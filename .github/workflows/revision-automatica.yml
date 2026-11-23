@@ -1,0 +1,47 @@
+# Revisión automática (D-47).
+# En cada Pull Request hacia main (y en cada push a main) GitHub Actions
+# instala las dependencias y corre las mismas verificaciones que usamos en
+# local: tipos de TypeScript, ESLint + Prettier y pruebas de Jest.
+# Si alguna falla, el PR muestra una X roja y no se fusiona.
+name: Revisión automática
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+# Si llega un push nuevo al mismo PR, se cancela la revisión anterior.
+concurrency:
+  group: revision-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  verificar:
+    name: TypeScript, ESLint/Prettier y Jest
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v4
+
+      - name: Preparar Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: TypeScript (npm run typecheck)
+        run: npm run typecheck
+
+      - name: ESLint y Prettier (npm run lint)
+        run: npm run lint
+
+      - name: Pruebas de Jest (npm test)
+        run: npm test -- --ci
