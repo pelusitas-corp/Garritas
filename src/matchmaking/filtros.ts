@@ -65,5 +65,5 @@ export function revisarPostulacion(
   if (pasaFiltros(respuestas, animal)) {
     return { permitida: true };
   }
-  return { permitida: false, mensaje: MENSAJES.mascotaNoCompatible };
+  return { permitida: false, mensaje: MENSAJES.MASCOTA_NO_COMPATIBLE };
 }

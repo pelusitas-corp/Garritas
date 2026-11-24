@@ -43,7 +43,7 @@ export default function explicarMatch(
     return {
       tipo: 'menorCoincidencia',
       dimensiones: menores.map((d) => NOMBRES_DIMENSION[d]),
-      mensaje: MENSAJES.mascotaPodriaNoAdaptarse,
+      mensaje: MENSAJES.MASCOTA_PODRIA_NO_ADAPTARSE,
     };
   }
   const mayores = ordenarDimensiones((d) => PESOS[d] * cosenos[d], true).slice(0, 3);

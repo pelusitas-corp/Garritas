@@ -103,7 +103,7 @@ describe('F-05 · RF-17 Filtros no negociables', () => {
     }
     expect(revisarPostulacion(ADOPTANTE_B.respuestas, PERRO_PATIO)).toEqual({
       permitida: false,
-      mensaje: MENSAJES.mascotaNoCompatible,
+      mensaje: MENSAJES.MASCOTA_NO_COMPATIBLE,
     });
     expect(revisarPostulacion(ADOPTANTE_B.respuestas, WINI)).toEqual({ permitida: true });
   });
@@ -153,7 +153,7 @@ describe('F-05 · RF-18 No Apto', () => {
   test('RF-18 válido: con 25 % la solicitud se etiqueta "No Apto"', () => {
     expect(esNoApto(25)).toBe(true);
     expect(esNoApto(29)).toBe(true);
-    expect(MENSAJES.etiquetaNoApto).toBeDefined();
+    expect(MENSAJES.ETIQUETA_NO_APTO).toBeDefined();
   });
 
   test('RF-18 no válido: con 30 % (o más) no se etiqueta "No Apto"', () => {
@@ -208,7 +208,7 @@ describe('F-05 · RF-19 Perfil Garritas', () => {
   test('RF-19 no válido: sin haber terminado el cuestionario, devuelve "Termina tu cuestionario para descubrir tu perfil Garritas"', () => {
     expect(asignarPerfilGarritas({ ...ADOPTANTE_A, completo: false })).toEqual({
       completo: false,
-      mensaje: MENSAJES.terminaCuestionarioPerfil,
+      mensaje: MENSAJES.PERFIL_SIN_CUESTIONARIO,
     });
   });
 });
@@ -225,7 +225,7 @@ describe('F-05 · RF-20 Explicación del match', () => {
     expect(resultadoDe(ADOPTANTE_B, TOBY).explicacion).toEqual({
       tipo: 'menorCoincidencia',
       dimensiones: ['Nivel de energía', 'Tiempo disponible'],
-      mensaje: MENSAJES.mascotaPodriaNoAdaptarse,
+      mensaje: MENSAJES.MASCOTA_PODRIA_NO_ADAPTARSE,
     });
   });
 });

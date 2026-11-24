@@ -52,7 +52,7 @@ function elegirPerfil(energia: number, temperamento: number): PerfilGarritas {
 export function asignarPerfilGarritas(cuestionario: Cuestionario): ResultadoPerfil {
   const valores = cuestionario.completo ? calcularValoresAdoptante(cuestionario.respuestas) : null;
   if (valores === null) {
-    return { completo: false, mensaje: MENSAJES.terminaCuestionarioPerfil };
+    return { completo: false, mensaje: MENSAJES.PERFIL_SIN_CUESTIONARIO };
   }
   const perfil = elegirPerfil(valores.energia, valores.temperamento);
   return { completo: true, perfil, ...PERFILES_GARRITAS[perfil] };
