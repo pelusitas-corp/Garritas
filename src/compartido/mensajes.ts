@@ -42,6 +42,14 @@ const MENSAJES = {
   ETIQUETA_NO_APTO: 'No Apto',
   /** RF-20 (no válido): match con menos de 30 %. */
   MASCOTA_PODRIA_NO_ADAPTARSE: 'Esta mascota podría no adaptarse a tu estilo de vida',
+
+  // ── Cuestionario (specs/features/F-04-cuestionario.md) ─────────────────
+  // RF-02 (no válido) usa CUESTIONARIO_INCOMPLETO y RF-19 (no válido) usa
+  // PERFIL_SIN_CUESTIONARIO, de navegación.
+  /** RF-16 (válido): al volver a abrir la app a mitad del cuestionario. */
+  CUESTIONARIO_RECUPERADO: 'Recuperamos tu cuestionario en progreso',
+  /** RF-16 (no válido): no hay avance guardado. */
+  CUESTIONARIO_SIN_AVANCE: 'No encontramos tu avance. Empecemos desde el inicio',
 } as const;
 
 export type ClaveMensaje = keyof typeof MENSAJES;
