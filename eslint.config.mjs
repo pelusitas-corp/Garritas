@@ -38,6 +38,15 @@ export default [
     },
   },
 
+  // React 19 ya no admite defaultProps en componentes de función: los
+  // valores por defecto se escriben en los parámetros (`variante = 'principal'`).
+  {
+    name: 'garritas/react-19-default-props',
+    rules: {
+      'react/require-default-props': ['error', { functions: 'defaultArguments' }],
+    },
+  },
+
   // Siempre al final: deja el formato en manos de Prettier
   prettierConfig,
 ];

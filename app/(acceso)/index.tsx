@@ -1,11 +1,23 @@
-// TEMPORAL (setup): pantalla de ejemplo del grupo (acceso). Se reemplaza en F-01.
-import PantallaDeEjemplo from '../../src/compartido/PantallaDeEjemplo';
+// PROVISIONAL (02-navegacion): Selección de Rol. F-01 pone el contenido real.
+import { router } from 'expo-router';
 
-export default function EjemploAcceso() {
+import PantallaProvisional from '../../src/compartido/navegacion/PantallaProvisional';
+import { RUTAS } from '../../src/compartido/navegacion/rutas';
+
+export default function SeleccionDeRol() {
   return (
-    <PantallaDeEjemplo
-      ruta="app/(acceso)/index.tsx"
-      enlaces={['/ejemplo-adoptante', '/ejemplo-albergue']}
+    <PantallaProvisional
+      titulo="Bienvenido a Garritas"
+      ruta={RUTAS.seleccionRol}
+      feature="F-01"
+      botones={[
+        { texto: 'Quiero adoptar', alPresionar: () => router.push(RUTAS.avisoPrivacidad) },
+        {
+          texto: 'Soy albergue o rescatista',
+          alPresionar: () => router.push(RUTAS.accesoAlbergue),
+          variante: 'secundario',
+        },
+      ]}
     />
   );
 }
