@@ -293,3 +293,20 @@ export const PREGUNTAS: readonly Pregunta[] = [
     ],
   },
 ];
+
+/**
+ * Revisa datos que vienen de fuera (el teléfono o Firestore) y se queda solo
+ * con las respuestas válidas: una clave `p1` a `p25` con una opción que
+ * existe en esa pregunta. Así un dato viejo o dañado nunca llega al motor.
+ * Recibe cualquier valor; devuelve las respuestas válidas (o `{}`).
+ */
+export function filtrarRespuestasValidas(datos: unknown): Respuestas {
+  if (typeof datos !== 'object' || datos === null) {
+    return {};
+  }
+  const entradas = Object.entries(datos).filter(([id, valor]) => {
+    const pregunta = PREGUNTAS.find((p) => p.id === id);
+    return pregunta?.opciones.some((opcion) => opcion.clave === valor) ?? false;
+  });
+  return Object.fromEntries(entradas);
+}
