@@ -33,6 +33,15 @@ const MENSAJES = {
   SIN_SOLICITUDES_ADOPTANTE: 'Aún no has enviado solicitudes. Encuentra a tu match en Descubrir',
   /** RF-04 (no válido): el animal no tiene solicitudes. */
   SIN_SOLICITUDES_ANIMAL: 'Aún no hay solicitudes de adopción para este perfil',
+
+  // ── Motor de match (specs/features/F-05-motor-match.md) ────────────────
+  // RF-19 (no válido) reutiliza PERFIL_SIN_CUESTIONARIO, de navegación.
+  /** RF-17 (no válido): solicitud a un animal excluido por un filtro. */
+  MASCOTA_NO_COMPATIBLE: 'Esta mascota no es compatible con las condiciones de tu hogar',
+  /** RF-18: etiqueta de la solicitud con menos de 30 %. */
+  ETIQUETA_NO_APTO: 'No Apto',
+  /** RF-20 (no válido): match con menos de 30 %. */
+  MASCOTA_PODRIA_NO_ADAPTARSE: 'Esta mascota podría no adaptarse a tu estilo de vida',
 } as const;
 
 export type ClaveMensaje = keyof typeof MENSAJES;
