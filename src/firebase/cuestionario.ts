@@ -15,7 +15,7 @@ import { doc, getDoc, serverTimestamp, setDoc, Timestamp } from 'firebase/firest
 import { filtrarRespuestasValidas } from '../adoptante/cuestionario/preguntas';
 import type { LecturaRemota } from '../adoptante/cuestionario/recuperacion';
 import type { PerfilGarritas, Respuestas } from '../matchmaking';
-import { db } from './config';
+import { auth, db } from './config';
 
 /** Nombre del campo "cuestionario completo" (P-02 de 02-navegacion; igual que sesion.ts). */
 const CAMPO_COMPLETO = 'completo';
@@ -30,6 +30,14 @@ export const ESPERA_GUARDAR_MS = 10000;
 
 /** Resultado de una lectura o escritura que la pantalla debe mostrar. */
 export type ResultadoGuardado = 'ok' | 'sin-conexion' | 'sin-permiso';
+
+/**
+ * `uid` del adoptante con sesión, o `null` si no hay sesión. Las guardas ya
+ * aseguran la sesión antes de abrir estas pantallas (G-1).
+ */
+export function uidDelAdoptante(): string | null {
+  return auth.currentUser ? auth.currentUser.uid : null;
+}
 
 function referencia(uid: string) {
   return doc(db, 'cuestionarios', uid);

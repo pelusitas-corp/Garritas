@@ -5,7 +5,8 @@
  * "Departamento"). Si el adoptante ya la había elegido (al regresar con
  * "←"), se ve marcada en menta (RN-03).
  *
- * Recibe el `texto`, si está `seleccionada` y qué hacer `alPresionar`.
+ * Recibe la `clave` de la opción, el `texto` que se ve, si está
+ * `seleccionada` y `alElegir`, que se llama con la clave al tocarla.
  * No devuelve datos: solo dibuja la opción.
  */
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -13,10 +14,11 @@ import { Pressable, StyleSheet, Text } from 'react-native';
 
 import { COLORES, FUENTES, RADIOS } from '../../compartido/tema';
 
-interface Props {
+interface Props<C extends string> {
+  clave: C;
   texto: string;
   seleccionada: boolean;
-  alPresionar: () => void;
+  alElegir: (clave: C) => void;
 }
 
 const estilos = StyleSheet.create({
@@ -36,12 +38,17 @@ const estilos = StyleSheet.create({
   texto: { flex: 1, fontFamily: FUENTES.negrita, fontSize: 20, color: COLORES.cafe },
 });
 
-export default function OpcionRespuesta({ texto, seleccionada, alPresionar }: Props) {
+export default function OpcionRespuesta<C extends string>({
+  clave,
+  texto,
+  seleccionada,
+  alElegir,
+}: Props<C>) {
   return (
     <Pressable
       accessibilityRole="button"
       accessibilityState={{ selected: seleccionada }}
-      onPress={alPresionar}
+      onPress={() => alElegir(clave)}
       style={({ pressed }) => [
         estilos.opcion,
         seleccionada && estilos.seleccionada,
