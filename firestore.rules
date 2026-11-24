@@ -1,10 +1,36 @@
 rules_version = '2';
 
 // Reglas de seguridad de Cloud Firestore (arquitectura §5).
-// Versión inicial del setup: NIEGA TODO. Nadie puede leer ni escribir.
+// Todo lo que no tenga un bloque propio sigue NEGADO (último bloque).
 // Cada feature abre solo lo que su spec permite, con su prueba en el emulador.
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    // ── Funciones de ayuda ───────────────────────────────────────────────
+    // ¿Quien hace la petición es el dueño del documento?
+    function esDueno(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+
+    // ¿Su cuenta tiene rol "adoptante" en usuarios/{uid}? (F-01, RN-05)
+    function esAdoptante() {
+      return get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data.rol == 'adoptante';
+    }
+
+    // ── cuestionarios/{uid} · F-04 (RF-02, RF-16, RF-19; RNF-02, RN-11) ──
+    // Solo el dueño lo lee. Solo el dueño, con rol adoptante, lo crea o lo
+    // cambia, y solo con los campos de arquitectura §4. Nadie lo borra.
+    // [PENDIENTE: prueba con el emulador; no existe npm run test:rules (F-04 §14.4)]
+    match /cuestionarios/{uid} {
+      allow read: if esDueno(uid);
+      allow create, update: if esDueno(uid)
+        && esAdoptante()
+        && request.resource.data.keys().hasOnly(['respuestas', 'completo', 'perfilGarritas', 'actualizadoEn'])
+        && request.resource.data.respuestas is map
+        && request.resource.data.completo is bool;
+    }
+
+    // ── Todo lo demás: nadie lee ni escribe ──────────────────────────────
     match /{document=**} {
       allow read, write: if false;
     }
