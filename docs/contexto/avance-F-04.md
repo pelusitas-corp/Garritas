@@ -1,6 +1,7 @@
 # Avance de F-04 · Cuestionario y perfil Garritas
 
-Nota para retomar el trabajo si se corta la sesión. Fecha: 24/11/2026.
+Nota para retomar el trabajo si se corta la sesión. Última actualización:
+25/11/2026.
 
 ## Estado
 | Dato | Valor |
@@ -9,8 +10,8 @@ Nota para retomar el trabajo si se corta la sesión. Fecha: 24/11/2026.
 | RF | RF-02, RF-15, RF-16, RF-19 · RNF-02, RNF-03 |
 | Rama | `feature/F-04-cuestionario` (sale de `main`) |
 | PR | #19 "feat(cuestionario): cuestionario y perfil Garritas (F-04, RF-02, RF-15, RF-16, RF-19)", abierto, **sin fusionar** |
-| Último commit antes de esta nota | `fe0a543` chore(cuestionario): integra main en F-04 (merge de `origin/main` hasta el PR #21) |
-| Revisión automática | `typecheck`, `lint` y `test` en verde en local después de integrar main |
+| Último commit antes de esta nota | `b2d4af6` chore(cuestionario): integra F-01 en F-04 (merge de `origin/main` en `73d38c9`, PR #25 y #26) |
+| Revisión automática | `typecheck`, `lint` y `test` (15 suites, 129 pruebas) en verde en local después de integrar F-01 |
 
 ## Hecho (T-1 a T-9)
 | Tarea | Commit |
@@ -25,13 +26,27 @@ Nota para retomar el trabajo si se corta la sesión. Fecha: 24/11/2026.
 | T-8 Pantalla Perfil Garritas | `4e23e15` |
 | T-9 Mi perfil | `1d815a9` |
 
+## Integraciones de `main`
+| Fecha | Merge | Hasta | Conflictos |
+|---|---|---|---|
+| 24/11/2026 | `fe0a543` | PR #21 | Ninguno |
+| 25/11/2026 | `b2d4af6` | PR #26 (F-01) | `firestore.rules` y `src/compartido/mensajes.ts` (ver abajo) |
+
+**Cómo se resolvieron los conflictos con F-01:**
+- `firestore.rules`:
+  - el encabezado es el de `main`;
+  - hay una sola `esDueno`, más `haySesion()` de F-01 y `esAdoptante()` de F-04;
+  - `usuarios/{uid}` es el de F-01 tal cual;
+  - queda el bloque completo de `cuestionarios/{uid}` de F-04, que reemplaza la lectura mínima de F-01 (F-01 A-9);
+  - siguen animales y fotos de F-01 y, al final, el bloque que niega todo lo demás.
+- `src/compartido/mensajes.ts`: primero el bloque de F-04 y luego el de F-01, sin cambiar textos.
+- `src/firebase/usuarios.ts` **no chocó**: F-01 escribe `usuarios/{uid}` en `src/firebase/acceso.ts`.
+
 ## Falta
-1. **Segunda integración de `main` cuando llegue F-01** (Jennifer). Resolver
-   ahí los choques de los archivos compartidos (ver abajo) y volver a correr
-   `typecheck`, `lint` y `test`.
-2. **T-10: prueba en el celular con Expo Go** (CA-01 a CA-09). Depende de
-   F-01 en `main` y de publicar **juntas** en la consola de Firebase las
-   reglas de `usuarios/{uid}` y `cuestionarios/{uid}` (PO-30).
+- **T-10: prueba en el celular con Expo Go** (CA-01 a CA-09). F-01 ya está
+  en `main`. Antes de probar hay que publicar en la consola de Firebase el
+  `firestore.rules` de esta rama, que lleva juntos los bloques de
+  `usuarios/{uid}` y `cuestionarios/{uid}` (PO-30).
 
 ## Decisiones aprobadas por la PO
 - **a) T-8:** en lugar de `IlustracionPerfil.tsx` se crearon
@@ -43,16 +58,8 @@ Nota para retomar el trabajo si se corta la sesión. Fecha: 24/11/2026.
   dicen "con la primera respuesta": Jennifer lo corrige en `03` v1.2, que
   también cierra P-06 con RN-06.
 - **c)** `src/firebase/usuarios.ts` (`leerNombreUsuario`) lo crea F-04 en la
-  carpeta de Jennifer, con aviso. Si F-01 también lo toca, el conflicto lo
-  resuelve F-04 al integrar `main`.
-- **d)** Falta T-10: prueba en el celular, que depende de F-01.
-
-## Archivos compartidos que chocarán con F-01
-- `firestore.rules`: F-04 agregó el bloque de `cuestionarios/{uid}`; F-01
-  agrega el de `usuarios/{uid}`.
-- `src/compartido/mensajes.ts`: F-04 agregó `CUESTIONARIO_RECUPERADO` y
-  `CUESTIONARIO_SIN_AVANCE`; F-01 agrega los suyos.
-- Quizá `src/firebase/usuarios.ts` (decisión c).
+  carpeta de Jennifer, con aviso. Al integrar F-01 no hubo conflicto.
+- **d)** Falta T-10: prueba en el celular.
 
 ## Acuerdos vigentes
 - No usar `DocumentoCuestionario` de `src/compartido/modelo.ts` en el código
