@@ -5,7 +5,7 @@ Nota para retomar el trabajo si se corta la sesión. Se actualiza en cada commit
 - **Spec:** `specs/features/F-06-match-solicitud.md` v1.0 (Aprobada) · `02-navegacion` v1.3 · `03-modelo-datos` v1.7 · `F-05` · `F-03` v1.2 · `F-08`
 - **RF:** RF-20, RF-11, RF-17 (no válido), RF-27, RF-18 · RNF-01 · RNF-02
 - **Rama:** `feature/F-06-match-solicitud` (desde `main` en `da09cc3`)
-- **Último commit:** T-9 (el anterior es `328f10e`)
+- **Último commit:** cierre de la nota (el de T-9 es `d174bd2`). Código completo; falta la prueba en el celular (T-10).
 - **PR:** "feat(solicitud): match explicado, enviar solicitud y mis solicitudes (F-06, RF-20, RF-11, RF-17, RF-27)". No se fusiona. Enlace: https://github.com/pelusitas-corp/garritas/pull/new/feature/F-06-match-solicitud
 
 ## Tareas (§10)
@@ -19,7 +19,7 @@ Nota para retomar el trabajo si se corta la sesión. Se actualiza en cada commit
 | T-6 | `useMatch` y `useMisSolicitudes` | ✅ Hecha (`78f048d`; `useMatch` y `useMisSolicitudes`; se exporta `regresarSinDisponible` del Detalle (decisión 5)) |
 | T-7 | Pantalla Match | ✅ Hecha (`a9086bd`; pantalla con `EncabezadoGarritas`, `HuellaMatch`, `TarjetaPorcentaje`, `TarjetaDimensiones` e `iconosMatch`; `pantallaMatch` con 5 pruebas; ícono opcional en `BotonPildora` (decisión 3)) |
 | T-8 | Pantalla "¡Solicitud enviada!" (`useSolicitudEnviada`) | ✅ Hecha (`328f10e`; pantalla y `useSolicitudEnviada`; `decidirSolicitudEnviada` y `pantallaSolicitudEnviada` con 3 pruebas) |
-| T-9 | Pantalla Mis solicitudes (`TarjetaMiSolicitud`, `PildoraEstado`) | ✅ Hecha (pantalla con `TarjetaMiSolicitud` y `PildoraEstado`; `npx expo export --platform android` arma el paquete) |
+| T-9 | Pantalla Mis solicitudes (`TarjetaMiSolicitud`, `PildoraEstado`) | ✅ Hecha (`d174bd2`; pantalla con `TarjetaMiSolicitud` y `PildoraEstado`; `npx expo export --platform android` arma el paquete) |
 | T-10 | Prueba en el celular, publicar reglas y reiniciar datos (Paulina) | Pendiente (lo hace la autora) |
 
 ## Decisiones aceptadas en el plan (Paulina, 25/11/2026; decisión del equipo, no están en el SRS)
@@ -86,6 +86,34 @@ Con los datos de 03 §8. "Lote" = `writeBatch` con `solicitudes/{id}` y `solicit
 | T-7 | ✅ sin errores | ✅ sin errores (Prettier OK) | ✅ 33 suites, 348 pruebas |
 | T-8 | ✅ sin errores | ✅ sin errores (Prettier OK) | ✅ 33 suites, 351 pruebas |
 | T-9 | ✅ sin errores | ✅ sin errores (Prettier OK) | ✅ 33 suites, 351 pruebas |
+
+## Cómo probarlo en el celular (T-10, Paulina)
+**Antes:** publica en la consola el `firestore.rules` completo de esta rama (si no, "Enviar solicitud" muestra "No tienes permiso para ver esta sección") y corre `npm run datos:prueba` para partir de los datos de 03 §8. Después, `npx expo start` y escanea el QR con Expo Go.
+
+**Ana Torres (A)**
+1. Inicia sesión → Descubrir → toca Wini → "¡Quiero adoptarlo!".
+2. Match (CA-01): huella con corazón, "¡Es un match!", "Wini y tú podrían ser la pareja perfecta.", "90%" "compatible" y "¿Por qué hacen match?" con Nivel de energía, Espacio y Tiempo disponible, cada una con palomita.
+3. "Enviar solicitud" (CA-08 con Ana, que ya tiene s1): encima del botón, "Ya enviaste una solicitud para esta mascota. Revisa su estado en Mis solicitudes" y el botón queda gris.
+4. Atrás del sistema → regresa al Detalle.
+5. Pestaña Mis solicitudes (CA-06): Wini "Pendiente" y Rocky "Pre-aprobada" con "El albergue te contactará para conocerse.", ambas con "Refugio Patitas"; abajo, "Cada paso te acerca a su hogar.". Tocar una tarjeta no hace nada (N-4).
+
+**Luis Pérez (B)**
+1. Descubrir → Toby → "¡Quiero adoptarlo!" (CA-02): huella sin corazón, título "Esta mascota podría no adaptarse a tu estilo de vida" sin subtítulo, "24%" con borde y sin relleno, y "Dimensiones con menor coincidencia" con Nivel de energía y Tiempo disponible con ✕. "Enviar solicitud" sigue activo (MS-3); al presionarlo sale "Ya enviaste…" (tiene s3).
+2. Canela por enlace directo (CA-05): en el navegador del celular abre `exp://<IP>:8081/--/match/canela` (la IP es la que muestra `npx expo start` debajo del QR). Sale "Esta mascota no es compatible con las condiciones de tu hogar" con "Ir a Descubrir" y **sin** "Enviar solicitud".
+3. Duplicado con Wini (CA-08): Descubrir → Wini → Match (70%) → "Enviar solicitud" → "Ya enviaste una solicitud para esta mascota. Revisa su estado en Mis solicitudes".
+4. Mis solicitudes: Luna "Rechazada", Rocky "Pendiente", Toby "Pendiente" y Wini "Pendiente".
+5. Rocky por enlace directo `exp://<IP>:8081/--/match/rocky` (A1): regresa a Descubrir con "Esta mascota ya no está disponible para adopción".
+
+**Cuenta nueva** (ficticia, p. ej. "Carla Ruiz", `carla.ruiz@example.com`)
+1. Regístrate y termina el cuestionario. Mis solicitudes (CA-07): "Aún no has enviado solicitudes. Encuentra a tu match en Descubrir".
+2. Descubrir → Wini → "¡Quiero adoptarlo!" → anota el % → "Enviar solicitud" (CA-03): el botón muestra el indicador y se abre "¡Solicitud enviada!" con la tarjeta menta, Wini y "Pendiente".
+3. Atrás del sistema → regresa al **Detalle**, no a Match. Vuelve a "¡Quiero adoptarlo!" → "Enviar solicitud" → "Ya enviaste…".
+4. "Ver mis solicitudes" → la pestaña con Wini "Pendiente".
+5. Cierra sesión y entra como Refugio Patitas → Solicitudes → Wini: aparece la solicitud de la cuenta nueva con el mismo % (y "No Apto" si fuera menor a 30, RF-18). Pre-apruébala o recházala (F-08); vuelve a entrar con la cuenta nueva → Mis solicitudes muestra el estado nuevo.
+6. CA-04 (G-10), con dos celulares: la cuenta nueva abre Match de Toby y se queda ahí; con Refugio Patitas pre-aprueba s3 (Toby). Luego la cuenta nueva presiona "Enviar solicitud" → "Esta mascota ya no está disponible para adopción" y el botón queda gris.
+7. CA-09: modo avión → abre un Match: indicador y, a los 3 s, "Calculando compatibilidad, verifica tu conexión a internet"; a más tardar a los 10 s, "Error de conexión, verifica tu conexión a internet" con "Reintentar". En un Match ya abierto, "Enviar solicitud" → el mismo mensaje encima del botón y no se abre "¡Solicitud enviada!". Mis solicitudes → el mismo mensaje con "Reintentar".
+
+**Al terminar, reiniciar los datos:** `npm run datos:prueba` deja como al inicio las 3 cuentas, los 5 animales y s1 a s6, pero **no borra** lo que se creó al probar. En la consola de Firebase borra a mano: la solicitud de la cuenta nueva (con su subcolección `privado/contacto`), `usuarios/{uid}` y `cuestionarios/{uid}` de la cuenta nueva, y la cuenta en Authentication.
 
 ## Pendientes
 - CA-10 con el emulador el viernes 27 (PO-31). `npm run test:rules` no existe todavía.
