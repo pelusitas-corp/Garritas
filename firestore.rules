@@ -1,8 +1,9 @@
 rules_version = '2';
 
-// Reglas de seguridad de Cloud Firestore (arquitectura §5).
+// Reglas de seguridad de Cloud Firestore (arquitectura §5, 03-modelo-datos §7).
 // Todo lo que no tenga un bloque propio sigue NEGADO (último bloque).
-// Cada feature abre solo lo que su spec permite, con su prueba en el emulador.
+// Cada feature abre solo lo que su spec permite. Las pruebas con el
+// emulador de F-01 (CA-09) se hacen el viernes 27 (A-6, PO-31).
 service cloud.firestore {
   match /databases/{database}/documents {
 
@@ -12,9 +13,35 @@ service cloud.firestore {
       return request.auth != null && request.auth.uid == uid;
     }
 
+    // ¿Quien hace la petición inició sesión?
+    function haySesion() {
+      return request.auth != null;
+    }
+
     // ¿Su cuenta tiene rol "adoptante" en usuarios/{uid}? (F-01, RN-05)
     function esAdoptante() {
       return get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data.rol == 'adoptante';
+    }
+
+    // ── usuarios/{uid} · F-01 (RF-23, RF-24, RF-25; RNF-02, RN-02 a RN-04) ──
+    // Leer: solo el dueño (RN-04). Crear: solo el dueño, con rol "adoptante"
+    // (RN-02), su consentimiento aceptado (RF-25), solo los campos de 03 §4.1,
+    // el mismo correo de Authentication y la hora del servidor.
+    // Modificar o borrar: nadie, así nadie cambia su rol (RN-03).
+    match /usuarios/{uid} {
+      allow read: if esDueno(uid);
+      allow create: if esDueno(uid)
+        && request.resource.data.keys().hasOnly(['rol', 'nombre', 'correo', 'telefono', 'consentimiento', 'creadoEn'])
+        && request.resource.data.rol == 'adoptante'
+        && request.resource.data.nombre is string
+        && request.resource.data.nombre.size() > 0
+        && request.resource.data.telefono is string
+        && request.resource.data.telefono.size() > 0
+        && request.resource.data.correo == request.auth.token.email
+        && request.resource.data.consentimiento.aceptado == true
+        && request.resource.data.consentimiento.fecha is timestamp
+        && request.resource.data.creadoEn == request.time;
+      allow update, delete: if false;
     }
 
     // ── cuestionarios/{uid} · F-04 (RF-02, RF-16, RF-19; RNF-02, RN-11) ──
@@ -28,6 +55,16 @@ service cloud.firestore {
         && request.resource.data.keys().hasOnly(['respuestas', 'completo', 'perfilGarritas', 'actualizadoEn'])
         && request.resource.data.respuestas is map
         && request.resource.data.completo is bool;
+    }
+
+    // ── animales y fotos · F-01 A-6 (03-modelo-datos §7) ─────────────────
+    // Cualquier usuario con sesión puede leerlos. Escribir lo abre F-02.
+    match /animales/{animalId} {
+      allow read: if haySesion();
+
+      match /fotos/{fotoId} {
+        allow read: if haySesion();
+      }
     }
 
     // ── Todo lo demás: nadie lee ni escribe ──────────────────────────────

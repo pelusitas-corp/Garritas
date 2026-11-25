@@ -17,6 +17,8 @@ import {
 } from 'react';
 import type { ReactNode } from 'react';
 
+import { crearCuentaAdoptante } from '../../firebase/acceso';
+import type { DatosRegistro, ResultadoAcceso } from '../../firebase/acceso';
 import { cerrarSesion, escucharSesion, leerEstadoSesion } from '../../firebase/sesion';
 import type { EstadoSesion } from './guardas';
 
@@ -30,6 +32,11 @@ interface ValorSesion {
   recargar: () => void;
   /** Cierra la sesión (N-3). Las guardas llevan después a Selección de Rol. */
   cerrarSesion: () => Promise<void>;
+  /**
+   * Crea la cuenta del adoptante (F-01, RF-23). Mientras se crea, la sesión
+   * NO cambia, así que nunca se ve un instante "No tienes permiso…" (RN-13).
+   */
+  crearCuenta: (datos: DatosRegistro) => Promise<ResultadoAcceso>;
 }
 
 const ContextoSesion = createContext<ValorSesion | null>(null);
@@ -45,10 +52,17 @@ export function ProveedorSesion({ children }: { children: ReactNode }) {
   const [vuelta, setVuelta] = useState(0);
   // Solo cuenta la lectura más reciente (evita que una respuesta vieja gane).
   const lecturaActual = useRef(0);
+  // F-01 RN-13: mientras se crea la cuenta, Firebase avisa del uid nuevo
+  // ANTES de que exista usuarios/{uid}. Ese aviso se ignora; `crearCuenta`
+  // pone el uid cuando la ficha ya está escrita.
+  const creandoCuenta = useRef(false);
 
   useEffect(
     () =>
       escucharSesion((nuevoUid) => {
+        if (creandoCuenta.current) {
+          return;
+        }
         setUid(nuevoUid);
         setSesion(nuevoUid ? { tipo: 'cargando' } : { tipo: 'sin-sesion' });
       }),
@@ -75,7 +89,28 @@ export function ProveedorSesion({ children }: { children: ReactNode }) {
     }
   }, [uid]);
 
-  const valor = useMemo(() => ({ sesion, recargar, cerrarSesion }), [sesion, recargar]);
+  /**
+   * Recibe los datos del registro. Devuelve el resultado de Firebase.
+   * Si salió bien, ahora sí lee el rol: la guarda G-2 lleva al inicio.
+   */
+  const crearCuenta = useCallback(async (datos: DatosRegistro) => {
+    creandoCuenta.current = true;
+    try {
+      const resultado = await crearCuentaAdoptante(datos);
+      if (resultado.ok) {
+        setSesion({ tipo: 'cargando' });
+        setUid(resultado.uid);
+      }
+      return resultado;
+    } finally {
+      creandoCuenta.current = false;
+    }
+  }, []);
+
+  const valor = useMemo(
+    () => ({ sesion, recargar, cerrarSesion, crearCuenta }),
+    [sesion, recargar, crearCuenta],
+  );
 
   return <ContextoSesion.Provider value={valor}>{children}</ContextoSesion.Provider>;
 }
