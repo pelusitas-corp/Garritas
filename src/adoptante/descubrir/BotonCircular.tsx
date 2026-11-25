@@ -1,10 +1,11 @@
 /**
- * Botón redondo con un ícono (diseño Soft UI de Descubrir y del Detalle):
- * ícono de usuario, "ⓘ", "Pasar", "Me encanta" y "✕".
+ * Botón redondo con un ícono (diseño del prototipo de Descubrir y del
+ * Detalle, DE-10): ícono de usuario, "ⓘ", "Pasar", "Me encanta" y "✕".
  *
  * Recibe el ícono, su nombre accesible (el texto de la spec), el color de
- * fondo y el diámetro. `alPresionar` es opcional: sin él, el círculo solo
- * se dibuja (no es un botón). No devuelve datos: solo dibuja.
+ * fondo, el diámetro y el tamaño del ícono (por defecto, la mitad del
+ * diámetro). `alPresionar` es opcional: sin
+ * él, el círculo solo se dibuja (no es un botón). No devuelve datos.
  */
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Pressable, StyleSheet, View } from 'react-native';
@@ -18,6 +19,7 @@ interface Props {
   etiqueta: string;
   fondo: NombreColor;
   diametro: number;
+  tamanoIcono?: number;
   alPresionar?: () => void;
 }
 
@@ -31,15 +33,14 @@ export default function BotonCircular({
   etiqueta,
   fondo,
   diametro,
+  tamanoIcono = Math.round(diametro / 2),
   alPresionar = undefined,
 }: Props) {
   const forma = [
     estilos.circulo,
     { width: diametro, height: diametro, backgroundColor: COLORES[fondo] },
   ];
-  const dibujo = (
-    <MaterialCommunityIcons name={icono} size={diametro * 0.5} color={COLORES.azulMarino} />
-  );
+  const dibujo = <MaterialCommunityIcons name={icono} size={tamanoIcono} color={COLORES.cafe} />;
   if (!alPresionar) {
     return (
       <View style={forma} accessibilityLabel={etiqueta}>

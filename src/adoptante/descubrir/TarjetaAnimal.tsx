@@ -1,22 +1,26 @@
 /**
- * Tarjeta del mazo de Descubrir (spec F-03: flujo A pasos 6 a 8; RF-10, N-2, DE-8).
+ * Tarjeta del mazo de Descubrir (spec F-03: flujo A pasos 6 a 8; RF-10, N-2, DE-8, DE-10).
  *
- * Diseño (prototipo "Descubrir", con los textos de la spec §6): la foto
- * (miniatura) ocupa todo el ancho y unos 2/3 de la tarjeta, con "ⓘ" en un
- * círculo crema en la esquina; abajo, una franja azul claro con el nombre y
- * píldoras crema con la especie y "{n} % compatible". Debajo, los botones
- * circulares "Pasar" y "Me encanta", cada uno con su texto. No muestra
- * "No Apto" (DE-3).
+ * Diseño del prototipo "Descubrir" (390 × 844), con los textos de la spec:
+ * - tarjeta de ancho completo, radio 32, sin borde ni sombra;
+ * - foto (miniatura) arriba, de 270 de alto escalado al ancho; si la
+ *   pantalla es baja, la foto se encoge (nunca los botones);
+ * - "ⓘ" en un círculo crema de 44 sobre la foto, abajo a la derecha;
+ * - franja azul claro con el nombre y las píldoras de especie y
+ *   "{n} % compatible" (esta en menta para destacar);
+ * - debajo, "Pasar" y "Me encanta" en círculos de 88, con su texto.
+ * No muestra "No Apto" (DE-3).
  *
  * Recibe la `tarjeta` y qué hacer al pasar o al abrir el Detalle.
  * No devuelve datos: solo dibuja.
  */
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Image, Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 
 import { COLORES, FUENTES, RADIOS } from '../../compartido/tema';
 import BotonCircular from './BotonCircular';
 import { ICONOS_DESCUBRIR } from './iconosDescubrir';
 import type { TarjetaMazo } from './mazo';
+import Pildora from './Pildora';
 import {
   NOMBRE_ESPECIE,
   TEXTO_INFO,
@@ -31,62 +35,60 @@ interface Props {
   alAbrir: (animalId: string) => void;
 }
 
-/** Diámetro de los botones "Pasar" y "Me encanta". */
-const DIAMETRO_ACCION = 84;
+/** Ancho del prototipo y alto de su foto: la foto se escala con el ancho real. */
+const ANCHO_PROTOTIPO = 390;
+const ALTO_FOTO_PROTOTIPO = 270;
+/** Lo menos que se encoge la foto en pantallas bajas. */
+const ALTO_FOTO_MINIMO = 120;
+const DIAMETRO_ACCION = 88;
+/** Margen lateral del prototipo: la tarjeta mide el ancho de la pantalla menos 2 × 24. */
+const MARGEN = 24;
 
 const estilos = StyleSheet.create({
-  contenedor: { flex: 1, gap: 20 },
+  // Sin flex: 1 para poder centrarse; flexShrink deja que la foto se encoja si no cabe.
+  contenedor: { flexShrink: 1, gap: 16 },
   tarjeta: {
-    flex: 1,
-    borderRadius: RADIOS.tarjeta,
+    flexShrink: 1,
+    borderRadius: RADIOS.tarjetaGrande,
     backgroundColor: COLORES.azulGrisaceo,
     overflow: 'hidden',
   },
-  zonaFoto: { flex: 2 },
-  foto: { flex: 1, width: '100%', backgroundColor: COLORES.menta },
+  foto: { flexShrink: 1, minHeight: ALTO_FOTO_MINIMO, width: '100%' },
   info: { position: 'absolute', right: 16, bottom: 16 },
-  franja: { flex: 1, justifyContent: 'center', gap: 12, paddingHorizontal: 20 },
-  nombre: { fontFamily: FUENTES.negrita, fontSize: 32, color: COLORES.cafe },
+  franja: { gap: 10, padding: 20 },
+  nombre: { fontFamily: FUENTES.negrita, fontSize: 28, color: COLORES.cafe },
   pildoras: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-  pildora: {
-    paddingHorizontal: 14,
-    paddingVertical: 6,
-    borderRadius: RADIOS.pildora,
-    backgroundColor: COLORES.crema,
-  },
-  textoPildora: { fontFamily: FUENTES.negrita, fontSize: 14, color: COLORES.cafe },
-  acciones: { flexDirection: 'row', justifyContent: 'center', gap: 48 },
+  acciones: { flexDirection: 'row', justifyContent: 'center', gap: 44 },
   accion: { alignItems: 'center', gap: 8 },
-  textoAccion: { fontFamily: FUENTES.negrita, fontSize: 16, color: COLORES.cafe },
+  textoAccion: { fontFamily: FUENTES.negrita, fontSize: 14, color: COLORES.cafe },
 });
 
-/** Píldora crema con un dato de la tarjeta (especie o %). */
-function Pildora({ texto }: { texto: string }) {
-  return (
-    <View style={estilos.pildora}>
-      <Text style={estilos.textoPildora}>{texto}</Text>
-    </View>
-  );
-}
-
 export default function TarjetaAnimal({ tarjeta, alPasar, alAbrir }: Props) {
+  const { width } = useWindowDimensions();
+  const altoFoto = Math.round((ALTO_FOTO_PROTOTIPO * width) / ANCHO_PROTOTIPO);
   const abrir = () => alAbrir(tarjeta.animalId);
+
   return (
-    <View style={estilos.contenedor}>
+    <View style={[estilos.contenedor, { width: width - MARGEN * 2 }]}>
       <Pressable
         style={estilos.tarjeta}
         onPress={abrir}
         accessibilityRole="button"
         accessibilityLabel={tarjeta.nombre}
       >
-        <View style={estilos.zonaFoto}>
-          <Image source={{ uri: tarjeta.miniatura }} style={estilos.foto} resizeMode="cover" />
+        <View style={[estilos.foto, { height: altoFoto }]}>
+          <Image
+            source={{ uri: tarjeta.miniatura }}
+            style={StyleSheet.absoluteFill}
+            resizeMode="cover"
+          />
           <View style={estilos.info}>
             <BotonCircular
               icono={ICONOS_DESCUBRIR.info}
               etiqueta={TEXTO_INFO}
               fondo="crema"
-              diametro={48}
+              diametro={44}
+              tamanoIcono={24}
               alPresionar={abrir}
             />
           </View>
@@ -97,7 +99,7 @@ export default function TarjetaAnimal({ tarjeta, alPasar, alAbrir }: Props) {
           </Text>
           <View style={estilos.pildoras}>
             <Pildora texto={NOMBRE_ESPECIE[tarjeta.especie]} />
-            <Pildora texto={textoPorcentaje(tarjeta.porcentaje)} />
+            <Pildora texto={textoPorcentaje(tarjeta.porcentaje)} fondo="menta" />
           </View>
         </View>
       </Pressable>
@@ -108,6 +110,7 @@ export default function TarjetaAnimal({ tarjeta, alPasar, alAbrir }: Props) {
             etiqueta={TEXTO_PASAR}
             fondo="azulGrisaceo"
             diametro={DIAMETRO_ACCION}
+            tamanoIcono={32}
             alPresionar={alPasar}
           />
           <Text style={estilos.textoAccion}>{TEXTO_PASAR}</Text>
@@ -118,6 +121,7 @@ export default function TarjetaAnimal({ tarjeta, alPasar, alAbrir }: Props) {
             etiqueta={TEXTO_ME_ENCANTA}
             fondo="menta"
             diametro={DIAMETRO_ACCION}
+            tamanoIcono={32}
             alPresionar={abrir}
           />
           <Text style={estilos.textoAccion}>{TEXTO_ME_ENCANTA}</Text>

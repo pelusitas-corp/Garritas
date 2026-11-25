@@ -1,19 +1,53 @@
 # Avance de F-03 · Descubrir y detalle del animal
 
 Nota para retomar el trabajo si se corta la sesión. Última actualización:
-25/11/2026 (ronda de ajustes después de la prueba en el celular).
+25/11/2026 (ronda de diseño fiel al prototipo, spec v1.2).
 
 ## Estado
 | Dato | Valor |
 |---|---|
-| Spec | `specs/features/F-03-descubrir-detalle.md` v1.1, Aprobada |
+| Spec | `specs/features/F-03-descubrir-detalle.md` v1.2, Aprobada |
 | RF | RF-10, RF-26, RF-28 · RNF-01 (usa RF-17, RF-03 y RF-18 del motor F-05) |
-| Rama | `feature/F-03-descubrir-detalle` |
-| Base | Salió de `feature/F-04-cuestionario` (`a2d1cdd`). Después se integró `origin/main` hasta `9b54218` (PR #19 F-04 y PR #29 F-02), por fast-forward y sin conflictos. Ya no depende de ningún PR abierto |
-| Último commit de código | `7e8d258` style(detalle): tarjeta azul claro con mosaicos y botón fijo |
+| PR #30 | Fusionado en `main` (`42b4a8c`): F-03 completa con la ronda de ajustes |
+| Rama actual | `style/F-03-diseno`, desde `main` en `42b4a8c` |
+| Último commit de código | `b14cc02` fix(navegacion): las pestañas del adoptante suman el espacio inferior de Android |
 | Revisión automática en local | `typecheck`, `lint` y `test` (24 suites, 213 pruebas) en verde |
-| PR | #30 "feat(descubrir): Descubrir ordenado por % y detalle del animal (F-03, RF-10, RF-26, RF-28)", abierto, **sin fusionar** |
-| Falta | Volver a probar en el celular: G-8 (pruebas 7 y 8), DE-9 y el diseño |
+| PR de diseño | Abierto por la autora hacia `main` desde `style/F-03-diseno`, **sin fusionar**; se actualiza con cada push |
+| Falta | Volver a probar en el celular: centrado de Descubrir y del Detalle, y las pestañas |
+
+## Ronda de diseño fiel al prototipo (spec v1.2, DE-10)
+| Cambio | Commit |
+|---|---|
+| Spec v1.2 | `34c034e` |
+| Descubrir: huella y "Garritas", subtítulo, tarjeta de radio 32, foto de 270 que se encoge en pantallas bajas, píldoras de 26 (el % en menta), botones de 88. `RADIOS.tarjetaGrande` (32) en `tema.ts`; `Pildora.tsx` nuevo | `53016f8` |
+| Detalle: encabezado con flecha y círculo de usuario, tarjeta de radio 32 con ✕, carrusel de 180, nombre con corazón, `Mosaico.tsx` (110), cuidados como píldoras, albergue con casita, texto de apoyo | `13a9a1d` |
+
+**Ajustes después de probar en Android (25/11/2026):**
+
+| Cambio | Commit |
+|---|---|
+| Descubrir: tarjeta y botones centrados entre el subtítulo y las pestañas; la tarjeta mide el ancho menos 2 × 24 | `688b915` |
+| Detalle: tarjeta centrada entre el encabezado y el pie; si no cabe, se desplaza | `06f024b` |
+| Pestañas del adoptante (PO-34): altura = 72 + inset inferior y `paddingBottom` = inset inferior, en `app/(adoptante)/(pestanas)/_layout.tsx`. `estiloPestanas.ts` no cambia | `b14cc02` |
+
+**Lo que no se igualó al prototipo:**
+- **Radio 20** del carrusel y de los mosaicos: queda en 24, el mínimo de
+  Soft UI (arquitectura §8, prueba `tests/tema.test.ts`).
+- **Píldora de tamaño en la tarjeta:** no está en la spec (flujo A paso 6 y
+  DE-8 piden especie y %). Si la quieren, primero va en el SRS y la spec.
+- **"¡Quiero adoptarlo!" de 64 de alto:** `BotonPildora` mide unos 57
+  (padding vertical 16 + texto de 18). Le falta un alto fijo o un padding
+  vertical de ~20; no se cambió el componente compartido.
+- **Etiquetas "Albergue" y "Cuidados de salud":** el prototipo no las
+  muestra; quedan como nombre accesible (lector de pantalla), no visibles.
+- **Cabe en 360 × 740:** calculado (la foto baja a ~226), no probado en un
+  celular desde esta sesión.
+
+## Historia anterior (rama `feature/F-03-descubrir-detalle`, PR #30)
+| Dato | Valor |
+|---|---|
+| Base | Salió de `feature/F-04-cuestionario` (`a2d1cdd`). Después se integró `origin/main` hasta `9b54218` (PR #19 F-04 y PR #29 F-02), por fast-forward y sin conflictos |
+| Último commit | `c8bdff9` docs(specs): DE-9 y A4 incluyen Ver de nuevo |
 
 ## Tareas (spec §9)
 | Tarea | Commit |

@@ -6,8 +6,17 @@
  */
 import type { Especie } from '../../matchmaking';
 
-/** Título de la pantalla y de la pestaña (02-navegacion §4.2). */
+/** Título de la pestaña (02-navegacion §4.2). */
 export const TEXTO_DESCUBRIR = 'Descubrir';
+
+/** Encabezado de Descubrir, junto al ícono de huella (Figma, DE-10). */
+export const TEXTO_GARRITAS = 'Garritas';
+
+/** Subtítulo de Descubrir (Figma, DE-10). */
+export const TEXTO_SUBTITULO_DESCUBRIR = 'Tu próximo mejor amigo.';
+
+/** Texto de apoyo debajo de "¡Quiero adoptarlo!" (Figma, PO-21, DE-10). */
+export const TEXTO_APOYO_ADOPTAR = 'El primer paso hacia una vida juntos.';
 
 /** Botones de la tarjeta (N-2, Figma). "ⓘ" se dibuja como ícono y este es su nombre accesible. */
 export const TEXTO_PASAR = 'Pasar';

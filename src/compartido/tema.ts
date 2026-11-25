@@ -35,6 +35,8 @@ export const RADIO_MINIMO = 24;
 export const RADIOS = {
   /** Tarjetas, campos y contenedores. */
   tarjeta: RADIO_MINIMO,
+  /** Tarjetas grandes del prototipo (Descubrir y Detalle de F-03, DE-10). */
+  tarjetaGrande: 32,
   /** Botones píldora: un radio tan grande que los extremos quedan redondos. */
   pildora: 999,
 } as const;
