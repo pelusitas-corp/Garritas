@@ -5,7 +5,7 @@ Nota para retomar el trabajo si se corta la sesión. Se actualiza en cada commit
 - **Spec:** `specs/features/F-01-acceso-privacidad.md` v1.1 (Aprobada)
 - **RF:** RF-25, RF-23, RF-09, RF-24 · RNF-02
 - **Rama:** `feature/F-01-acceso-privacidad` (desde `main` en `c242f1b`)
-- **Último commit:** T-7 (registro y accesos)
+- **Último commit:** T-8 (reglas)
 - **PR:** todavía no se abre. Título: "F-01: Acceso y privacidad (RF-25, RF-23, RF-09, RF-24)". No se fusiona.
 
 > El intento anterior de F-01 (sobre un `main` viejo) quedó en la rama local
@@ -21,7 +21,7 @@ Nota para retomar el trabajo si se corta la sesión. Se actualiza en cada commit
 | T-5 | `avisos.ts` (texto + lector corto de Markdown) y prueba contra los `.md` | ✅ Hecha (`avisos.ts` + `lectorAviso.ts`) |
 | T-6 | Pantallas: Selección de Rol, Aviso de Privacidad, Aviso integral | ✅ Hecha |
 | T-7 | Pantallas: Registro y los dos accesos | ✅ Hecha |
-| T-8 | `firestore.rules`: `usuarios`, `animales`/`fotos` con sesión, lectura mínima de `cuestionarios` | Pendiente |
+| T-8 | `firestore.rules`: `usuarios`, `animales`/`fotos` con sesión, lectura mínima de `cuestionarios` | ✅ Hecha (sin publicar; emulador el viernes) |
 | T-9 | Cerrar esta nota y descripción del PR | Pendiente |
 
 ## Decisiones aceptadas en el plan (Jennifer, 2026-11-24)
@@ -43,5 +43,5 @@ Nota para retomar el trabajo si se corta la sesión. Se actualiza en cada commit
 - Firestore sin internet no falla al escribir: se queda esperando. Por eso `setDoc` tiene el límite de 10 s.
 
 ## Qué falta
-- T-8 y T-9.
+- T-9.
 - Prueba en el celular (publicar reglas de F-01 + bloque de F-04 juntos, PO-30).
