@@ -5,7 +5,7 @@ Nota para retomar el trabajo si se corta la sesión. Se actualiza en cada commit
 - **Spec:** `specs/features/F-02-alta-animal.md` v1.0 (Aprobada) · `03-modelo-datos` v1.4
 - **RF:** RF-01, RF-13, RF-14 · RI-02 · RNF-02
 - **Rama:** `feature/F-02-alta-animal` (desde `main` en `58e7a16`)
-- **Último commit:** T-5 (fotos, cámara y compresión)
+- **Último commit:** T-6 (publicar con writeBatch)
 - **PR:** todavía no se abre. Título: "feat(alta): alta del animal con fotos y perfil de compatibilidad (F-02, RF-01, RF-13, RF-14, RI-02)". No se fusiona.
 
 ## Tareas (§10)
@@ -16,7 +16,7 @@ Nota para retomar el trabajo si se corta la sesión. Se actualiza en cada commit
 | T-3 | `src/albergue/alta/textos.ts` y `opcionesPerfil.ts` | ✅ Hecha |
 | T-4 | `src/albergue/alta/validacion.ts` (`validarAlta`, `datosValidados`, `perfilCompleto`) y sus pruebas | ✅ Hecha |
 | T-5 | `expo-image-picker` y `expo-image-manipulator`; `fotos.ts` (puro) y `procesarFoto.ts` (nativo) | ✅ Hecha (`expo-image-picker` ~58.0.10, `expo-image-manipulator` ~58.0.16; `app.json` sin cambios) |
-| T-6 | `src/firebase/altaAnimal.ts` (`writeBatch`, 10 s, ID fijo, A9) | Pendiente |
+| T-6 | `src/firebase/altaAnimal.ts` (`writeBatch`, 10 s, ID fijo, A9) | ✅ Hecha (`conTiempoLimite` exportado desde `acceso.ts`) |
 | T-7 | `SelectorOpciones`, `CasillaCuidado`, `SeccionFotos` | Pendiente |
 | T-8 | `useAltaAnimal` y pantalla "Nueva mascota" | Pendiente |
 | T-9 | `firestore.rules` (§9) y casos de CA-11 en esta nota | Pendiente |
@@ -39,5 +39,5 @@ Nota para retomar el trabajo si se corta la sesión. Se actualiza en cada commit
 Se escriben en T-9.
 
 ## Qué falta
-- T-6 a T-10.
+- T-7 a T-10.
 - Después de fusionar: volver a correr `npm run datos:prueba` (Jennifer) para que Wini, Luna, Rocky, Toby y Canela tengan la edad y el tamaño nuevos.

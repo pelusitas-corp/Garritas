@@ -48,8 +48,9 @@ function codigoDe(error: unknown): string {
  * Recibe una promesa y un tiempo en milisegundos. Devuelve la misma promesa,
  * pero falla si no termina a tiempo. Hace falta porque Firestore, sin
  * internet, no falla al escribir: se queda esperando (RN-11).
+ * También la usa el alta del animal (F-02 AL-8).
  */
-function conTiempoLimite<T>(promesa: Promise<T>, milisegundos: number): Promise<T> {
+export function conTiempoLimite<T>(promesa: Promise<T>, milisegundos: number): Promise<T> {
   return new Promise<T>((resolver, rechazar) => {
     const temporizador = setTimeout(() => rechazar(new Error('Tiempo agotado')), milisegundos);
     promesa.then(
