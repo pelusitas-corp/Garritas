@@ -6,12 +6,12 @@
  * Match (F-06). No muestra el % (RN-06). "←" y "✕" regresan a Descubrir,
  * que sigue en la misma tarjeta (RN-03). G-8 lo resuelve `useDetalleAnimal`.
  *
- * Diseño (prototipo "Detalle", con los textos de la spec §6): encabezado
- * con "←", el título y el ícono de usuario; tarjeta azul claro con "✕",
- * el carrusel, el nombre, tres mosaicos crema, los cuidados de salud y el
- * albergue; "¡Quiero adoptarlo!" fijo abajo, fuera de la tarjeta.
- * El ícono de usuario solo se dibuja: 02-navegacion §4.2 no da una ruta
- * del Detalle a Mi perfil.
+ * Diseño del prototipo "Detalle" (DE-10), con los textos de la spec:
+ * encabezado con "←", "Conoce a {nombre}" y el ícono de usuario (solo
+ * dibujo: 02-navegacion §4.2 no da una ruta del Detalle a Mi perfil);
+ * tarjeta azul claro de radio 32 con "✕", el carrusel, el nombre con un
+ * corazón, tres mosaicos crema, los cuidados de salud como píldoras y el
+ * albergue con su casita; fijo abajo, "¡Quiero adoptarlo!" y el texto de apoyo.
  */
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -22,10 +22,12 @@ import BotonCircular from '../../../src/adoptante/descubrir/BotonCircular';
 import CarruselFotos from '../../../src/adoptante/descubrir/CarruselFotos';
 import { pantallaDetalle } from '../../../src/adoptante/descubrir/estados';
 import { ICONOS_DESCUBRIR, iconoCuidado } from '../../../src/adoptante/descubrir/iconosDescubrir';
-import type { NombreIcono } from '../../../src/adoptante/descubrir/iconosDescubrir';
+import Mosaico from '../../../src/adoptante/descubrir/Mosaico';
+import Pildora from '../../../src/adoptante/descubrir/Pildora';
 import {
   ETIQUETAS_DETALLE,
   NOMBRE_ESPECIE,
+  TEXTO_APOYO_ADOPTAR,
   TEXTO_ATRAS,
   TEXTO_CERRAR,
   TEXTO_MI_PERFIL,
@@ -38,64 +40,42 @@ import EstadoPantalla from '../../../src/compartido/EstadoPantalla';
 import { RUTAS, rutaMatch } from '../../../src/compartido/navegacion/rutas';
 import { COLORES, FUENTES, RADIOS } from '../../../src/compartido/tema';
 
-/** Margen de la pantalla y relleno de la tarjeta: el carrusel ocupa lo que queda. */
+/** Margen lateral del prototipo y relleno de la tarjeta: el carrusel ocupa lo que queda. */
 const MARGEN = 24;
 const RELLENO_TARJETA = 20;
 
 const estilos = StyleSheet.create({
   pantalla: { flex: 1, backgroundColor: COLORES.crema },
   encabezado: {
+    height: 48,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
+    marginTop: 8,
     paddingHorizontal: MARGEN,
-    paddingTop: 16,
-    paddingBottom: 8,
   },
-  titulo: { flex: 1, fontFamily: FUENTES.negrita, fontSize: 26, color: COLORES.cafe },
-  contenido: { padding: MARGEN },
+  titulo: { flex: 1, fontFamily: FUENTES.negrita, fontSize: 24, color: COLORES.cafe },
+  contenido: { paddingHorizontal: MARGEN, paddingVertical: 16 },
   tarjeta: {
-    gap: 16,
+    gap: 14,
     padding: RELLENO_TARJETA,
-    borderRadius: RADIOS.tarjeta,
+    borderRadius: RADIOS.tarjetaGrande,
     backgroundColor: COLORES.azulGrisaceo,
   },
   cerrar: { alignSelf: 'flex-end' },
-  nombre: { fontFamily: FUENTES.negrita, fontSize: 32, color: COLORES.cafe },
-  mosaicos: { flexDirection: 'row', gap: 10 },
-  mosaico: {
-    flex: 1,
-    alignItems: 'center',
-    gap: 4,
-    paddingVertical: 14,
-    paddingHorizontal: 6,
-    borderRadius: RADIOS.tarjeta,
-    backgroundColor: COLORES.crema,
-  },
-  etiquetaMosaico: { fontFamily: FUENTES.regular, fontSize: 13, color: COLORES.cafe },
-  valorMosaico: {
-    fontFamily: FUENTES.negrita,
-    fontSize: 15,
+  filaNombre: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  nombre: { flexShrink: 1, fontFamily: FUENTES.negrita, fontSize: 30, color: COLORES.cafe },
+  mosaicos: { flexDirection: 'row', gap: 8 },
+  cuidados: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
+  albergue: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  nombreAlbergue: { fontFamily: FUENTES.negrita, fontSize: 13, color: COLORES.cafe },
+  pie: { gap: 8, paddingHorizontal: MARGEN, paddingTop: 8, paddingBottom: 12 },
+  apoyo: {
+    fontFamily: FUENTES.regular,
+    fontSize: 13,
     color: COLORES.cafe,
     textAlign: 'center',
   },
-  seccion: { gap: 8 },
-  etiqueta: { fontFamily: FUENTES.negrita, fontSize: 15, color: COLORES.cafe },
-  cuidados: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
-  cuidado: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-    borderRadius: RADIOS.pildora,
-    backgroundColor: COLORES.crema,
-  },
-  textoCuidado: { fontFamily: FUENTES.negrita, fontSize: 14, color: COLORES.cafe },
-  albergue: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  textoAlbergue: { fontFamily: FUENTES.regular, fontSize: 15, color: COLORES.cafe },
-  nombreAlbergue: { fontFamily: FUENTES.negrita, fontSize: 15, color: COLORES.cafe },
-  pie: { paddingHorizontal: MARGEN, paddingTop: 8, paddingBottom: 16 },
 });
 
 /** "←" o "✕": regresa a Descubrir. Con un enlace directo no hay a dónde regresar y lo abre. */
@@ -107,36 +87,7 @@ function regresar() {
   }
 }
 
-/** Mosaico crema con ícono, etiqueta chica y valor en negrita (Especie, Edad, Tamaño). */
-function Mosaico({
-  icono,
-  etiqueta,
-  valor,
-}: {
-  icono: NombreIcono;
-  etiqueta: string;
-  valor: string;
-}) {
-  return (
-    <View style={estilos.mosaico}>
-      <MaterialCommunityIcons name={icono} size={28} color={COLORES.cafe} />
-      <Text style={estilos.etiquetaMosaico}>{etiqueta}</Text>
-      <Text style={estilos.valorMosaico}>{valor}</Text>
-    </View>
-  );
-}
-
-/** Un cuidado de salud con su ícono de sí (✓) o no (✕) (DE-7). */
-function Cuidado({ texto, tiene }: { texto: string; tiene: boolean }) {
-  return (
-    <View style={estilos.cuidado}>
-      <MaterialCommunityIcons name={iconoCuidado(tiene)} size={20} color={COLORES.azulMarino} />
-      <Text style={estilos.textoCuidado}>{texto}</Text>
-    </View>
-  );
-}
-
-/** Encabezado: "←", el título y el ícono de usuario. */
+/** Encabezado: "←", el título y el ícono de usuario (solo dibujo). */
 function Encabezado({ titulo }: { titulo: string }) {
   return (
     <View style={estilos.encabezado}>
@@ -146,7 +97,7 @@ function Encabezado({ titulo }: { titulo: string }) {
         accessibilityLabel={TEXTO_ATRAS}
         hitSlop={12}
       >
-        <MaterialCommunityIcons name={ICONOS_DESCUBRIR.atras} size={28} color={COLORES.cafe} />
+        <MaterialCommunityIcons name={ICONOS_DESCUBRIR.atras} size={24} color={COLORES.cafe} />
       </Pressable>
       <Text accessibilityRole="header" style={estilos.titulo} numberOfLines={1}>
         {titulo}
@@ -155,7 +106,8 @@ function Encabezado({ titulo }: { titulo: string }) {
         icono={ICONOS_DESCUBRIR.miPerfil}
         etiqueta={TEXTO_MI_PERFIL}
         fondo="azulGrisaceo"
-        diametro={52}
+        diametro={48}
+        tamanoIcono={24}
       />
     </View>
   );
@@ -195,11 +147,21 @@ export default function DetalleAnimal() {
               etiqueta={TEXTO_CERRAR}
               fondo="crema"
               diametro={44}
+              tamanoIcono={24}
               alPresionar={regresar}
             />
           </View>
           <CarruselFotos imagenes={imagenes} ancho={width - MARGEN * 2 - RELLENO_TARJETA * 2} />
-          <Text style={estilos.nombre}>{animal.nombre}</Text>
+          <View style={estilos.filaNombre}>
+            <Text style={estilos.nombre} numberOfLines={1}>
+              {animal.nombre}
+            </Text>
+            <MaterialCommunityIcons
+              name={ICONOS_DESCUBRIR.meEncanta}
+              size={26}
+              color={COLORES.cafe}
+            />
+          </View>
           <View style={estilos.mosaicos}>
             <Mosaico
               icono={ICONOS_DESCUBRIR.especie}
@@ -217,20 +179,23 @@ export default function DetalleAnimal() {
               valor={animal.tamano}
             />
           </View>
-          <View style={estilos.seccion}>
-            <Text style={estilos.etiqueta}>{ETIQUETAS_DETALLE.cuidados}</Text>
-            <View style={estilos.cuidados}>
-              <Cuidado texto={ETIQUETAS_DETALLE.vacunado} tiene={animal.vacunado} />
-              <Cuidado texto={ETIQUETAS_DETALLE.esterilizado} tiene={animal.esterilizado} />
-            </View>
+          <View style={estilos.cuidados} accessibilityLabel={ETIQUETAS_DETALLE.cuidados}>
+            <Pildora texto={ETIQUETAS_DETALLE.vacunado} icono={iconoCuidado(animal.vacunado)} />
+            <Pildora
+              texto={ETIQUETAS_DETALLE.esterilizado}
+              icono={iconoCuidado(animal.esterilizado)}
+            />
           </View>
-          <View style={estilos.albergue}>
+          <View
+            style={estilos.albergue}
+            accessible
+            accessibilityLabel={`${ETIQUETAS_DETALLE.albergue}: ${animal.nombreAlbergue}`}
+          >
             <MaterialCommunityIcons
               name={ICONOS_DESCUBRIR.albergue}
-              size={22}
+              size={18}
               color={COLORES.cafe}
             />
-            <Text style={estilos.textoAlbergue}>{ETIQUETAS_DETALLE.albergue}</Text>
             <Text style={estilos.nombreAlbergue}>{animal.nombreAlbergue}</Text>
           </View>
         </View>
@@ -240,6 +205,7 @@ export default function DetalleAnimal() {
           texto={TEXTO_QUIERO_ADOPTARLO}
           alPresionar={() => router.push(rutaMatch(animal.id))}
         />
+        <Text style={estilos.apoyo}>{TEXTO_APOYO_ADOPTAR}</Text>
       </View>
     </SafeAreaView>
   );

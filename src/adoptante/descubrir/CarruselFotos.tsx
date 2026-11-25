@@ -10,8 +10,8 @@ import { FlatList, Image, StyleSheet, View } from 'react-native';
 
 import { COLORES, RADIOS } from '../../compartido/tema';
 
-/** Alto de las fotos del Detalle. */
-const ALTO_FOTO = 220;
+/** Alto de las fotos del Detalle (prototipo, DE-10). */
+const ALTO_FOTO = 180;
 
 interface Props {
   imagenes: readonly string[];
@@ -19,7 +19,8 @@ interface Props {
 }
 
 const estilos = StyleSheet.create({
-  // Bordes redondeados: el contenedor recorta las fotos (overflow).
+  // Bordes redondeados: el contenedor recorta las fotos (overflow). El
+  // prototipo usa 20; el mínimo de Soft UI es 24 (arquitectura §8).
   marco: { borderRadius: RADIOS.tarjeta, overflow: 'hidden' },
   lista: { flexGrow: 0 },
   foto: { height: ALTO_FOTO, backgroundColor: COLORES.menta },
