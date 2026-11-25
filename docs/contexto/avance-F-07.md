@@ -5,7 +5,7 @@ Nota para retomar el trabajo si se corta la sesión. Se actualiza en cada commit
 - **Spec:** `specs/features/F-07-panel-solicitudes.md` v1.0 (Aprobada) · `02-navegacion` v1.1 · `03-modelo-datos` v1.6
 - **RF:** RF-04, RF-18 · RNF-02 · RF-24 (pestañas) · prepara RC-05
 - **Rama:** `feature/F-07-panel-solicitudes` (desde `main` en `a5de767`)
-- **Último commit:** T-5
+- **Último commit:** T-6
 - **PR:** "feat(panel): solicitudes del albergue ordenadas por compatibilidad con "No Apto" (F-07, RF-04, RF-18)". No se fusiona.
 - **Línea base en `main` (25/11, después de `npm ci`):** typecheck ✅, lint ✅, Jest 24 suites / 213 pruebas ✅.
 
@@ -16,8 +16,8 @@ Nota para retomar el trabajo si se corta la sesión. Se actualiza en cada commit
 | T-2 | `src/albergue/panel/panel.ts` (funciones puras) y `tests/albergue/panel.test.ts` | ✅ Hecha (`79bfb02`; 24 pruebas; `PALABRAS_CONTEO` en `textos.ts`) |
 | T-3 | `src/firebase/panelSolicitudes.ts` y `tests/firebase/panelSolicitudes.test.ts` | ✅ Hecha (`99127c7`; 10 pruebas; `getDocsFromServer` + 10 s; `uidDelAlbergue`) |
 | T-4 | Bloque de `solicitudes` en `firestore.rules` y casos de CA-11 | ✅ Hecha (`d5df00b`; sin publicar; se prueba el viernes) |
-| T-5 | `useMisAnimales` y `useSolicitudesDeAnimal` | ✅ Hecha (`useFocusEffect` + turno; `leerNombreDelAlbergue` con 10 s en `panelSolicitudes.ts`, 2 pruebas más) |
-| T-6 | `FilaAnimal`, `TarjetaSolicitud`, `MenuUsuario` e `iconosPanel.ts` | Pendiente |
+| T-5 | `useMisAnimales` y `useSolicitudesDeAnimal` | ✅ Hecha (`d444b62`; `useFocusEffect` + turno; `leerNombreDelAlbergue` con 10 s en `panelSolicitudes.ts`, 2 pruebas más) |
+| T-6 | `FilaAnimal`, `TarjetaSolicitud`, `MenuUsuario` e `iconosPanel.ts` | ✅ Hecha (menú en un `Modal` transparente) |
 | T-7 | Pantalla "Solicitudes · lista de mis animales" | Pendiente |
 | T-8 | Pantalla "Solicitudes de un animal" | Pendiente |
 | T-9 | Pestañas de los dos roles (PS-13, PO-34, PO-26) | Pendiente |
@@ -67,6 +67,9 @@ Datos del emulador: `usuarios/refugio-patitas` (`rol: 'albergue'`), `usuarios/ot
 - **Iniciales (PS-9):** se toma la primera letra tal como está escrita (no se pasa a mayúsculas, porque la spec no lo pide). Con nombres capturados en minúsculas se verían en minúsculas: se puede decidir en la v1.1.
 - Los tipos `SolicitudConId` y `LecturaSolicitudes` viven en `panel.ts` y `panelSolicitudes.ts` los importa como tipo (igual que `cuestionario.ts` usa tipos de `src/adoptante/`).
 - `panel.ts` solo importa **tipos** de `src/firebase/` (se borran al compilar): no usa Firebase en tiempo de ejecución (RN-01).
+
+- **Radios:** fila 32 (`RADIOS.tarjetaGrande`), tarjeta 28 (constante local, ≥ 24), píldoras con `RADIOS.pildora` (alto 32 → se ve igual que radio 16). **La miniatura usa radio 16** (constante local en `FilaAnimal`), debajo del mínimo de 24 de arquitectura §8: es la medida de Figma aprobada en el plan. Si se quiere en `tema.ts`, hay que ajustar `tests/tema.test.ts` (todos los `RADIOS` ≥ 24).
+- **MenuUsuario (PS-11):** el botón vive en un `Modal` transparente que cubre la pantalla; la capa de fondo cierra el menú (también al tocar el ícono otra vez, porque queda debajo de la capa). La posición se mide con `measureInWindow`. **Revisar en el celular** que el botón quede 8 px debajo del ícono en Android (barra de estado) y en iPhone.
 
 ## Qué falta
 - Todo lo de la tabla de arriba marcado como Pendiente.
