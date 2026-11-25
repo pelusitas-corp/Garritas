@@ -66,16 +66,14 @@ export type AnimalPrueba = Omit<
   id: string;
 };
 
-/** [PENDIENTE P-01: edad y tamaño se ajustan a las opciones de F-02]. */
-const EDAD_TAMANO_PENDIENTE = 'Pendiente (F-02)';
-
+// Edad y tamaño: opciones de F-02 (AL-1, AL-2) y 03-modelo-datos §8.2.
 export const ANIMALES: AnimalPrueba[] = [
   {
     id: 'wini',
     nombre: 'Wini',
     especie: 'perro',
-    edad: '2 años',
-    tamano: 'Pequeña',
+    edad: '1 a 3 años',
+    tamano: 'Pequeño',
     vacunado: true,
     esterilizado: true,
     perfilCompatibilidad: {
@@ -92,8 +90,8 @@ export const ANIMALES: AnimalPrueba[] = [
     id: 'luna',
     nombre: 'Luna',
     especie: 'gato',
-    edad: '1 año',
-    tamano: 'Pequeña',
+    edad: '1 a 3 años',
+    tamano: 'Pequeño',
     vacunado: true,
     esterilizado: false,
     perfilCompatibilidad: {
@@ -110,8 +108,8 @@ export const ANIMALES: AnimalPrueba[] = [
     id: 'rocky',
     nombre: 'Rocky',
     especie: 'perro',
-    edad: EDAD_TAMANO_PENDIENTE,
-    tamano: EDAD_TAMANO_PENDIENTE,
+    edad: '4 a 7 años',
+    tamano: 'Grande',
     vacunado: false,
     esterilizado: false,
     perfilCompatibilidad: {
@@ -128,8 +126,8 @@ export const ANIMALES: AnimalPrueba[] = [
     id: 'toby',
     nombre: 'Toby',
     especie: 'perro',
-    edad: EDAD_TAMANO_PENDIENTE,
-    tamano: EDAD_TAMANO_PENDIENTE,
+    edad: '1 a 3 años',
+    tamano: 'Mediano',
     vacunado: false,
     esterilizado: false,
     perfilCompatibilidad: {
@@ -146,8 +144,8 @@ export const ANIMALES: AnimalPrueba[] = [
     id: 'canela',
     nombre: 'Canela',
     especie: 'perro',
-    edad: EDAD_TAMANO_PENDIENTE,
-    tamano: EDAD_TAMANO_PENDIENTE,
+    edad: '1 a 3 años',
+    tamano: 'Grande',
     vacunado: false,
     esterilizado: false,
     perfilCompatibilidad: {
