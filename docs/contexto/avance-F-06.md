@@ -5,7 +5,7 @@ Nota para retomar el trabajo si se corta la sesión. Se actualiza en cada commit
 - **Spec:** `specs/features/F-06-match-solicitud.md` v1.0 (Aprobada) · `02-navegacion` v1.3 · `03-modelo-datos` v1.7 · `F-05` · `F-03` v1.2 · `F-08`
 - **RF:** RF-20, RF-11, RF-17 (no válido), RF-27, RF-18 · RNF-01 · RNF-02
 - **Rama:** `feature/F-06-match-solicitud` (desde `main` en `da09cc3`)
-- **Último commit:** T-3 (el anterior es `ccf9bfc`)
+- **Último commit:** T-4 (el anterior es `f249c35`)
 - **PR:** "feat(solicitud): match explicado, enviar solicitud y mis solicitudes (F-06, RF-20, RF-11, RF-17, RF-27)". No se fusiona. Enlace: https://github.com/pelusitas-corp/garritas/pull/new/feature/F-06-match-solicitud
 
 ## Tareas (§10)
@@ -13,8 +13,8 @@ Nota para retomar el trabajo si se corta la sesión. Se actualiza en cada commit
 |---|---|---|
 | T-1 | Mensaje `SOLICITUD_YA_ENVIADA` y textos (`match/textos.ts`, `solicitudes/textos.ts`) | ✅ Hecha (`841ac12`; 3 pruebas en `tests/adoptante/textosMatch.test.ts`) |
 | T-2 | `decidirMatch`, `decidirEnvio`, `armarSolicitud` y sus pruebas | ✅ Hecha (`ccf9bfc`; 24 pruebas en `tests/adoptante/match.test.ts`; las dimensiones de Ana y Wini salen del motor real y coinciden con F-05 CA-09) |
-| T-3 | `ordenarMisSolicitudes`, estado de la pantalla y sus pruebas | ✅ Hecha (10 pruebas en `tests/adoptante/misSolicitudes.test.ts`; `MiSolicitud`, `ordenarMisSolicitudes`, `pantallaMisSolicitudes` y `apoyoDelEstado`) |
-| T-4 | `src/firebase/solicitudes.ts` (`leerCuentaAdoptante`, `leerMisSolicitudes`, `enviarSolicitud`) y sus pruebas | Pendiente |
+| T-3 | `ordenarMisSolicitudes`, estado de la pantalla y sus pruebas | ✅ Hecha (`f249c35`; 10 pruebas en `tests/adoptante/misSolicitudes.test.ts`; `MiSolicitud`, `ordenarMisSolicitudes`, `pantallaMisSolicitudes` y `apoyoDelEstado`) |
+| T-4 | `src/firebase/solicitudes.ts` (`leerCuentaAdoptante`, `leerMisSolicitudes`, `enviarSolicitud`) y sus pruebas | ✅ Hecha (12 pruebas en `tests/firebase/solicitudes.test.ts` con un `writeBatch` de mentira) |
 | T-5 | Reglas de `create` (§9) y casos de CA-10 | Pendiente |
 | T-6 | `useMatch` y `useMisSolicitudes` | Pendiente |
 | T-7 | Pantalla Match | Pendiente |
@@ -40,6 +40,7 @@ Nota para retomar el trabajo si se corta la sesión. Se actualiza en cada commit
 - La prueba de RF-20 válido con Ana y Wini **no fija de antemano** las 3 dimensiones: usa las que devuelve el motor real con `tests/matchmaking/datos.ts` y las pone en el nombre solo si coinciden.
 
 ## Notas técnicas
+- **T-4:** `enviarSolicitud` genera el ID con `doc(collection(...))` antes del lote y espera el `commit` 10 s (`ESPERA_ESCRITURA_MS`). Las lecturas usan `getDocFromServer` y `getDocsFromServer` con 10 s (`ESPERA_GUARDAR_MS`). `permission-denied` → `sin-permiso`; cualquier otro error o el tiempo agotado → `sin-conexion`. Los tipos `MiSolicitud`, `CuentaAdoptante` y `SolicitudNueva` viven en `src/adoptante/` (como F-07 con `SolicitudConId`), así el adoptante nunca importa de `src/albergue/`.
 - **T-2:** `decidirMatch` revisa: lecturas fallidas → A1 → cuestionario completo (G-5) → perfil completo (decisión 1) → filtro (A2) → motor. Para probar 29 % y 30 % se envuelve `evaluarAnimales` con `jest.mock` y la explicación se arma con el `explicarMatch` real de F-05. `armarSolicitud` devuelve `null` si falta p2, p12 o p19.
 - **T-1:** `solicitudes/textos.ts` usa `export default` (regla `prefer-default-export` de Airbnb con una sola exportación). "Garritas", "Mi perfil" y "Reintentar" se reutilizan de `src/adoptante/descubrir/textos.ts` (mismo lado, adoptante). El porcentaje de Match se escribe "90%" (sin espacio, Figma); en Descubrir es "90 % compatible" (F-03).
 
@@ -49,6 +50,7 @@ Nota para retomar el trabajo si se corta la sesión. Se actualiza en cada commit
 | T-1 | ✅ sin errores | ✅ sin errores (Prettier OK) | ✅ 30 suites, 297 pruebas |
 | T-2 | ✅ sin errores | ✅ sin errores (Prettier OK) | ✅ 31 suites, 321 pruebas |
 | T-3 | ✅ sin errores | ✅ sin errores (Prettier OK) | ✅ 32 suites, 331 pruebas |
+| T-4 | ✅ sin errores | ✅ sin errores (Prettier OK) | ✅ 33 suites, 343 pruebas |
 
 ## Pendientes
 - CA-10 con el emulador el viernes 27 (PO-31). `npm run test:rules` no existe todavía.
