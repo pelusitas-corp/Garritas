@@ -5,7 +5,7 @@ Nota para retomar el trabajo si se corta la sesión. Se actualiza en cada commit
 - **Spec:** `specs/features/F-08-preaprobar-rechazar.md` v1.0 (Aprobada) · `02-navegacion` v1.2 · `03-modelo-datos` v1.6 · `F-07` v1.1
 - **RF:** RF-05, RF-21, RF-22, RF-12 · RC-05 · RNF-02
 - **Rama:** `feature/F-08-preaprobar-rechazar` (desde `main` en `622fdb3`)
-- **Último commit:** T-6
+- **Último commit:** T-7
 - **PR:** "feat(decision): pre-aprobar, rechazar y revelar el contacto del adoptante (F-08, RF-05, RF-21, RF-22, RF-12)". No se fusiona. Enlace: https://github.com/pelusitas-corp/garritas/pull/new/feature/F-08-preaprobar-rechazar
 
 ## Tareas (§10)
@@ -16,8 +16,8 @@ Nota para retomar el trabajo si se corta la sesión. Se actualiza en cada commit
 | T-3 | `src/firebase/decisionSolicitud.ts` (`runTransaction`, 10 s) y `tests/firebase/decisionSolicitud.test.ts` | ✅ Hecha (`5113425`) (16 pruebas; transacción con 10 s; RN-01 no lee el animal si ya fue atendida) |
 | T-4 | Reglas de §9 y casos de CA-13 | ✅ Hecha (`2d7fc38`) (sin publicar; se prueba el viernes) |
 | T-5 | `ConfirmarDecision` y `BotonesDecision` | ✅ Hecha (`bed9090`) (Modal propio; `iconosDecision.ts`; texto de los botones del Detalle en negrita 16 café, igual que la tarjeta) |
-| T-6 | Botones y píldoras en la tarjeta de F-07; volver a leer sin indicador | ✅ Hecha (datos y botones separados en la tarjeta; relectura en silencio; mensaje en negrita 13 café debajo de los botones; texto final regular 13 centrado) |
-| T-7 | `useDetalleSolicitud` y pantalla "Detalle de Solicitud" | Pendiente |
+| T-6 | Botones y píldoras en la tarjeta de F-07; volver a leer sin indicador | ✅ Hecha (`d723678`) (datos y botones separados en la tarjeta; relectura en silencio; mensaje en negrita 13 café debajo de los botones; texto final regular 13 centrado) |
+| T-7 | `useDetalleSolicitud` y pantalla "Detalle de Solicitud" | ✅ Hecha (relectura en silencio después de decidir; contacto con su indicador; `npx expo export --platform android` arma el paquete) |
 | T-8 | Prueba en el celular, publicar reglas y reiniciar datos (Jennifer) | Pendiente |
 
 ## Decisiones aceptadas en el plan (Jennifer, 25/11/2026)
@@ -39,7 +39,8 @@ Nota para retomar el trabajo si se corta la sesión. Se actualiza en cada commit
 - **Tarjeta (T-6):** los datos (círculo, nombre, hogar y %) son el botón que abre el Detalle; los botones de decisión van aparte, debajo, para que tocar "Rechazar" no abra el Detalle. Con "No Apto" toda la tarjeta (botones incluidos) queda con opacidad 0.6 y los botones sí funcionan (PA-3).
 - **Relectura en silencio (decisión 5):** `useSolicitudesDeAnimal` guarda el nombre y el animal ya revisados (PS-5) y, después de `ok` o "ya atendida", vuelve a leer **solo** las solicitudes. Si esa lectura falla, se queda la lista que ya se veía. Si la pantalla ya no tiene el foco, no lee: al volver se lee todo.
 - **Mensaje de la tarjeta (RN-06):** se borra al confirmar otra decisión en esa tarjeta y al salir de la pantalla. Si se abre la confirmación y se presiona "Cancelar", el mensaje anterior se queda.
-- **Medidas sin dato en el plan** (tomadas de lo más parecido ya aprobado): texto de los botones del Detalle en negrita 16 café (igual que los de la tarjeta); mensaje de error de la tarjeta en negrita 13 café; "Al pre-aprobar…" al final de la lista en regular 13 centrado (igual que en el Detalle); íconos de 20 en los botones y de 16 en las píldoras; botones de la confirmación con relleno vertical de 16 (igual que `BotonPildora`).
+- **Detalle (T-7):** encabezado y botones fijos fuera del `ScrollView`, como "Nueva mascota" de F-02. Orden abajo: texto ("Al pre-aprobar…" o "Coordina la visita…"), mensaje de error y botones. El mensaje se borra al confirmar otra decisión y al volver a la pantalla. Después de decidir, la relectura es en silencio: si falla, se queda lo que ya se veía.
+- **Medidas sin dato en el plan** (tomadas de lo más parecido ya aprobado): texto de los botones del Detalle en negrita 16 café (igual que los de la tarjeta); mensaje de error de la tarjeta en negrita 13 café; "Al pre-aprobar…" al final de la lista en regular 13 centrado (igual que en el Detalle); íconos de 20 en los botones y de 16 en las píldoras; botones de la confirmación con relleno vertical de 16 (igual que `BotonPildora`); en la tarjeta del adoptante del Detalle, "Vive en" en negrita 13 con ícono de casa de 18; mensaje de error del Detalle en negrita 13 centrado.
 
 ## Casos de CA-13 para el emulador (viernes 27, PO-31)
 Datos: `usuarios/refugio-patitas` y `usuarios/otro-albergue` (`rol: 'albergue'`), `usuarios/adoptante-a` y `usuarios/adoptante-b` (`rol: 'adoptante'`), los animales y las solicitudes s1 a s6 de 03 §8 (Wini "Disponible", Rocky "En pre-adopción"), cada solicitud con su `privado/contacto`. "Pre-aprobar s1" = una transacción que cambia `s1` a `{ estado: 'Pre-aprobada', actualizadaEn: serverTimestamp() }` y `animales/wini` a `{ estado: 'En pre-adopción' }`.
