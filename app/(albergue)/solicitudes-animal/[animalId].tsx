@@ -4,9 +4,10 @@
  * encima de las pestañas, N-5).
  *
  * Diseño de Figma (plan de F-07): encabezado con "←" y "Solicitudes";
- * debajo, el nombre del albergue y "Un hogar para {nombre}"; en una misma
- * línea, "N solicitudes nuevas" a la izquierda y "Mayor compatibilidad" (con
- * el ícono de orden; no es un botón, PS-8) a la derecha. Las tarjetas van de
+ * debajo, el nombre del albergue y "Un hogar para {nombre}"; en su propia
+ * línea, "N solicitudes nuevas" en negrita 16 (PS-15, spec v1.1), y en la
+ * línea siguiente, alineado a la derecha, "Mayor compatibilidad" (con el
+ * ícono de orden; no es un botón, PS-8). Las tarjetas van de
  * mayor a menor % (RF-04) y con "No Apto" deslavadas (RF-18). Tocar una
  * tarjeta abre `/solicitud/{solicitudId}` (provisional hasta F-08).
  *
@@ -48,16 +49,10 @@ const estilos = StyleSheet.create({
   titulos: { gap: 2, marginTop: 16, paddingHorizontal: MARGEN },
   subtitulo: { fontFamily: FUENTES.negrita, fontSize: 13, color: COLORES.cafe },
   titulo: { fontFamily: FUENTES.negrita, fontSize: 26, color: COLORES.cafe },
-  resumen: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginTop: 12,
-    marginBottom: 16,
-    paddingHorizontal: MARGEN,
-  },
-  nuevas: { fontFamily: FUENTES.regular, fontSize: 12, color: COLORES.cafe },
-  orden: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+  resumen: { gap: 8, marginTop: 12, marginBottom: 16, paddingHorizontal: MARGEN },
+  // PS-15 (spec v1.1): el conteo de nuevas se destaca en su propia línea.
+  nuevas: { fontFamily: FUENTES.negrita, fontSize: 16, color: COLORES.cafe },
+  orden: { flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-end', gap: 4 },
   textoOrden: { fontFamily: FUENTES.negrita, fontSize: 12, color: COLORES.cafe },
   lista: { gap: 12, paddingHorizontal: MARGEN, paddingBottom: MARGEN },
   separacion: { height: 16 },

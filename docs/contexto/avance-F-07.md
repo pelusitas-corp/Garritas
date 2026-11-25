@@ -74,6 +74,9 @@ Datos del emulador: `usuarios/refugio-patitas` (`rol: 'albergue'`), `usuarios/ot
 - **Espacio inferior (PO-34):** con `height` fija, React Navigation no suma el espacio inferior a la altura, pero sí pone `paddingBottom = insets.bottom` (revisado en `expo-router/build/react-navigation/bottom-tabs/views/BottomTabBar.js`). `estiloBarraPestanas(inferior)` devuelve `height: 72 + inferior` y `paddingBottom: inferior`: es el único lugar que lo suma. `app/(adoptante)/(pestanas)/_layout.tsx` ya no lo suma (se quitó `ALTURA_BASE` del PR #32) y usa `useOpcionesPestanas()`, igual que el albergue.
 - **Aviso a Paulina (P-03):** cambiaron `estiloPestanas.ts` (export por defecto sin `height`, más `useOpcionesPestanas`, `ICONOS_PESTANAS`, `iconoDePestana`, `estiloBarraPestanas`) y `app/(adoptante)/(pestanas)/_layout.tsx` (íconos y hook). Si F-06 toca ese `_layout`, al hacer `git merge origin/main` conservar el hook y los íconos.
 
+## Ajuste visual antes de fusionar (PS-15, spec v1.1)
+- En "Solicitudes de un animal", "N solicitudes nuevas" pasa a **negrita 16 café** (`FUENTES.negrita`), en su propia línea debajo de "Un hogar para {nombre}". "Mayor compatibilidad" (negrita 12 con el ícono de orden) queda en la línea siguiente, alineado a la derecha. Sin cambios de textos ni de lógica. Commit `style(panel): destaca el conteo de solicitudes nuevas (F-07, RF-04)`.
+
 ## Verificaciones al cerrar (25/11)
 - `npm run typecheck` ✅ · `npm run lint` ✅ · `npm test` ✅ 27 suites / 254 pruebas (41 nuevas: 24 de `panel.test.ts`, 12 de `panelSolicitudes.test.ts`, 5 de `estiloPestanas.test.ts`).
 
