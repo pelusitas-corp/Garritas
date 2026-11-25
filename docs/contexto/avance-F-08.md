@@ -5,15 +5,15 @@ Nota para retomar el trabajo si se corta la sesión. Se actualiza en cada commit
 - **Spec:** `specs/features/F-08-preaprobar-rechazar.md` v1.0 (Aprobada) · `02-navegacion` v1.2 · `03-modelo-datos` v1.6 · `F-07` v1.1
 - **RF:** RF-05, RF-21, RF-22, RF-12 · RC-05 · RNF-02
 - **Rama:** `feature/F-08-preaprobar-rechazar` (desde `main` en `622fdb3`)
-- **Último commit:** T-2
+- **Último commit:** T-3
 - **PR:** "feat(decision): pre-aprobar, rechazar y revelar el contacto del adoptante (F-08, RF-05, RF-21, RF-22, RF-12)". No se fusiona. Enlace: https://github.com/pelusitas-corp/garritas/pull/new/feature/F-08-preaprobar-rechazar
 
 ## Tareas (§10)
 | # | Tarea | Estado |
 |---|---|---|
 | T-1 | Mensajes `SOLICITUD_YA_ATENDIDA`, `PREADOPCION_EN_CURSO`, `CONTACTO_OCULTO`; `src/albergue/solicitud/textos.ts`; texto final de la lista en `panel/textos.ts` | ✅ Hecha (`7d71bdd`) |
-| T-2 | `src/albergue/solicitud/decision.ts` y `tests/albergue/decision.test.ts` | ✅ Hecha (24 pruebas) |
-| T-3 | `src/firebase/decisionSolicitud.ts` (`runTransaction`, 10 s) y `tests/firebase/decisionSolicitud.test.ts` | Pendiente |
+| T-2 | `src/albergue/solicitud/decision.ts` y `tests/albergue/decision.test.ts` | ✅ Hecha (`9b92642`) (24 pruebas) |
+| T-3 | `src/firebase/decisionSolicitud.ts` (`runTransaction`, 10 s) y `tests/firebase/decisionSolicitud.test.ts` | ✅ Hecha (16 pruebas; transacción con 10 s; RN-01 no lee el animal si ya fue atendida) |
 | T-4 | Reglas de §9 y casos de CA-13 | Pendiente |
 | T-5 | `ConfirmarDecision` y `BotonesDecision` | Pendiente |
 | T-6 | Botones y píldoras en la tarjeta de F-07; volver a leer sin indicador | Pendiente |
