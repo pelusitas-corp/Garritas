@@ -60,7 +60,8 @@ const estilos = StyleSheet.create({
     backgroundColor: COLORES.menta,
   },
   textoAviso: { fontFamily: FUENTES.negrita, fontSize: 16, color: COLORES.cafe },
-  cuerpo: { flex: 1, paddingHorizontal: MARGEN, paddingTop: 16, paddingBottom: 12 },
+  // Centra la tarjeta y los botones entre el subtítulo y la barra de pestañas.
+  cuerpo: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingVertical: 12 },
 });
 
 export default function Descubrir() {

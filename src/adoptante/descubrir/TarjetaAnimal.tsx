@@ -41,9 +41,12 @@ const ALTO_FOTO_PROTOTIPO = 270;
 /** Lo menos que se encoge la foto en pantallas bajas. */
 const ALTO_FOTO_MINIMO = 120;
 const DIAMETRO_ACCION = 88;
+/** Margen lateral del prototipo: la tarjeta mide el ancho de la pantalla menos 2 × 24. */
+const MARGEN = 24;
 
 const estilos = StyleSheet.create({
-  contenedor: { flex: 1, gap: 16 },
+  // Sin flex: 1 para poder centrarse; flexShrink deja que la foto se encoja si no cabe.
+  contenedor: { flexShrink: 1, gap: 16 },
   tarjeta: {
     flexShrink: 1,
     borderRadius: RADIOS.tarjetaGrande,
@@ -66,7 +69,7 @@ export default function TarjetaAnimal({ tarjeta, alPasar, alAbrir }: Props) {
   const abrir = () => alAbrir(tarjeta.animalId);
 
   return (
-    <View style={estilos.contenedor}>
+    <View style={[estilos.contenedor, { width: width - MARGEN * 2 }]}>
       <Pressable
         style={estilos.tarjeta}
         onPress={abrir}
