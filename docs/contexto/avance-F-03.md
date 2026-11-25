@@ -12,7 +12,7 @@ Nota para retomar el trabajo si se corta la sesión. Última actualización:
 | Base | Salió de `feature/F-04-cuestionario` (`a2d1cdd`). Después se integró `origin/main` hasta `9b54218` (PR #19 F-04 y PR #29 F-02), por fast-forward y sin conflictos. Ya no depende de ningún PR abierto |
 | Último commit de código | `cc53e4c` feat(detalle): pantalla del Detalle con carrusel de fotos y G-8 |
 | Revisión automática en local | `typecheck`, `lint` y `test` (23 suites, 209 pruebas) en verde |
-| PR | Push hecho. PR hacia `main` pendiente de abrir con el título "feat(descubrir): Descubrir ordenado por % y detalle del animal (F-03, RF-10, RF-26, RF-28)" (no hay `gh` en esta computadora: se abre desde GitHub o desde la app) |
+| PR | #30 "feat(descubrir): Descubrir ordenado por % y detalle del animal (F-03, RF-10, RF-26, RF-28)", abierto por la autora el 25/11/2026, **sin fusionar** |
 | Falta | T-10: prueba en el celular con Expo Go (la hace la autora) |
 
 ## Tareas (spec §9)
