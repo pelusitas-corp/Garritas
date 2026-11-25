@@ -5,7 +5,7 @@ Nota para retomar el trabajo si se corta la sesión. Se actualiza en cada commit
 - **Spec:** `specs/features/F-07-panel-solicitudes.md` v1.0 (Aprobada) · `02-navegacion` v1.1 · `03-modelo-datos` v1.6
 - **RF:** RF-04, RF-18 · RNF-02 · RF-24 (pestañas) · prepara RC-05
 - **Rama:** `feature/F-07-panel-solicitudes` (desde `main` en `a5de767`)
-- **Último commit:** T-7
+- **Último commit:** T-8
 - **PR:** "feat(panel): solicitudes del albergue ordenadas por compatibilidad con "No Apto" (F-07, RF-04, RF-18)". No se fusiona.
 - **Línea base en `main` (25/11, después de `npm ci`):** typecheck ✅, lint ✅, Jest 24 suites / 213 pruebas ✅.
 
@@ -18,8 +18,8 @@ Nota para retomar el trabajo si se corta la sesión. Se actualiza en cada commit
 | T-4 | Bloque de `solicitudes` en `firestore.rules` y casos de CA-11 | ✅ Hecha (`d5df00b`; sin publicar; se prueba el viernes) |
 | T-5 | `useMisAnimales` y `useSolicitudesDeAnimal` | ✅ Hecha (`d444b62`; `useFocusEffect` + turno; `leerNombreDelAlbergue` con 10 s en `panelSolicitudes.ts`, 2 pruebas más) |
 | T-6 | `FilaAnimal`, `TarjetaSolicitud`, `MenuUsuario` e `iconosPanel.ts` | ✅ Hecha (`4d12f56`; menú en un `Modal` transparente) |
-| T-7 | Pantalla "Solicitudes · lista de mis animales" | ✅ Hecha (encabezado, nombre del albergue y "Tus animales" solo cuando hay datos o está vacía) |
-| T-8 | Pantalla "Solicitudes de un animal" | Pendiente |
+| T-7 | Pantalla "Solicitudes · lista de mis animales" | ✅ Hecha (`b4f47d9`; encabezado, nombre del albergue y "Tus animales" solo cuando hay datos o está vacía) |
+| T-8 | Pantalla "Solicitudes de un animal" | ✅ Hecha ("←" visible en todos los estados; el título se ve mientras se leen las solicitudes) |
 | T-9 | Pestañas de los dos roles (PS-13, PO-34, PO-26) | Pendiente |
 | T-10 | Prueba en el celular y publicar reglas (Jennifer) | Pendiente |
 
