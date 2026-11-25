@@ -5,15 +5,15 @@ Nota para retomar el trabajo si se corta la sesión. Se actualiza en cada commit
 - **Spec:** `specs/features/F-07-panel-solicitudes.md` v1.0 (Aprobada) · `02-navegacion` v1.1 · `03-modelo-datos` v1.6
 - **RF:** RF-04, RF-18 · RNF-02 · RF-24 (pestañas) · prepara RC-05
 - **Rama:** `feature/F-07-panel-solicitudes` (desde `main` en `a5de767`)
-- **Último commit:** T-1
+- **Último commit:** T-2
 - **PR:** "feat(panel): solicitudes del albergue ordenadas por compatibilidad con "No Apto" (F-07, RF-04, RF-18)". No se fusiona.
 - **Línea base en `main` (25/11, después de `npm ci`):** typecheck ✅, lint ✅, Jest 24 suites / 213 pruebas ✅.
 
 ## Tareas (§10)
 | # | Tarea | Estado |
 |---|---|---|
-| T-1 | `SIN_ANIMALES_ALBERGUE` y `src/albergue/panel/textos.ts` | ✅ Hecha |
-| T-2 | `src/albergue/panel/panel.ts` (funciones puras) y `tests/albergue/panel.test.ts` | Pendiente |
+| T-1 | `SIN_ANIMALES_ALBERGUE` y `src/albergue/panel/textos.ts` | ✅ Hecha (`ac5d716`) |
+| T-2 | `src/albergue/panel/panel.ts` (funciones puras) y `tests/albergue/panel.test.ts` | ✅ Hecha (24 pruebas; `PALABRAS_CONTEO` en `textos.ts`) |
 | T-3 | `src/firebase/panelSolicitudes.ts` y `tests/firebase/panelSolicitudes.test.ts` | Pendiente |
 | T-4 | Bloque de `solicitudes` en `firestore.rules` y casos de CA-11 | Pendiente |
 | T-5 | `useMisAnimales` y `useSolicitudesDeAnimal` | Pendiente |
@@ -39,6 +39,11 @@ Nota para retomar el trabajo si se corta la sesión. Se actualiza en cada commit
 5. Sin botón "Reintentar": se vuelve a leer al regresar a la pantalla (A4).
 6. `uidDelAlbergue()` vive en `src/firebase/panelSolicitudes.ts`. `decidirPantallaLista` se agrega a `panel.ts` para probar CA-06 y CA-08 con Jest.
 7. No se tocan `app/(albergue)/solicitud/[solicitudId].tsx` (F-08) ni `specs/`.
+
+## Notas técnicas
+- **PS-2 con los datos de prueba:** `npm run datos:prueba` escribe los 5 animales en un solo lote con `serverTimestamp()`, así que todos tienen el mismo `creadoEn`. Con el empate, `ordenarAnimales` deja el orden en que llegan de Firestore (por ID: Canela, Luna, Rocky, Toby, Wini). Un animal nuevo publicado desde la app sí sale arriba.
+- **Iniciales (PS-9):** se toma la primera letra tal como está escrita (no se pasa a mayúsculas, porque la spec no lo pide). Con nombres capturados en minúsculas se verían en minúsculas: se puede decidir en la v1.1.
+- `panel.ts` solo importa **tipos** de `src/firebase/` (se borran al compilar): no usa Firebase en tiempo de ejecución (RN-01).
 
 ## Qué falta
 - Todo lo de la tabla de arriba marcado como Pendiente.

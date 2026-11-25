@@ -24,6 +24,15 @@ export const TEXTOS_PANEL = {
   separador: ' · ',
 } as const;
 
+/**
+ * Palabras de los conteos (Figma, D-52, PO-21, PS-3 y PS-7). Las arma
+ * `textoConteo` de panel.ts: "1 solicitud", "0 solicitudes", "1 solicitud nueva"…
+ */
+export const PALABRAS_CONTEO = {
+  solicitudes: { singular: 'solicitud', plural: 'solicitudes' },
+  nuevas: { singular: 'solicitud nueva', plural: 'solicitudes nuevas' },
+} as const;
+
 /** `p2`: "Casa" · "Departamento" (Figma y texto de la opción, PS-9). */
 export const TEXTO_VIVIENDA: Readonly<Record<ResumenHogar['p2'], string>> = {
   casa: 'Casa',
