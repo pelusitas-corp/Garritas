@@ -18,6 +18,11 @@ service cloud.firestore {
       return request.auth != null;
     }
 
+    // ¿Su cuenta tiene rol "adoptante" en usuarios/{uid}? (F-01, RN-05)
+    function esAdoptante() {
+      return get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data.rol == 'adoptante';
+    }
+
     // ── usuarios/{uid} · F-01 (RF-23, RF-24, RF-25; RNF-02, RN-02 a RN-04) ──
     // Leer: solo el dueño (RN-04). Crear: solo el dueño, con rol "adoptante"
     // (RN-02), su consentimiento aceptado (RF-25), solo los campos de 03 §4.1,
@@ -39,11 +44,17 @@ service cloud.firestore {
       allow update, delete: if false;
     }
 
-    // ── cuestionarios/{uid} · solo lectura ──────────────────────────────
-    // Lectura mínima para la navegación (02-navegacion G-5). F-04 la
-    // reemplaza con su bloque completo (PR #19).
+    // ── cuestionarios/{uid} · F-04 (RF-02, RF-16, RF-19; RNF-02, RN-11) ──
+    // Solo el dueño lo lee. Solo el dueño, con rol adoptante, lo crea o lo
+    // cambia, y solo con los campos de arquitectura §4. Nadie lo borra.
+    // [PENDIENTE: prueba con el emulador; no existe npm run test:rules (F-04 §14.4)]
     match /cuestionarios/{uid} {
       allow read: if esDueno(uid);
+      allow create, update: if esDueno(uid)
+        && esAdoptante()
+        && request.resource.data.keys().hasOnly(['respuestas', 'completo', 'perfilGarritas', 'actualizadoEn'])
+        && request.resource.data.respuestas is map
+        && request.resource.data.completo is bool;
     }
 
     // ── animales y fotos · F-01 A-6 (03-modelo-datos §7) ─────────────────
