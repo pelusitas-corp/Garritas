@@ -6,7 +6,9 @@ import {
   armarSolicitud,
   decidirEnvio,
   decidirMatch,
+  decidirSolicitudEnviada,
   pantallaMatch,
+  pantallaSolicitudEnviada,
 } from '../../src/adoptante/match/match';
 import type { LecturaCuestionario } from '../../src/adoptante/match/match';
 import MENSAJES from '../../src/compartido/mensajes';
@@ -334,5 +336,35 @@ describe('pantallaMatch (estados de Match, §6)', () => {
     const decision = decidirMatch(lecturaDe(ADOPTANTE_A), lecturaAnimal(WINI));
     if (decision.tipo !== 'match') throw new Error(decision.tipo);
     expect(pantallaMatch(decision, acciones)).toBeNull();
+  });
+});
+
+describe('"¡Solicitud enviada!" (flujo C, §6)', () => {
+  const S_NUEVA = {
+    nombreAnimal: 'Wini',
+    miniaturaAnimal: WINI.miniatura,
+    estado: 'Pendiente',
+  } as const;
+
+  test('RF-11 válido: con la solicitud leída muestra Wini y "Pendiente"', () => {
+    const estado = decidirSolicitudEnviada({ estado: 'ok', solicitud: S_NUEVA });
+    expect(estado).toEqual({ tipo: 'con-datos', solicitud: S_NUEVA });
+    expect(pantallaSolicitudEnviada(estado, jest.fn())).toBeNull();
+  });
+
+  test('RNF-02: una solicitud inexistente o ajena muestra "No tienes permiso para ver esta sección"', () => {
+    expect(decidirSolicitudEnviada({ estado: 'no-existe' })).toEqual({ tipo: 'sin-permiso' });
+    expect(decidirSolicitudEnviada({ estado: 'sin-permiso' })).toEqual({ tipo: 'sin-permiso' });
+    expect(pantallaSolicitudEnviada({ tipo: 'sin-permiso' }, jest.fn())).toEqual({
+      estado: 'sin-permiso',
+      mensaje: MENSAJES.SIN_PERMISO,
+    });
+  });
+
+  test('CA-09: sin conexión muestra "Error de conexión, verifica tu conexión a internet" con Reintentar', () => {
+    const estado = decidirSolicitudEnviada({ estado: 'sin-conexion' });
+    const props = pantallaSolicitudEnviada(estado, jest.fn());
+    expect(props?.mensaje).toBe(MENSAJES.ERROR_CONEXION);
+    expect(props?.boton?.texto).toBe('Reintentar');
   });
 });

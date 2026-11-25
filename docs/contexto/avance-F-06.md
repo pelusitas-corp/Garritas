@@ -5,7 +5,7 @@ Nota para retomar el trabajo si se corta la sesión. Se actualiza en cada commit
 - **Spec:** `specs/features/F-06-match-solicitud.md` v1.0 (Aprobada) · `02-navegacion` v1.3 · `03-modelo-datos` v1.7 · `F-05` · `F-03` v1.2 · `F-08`
 - **RF:** RF-20, RF-11, RF-17 (no válido), RF-27, RF-18 · RNF-01 · RNF-02
 - **Rama:** `feature/F-06-match-solicitud` (desde `main` en `da09cc3`)
-- **Último commit:** T-7 (el anterior es `78f048d`)
+- **Último commit:** T-8 (el anterior es `a9086bd`)
 - **PR:** "feat(solicitud): match explicado, enviar solicitud y mis solicitudes (F-06, RF-20, RF-11, RF-17, RF-27)". No se fusiona. Enlace: https://github.com/pelusitas-corp/garritas/pull/new/feature/F-06-match-solicitud
 
 ## Tareas (§10)
@@ -17,8 +17,8 @@ Nota para retomar el trabajo si se corta la sesión. Se actualiza en cada commit
 | T-4 | `src/firebase/solicitudes.ts` (`leerCuentaAdoptante`, `leerMisSolicitudes`, `enviarSolicitud`) y sus pruebas | ✅ Hecha (`204bada`; 12 pruebas en `tests/firebase/solicitudes.test.ts` con un `writeBatch` de mentira) |
 | T-5 | Reglas de `create` (§9) y casos de CA-10 | ✅ Hecha (`d5a4271`; reglas de §9 sin publicar; 19 casos de CA-10 abajo) |
 | T-6 | `useMatch` y `useMisSolicitudes` | ✅ Hecha (`78f048d`; `useMatch` y `useMisSolicitudes`; se exporta `regresarSinDisponible` del Detalle (decisión 5)) |
-| T-7 | Pantalla Match | ✅ Hecha (pantalla con `EncabezadoGarritas`, `HuellaMatch`, `TarjetaPorcentaje`, `TarjetaDimensiones` e `iconosMatch`; `pantallaMatch` con 5 pruebas; ícono opcional en `BotonPildora` (decisión 3)) |
-| T-8 | Pantalla "¡Solicitud enviada!" (`useSolicitudEnviada`) | Pendiente |
+| T-7 | Pantalla Match | ✅ Hecha (`a9086bd`; pantalla con `EncabezadoGarritas`, `HuellaMatch`, `TarjetaPorcentaje`, `TarjetaDimensiones` e `iconosMatch`; `pantallaMatch` con 5 pruebas; ícono opcional en `BotonPildora` (decisión 3)) |
+| T-8 | Pantalla "¡Solicitud enviada!" (`useSolicitudEnviada`) | ✅ Hecha (pantalla y `useSolicitudEnviada`; `decidirSolicitudEnviada` y `pantallaSolicitudEnviada` con 3 pruebas) |
 | T-9 | Pantalla Mis solicitudes (`TarjetaMiSolicitud`, `PildoraEstado`) | Pendiente |
 | T-10 | Prueba en el celular, publicar reglas y reiniciar datos (Paulina) | Pendiente (lo hace la autora) |
 
@@ -40,6 +40,7 @@ Nota para retomar el trabajo si se corta la sesión. Se actualiza en cada commit
 - La prueba de RF-20 válido con Ana y Wini **no fija de antemano** las 3 dimensiones: usa las que devuelve el motor real con `tests/matchmaking/datos.ts` y las pone en el nombre solo si coinciden.
 
 ## Notas técnicas
+- **T-8:** "Pendiente" va como texto negrita 14 café debajo del nombre, dentro de la tarjeta menta (ajuste de Paulina). "Ver mis solicitudes" se dibuja siempre, también con el indicador o el error (§6). `LecturaSolicitudEnviada` copia solo la forma de lo que devuelve `leerSolicitud` (F-08): el adoptante no importa tipos de `src/albergue/` (RN-04). `leerSolicitud` sí vive en `src/firebase/decisionSolicitud.ts`, que por dentro usa tipos de `src/albergue/`; eso está permitido (el plan reutiliza `leerSolicitud`).
 - **T-7:** `EstadoMatch` pasó de `useMatch.ts` a `match.ts` para probar `pantallaMatch` sin el hook. Medidas: huella 72 en círculo de 110 con corazón crema de 20; tarjeta del % con relleno 16 y separación 16; variante < 30 % con el crema del fondo (sin color nuevo) y borde azul grisáceo de 2; dimensiones con círculo de 28 e ícono de 18, nombre regular 16; ícono del botón de 22. El encabezado reutiliza `BotonCircular`, "Garritas" y "Mi perfil" de F-03. `BotonPildora` envuelve el texto en una fila para poner el ícono; sin `icono` se ve igual que antes.
 - **T-6:** `useMatch` lee cuestionario y animal en paralelo (`Promise.all`); A1 → `regresarSinDisponible`, G-5 → cuestionario. Al enviar lee animal, solicitudes y cuenta en paralelo (no cambia ningún resultado, solo ahorra tiempo); sin permiso o sin conexión deja el botón activo, A3 y A4 lo desactivan. Sin sesión, el estado inicial es "sin permiso" (regla `react-hooks/set-state-in-effect`: el estado solo cambia cuando llega la respuesta, como en el Detalle). `useMisSolicitudes` lee con `useFocusEffect`; el indicador solo en la primera lectura (decisión 4) y, si falla al volver, error con "Reintentar" (MS-6).
 - **T-5:** las 4 funciones de ayuda (`camposSolicitud`, `animalDeLaSolicitud`, `respuestasDelUsuario`, `telefonoDelUsuario`) viven dentro de `match /solicitudes/{solicitudId}`; `privado` las ve porque está anidado. El lote lee 6 documentos distintos (límite: 20). No hay emulador ni `firebase-tools` en el repo: la sintaxis se revisa el viernes.
@@ -82,6 +83,7 @@ Con los datos de 03 §8. "Lote" = `writeBatch` con `solicitudes/{id}` y `solicit
 | T-5 | ✅ sin errores | ✅ sin errores (Prettier OK) | ✅ 33 suites, 343 pruebas (las reglas se prueban con el emulador) |
 | T-6 | ✅ sin errores | ✅ sin errores (Prettier OK) | ✅ 33 suites, 343 pruebas (los hooks se prueban con sus funciones puras y en el celular) |
 | T-7 | ✅ sin errores | ✅ sin errores (Prettier OK) | ✅ 33 suites, 348 pruebas |
+| T-8 | ✅ sin errores | ✅ sin errores (Prettier OK) | ✅ 33 suites, 351 pruebas |
 
 ## Pendientes
 - CA-10 con el emulador el viernes 27 (PO-31). `npm run test:rules` no existe todavía.

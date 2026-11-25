@@ -134,6 +134,65 @@ export function pantallaMatch(estado: EstadoMatch, acciones: AccionesMatch): Pro
   }
 }
 
+/**
+ * Lo que devuelve `leerSolicitud` (F-08), con solo los campos que usa
+ * "¡Solicitud enviada!". Se escribe aquí para no importar de `src/albergue/` (RN-04).
+ */
+export type LecturaSolicitudEnviada =
+  | { estado: 'ok'; solicitud: Pick<Solicitud, 'nombreAnimal' | 'miniaturaAnimal' | 'estado'> }
+  | { estado: 'no-existe' }
+  | { estado: 'sin-conexion' }
+  | { estado: 'sin-permiso' };
+
+/** Lo que dibuja "¡Solicitud enviada!" (§6). */
+export type EstadoSolicitudEnviada =
+  | { tipo: 'cargando' }
+  | { tipo: 'con-datos'; solicitud: Pick<Solicitud, 'nombreAnimal' | 'miniaturaAnimal' | 'estado'> }
+  | { tipo: 'error' }
+  | { tipo: 'sin-permiso' };
+
+/**
+ * Flujo C (§6). Recibe la lectura de `solicitudes/{solicitudId}`. Devuelve
+ * `con-datos`; `sin-permiso` si no existe o las reglas la rechazan (la de
+ * otro adoptante, RNF-02); o `error` sin conexión (A5).
+ */
+export function decidirSolicitudEnviada(lectura: LecturaSolicitudEnviada): EstadoSolicitudEnviada {
+  switch (lectura.estado) {
+    case 'ok':
+      return { tipo: 'con-datos', solicitud: lectura.solicitud };
+    case 'sin-conexion':
+      return { tipo: 'error' };
+    default:
+      return { tipo: 'sin-permiso' };
+  }
+}
+
+/**
+ * Recibe el estado de "¡Solicitud enviada!" y qué hacer con "Reintentar".
+ * Devuelve las props de `EstadoPantalla` (indicador, error con "Reintentar"
+ * o sin permiso), o `null` si hay solicitud que mostrar. "Ver mis
+ * solicitudes" lo dibuja la pantalla siempre (§6).
+ */
+export function pantallaSolicitudEnviada(
+  estado: EstadoSolicitudEnviada,
+  reintentar: () => void,
+): PropsEstado | null {
+  switch (estado.tipo) {
+    case 'cargando':
+      return { estado: 'cargando' };
+    case 'error':
+      return {
+        estado: 'error',
+        mensaje: MENSAJES.ERROR_CONEXION,
+        boton: { texto: TEXTO_REINTENTAR, alPresionar: reintentar },
+      };
+    case 'sin-permiso':
+      return { estado: 'sin-permiso', mensaje: MENSAJES.SIN_PERMISO };
+    default:
+      return null;
+  }
+}
+
 /** Qué pasa al presionar "Enviar solicitud". */
 export type DecisionEnvio = { permitida: true } | { permitida: false; mensaje: string };
 
