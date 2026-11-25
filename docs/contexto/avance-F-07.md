@@ -5,7 +5,7 @@ Nota para retomar el trabajo si se corta la sesión. Se actualiza en cada commit
 - **Spec:** `specs/features/F-07-panel-solicitudes.md` v1.0 (Aprobada) · `02-navegacion` v1.1 · `03-modelo-datos` v1.6
 - **RF:** RF-04, RF-18 · RNF-02 · RF-24 (pestañas) · prepara RC-05
 - **Rama:** `feature/F-07-panel-solicitudes` (desde `main` en `a5de767`)
-- **Último commit:** T-9
+- **Último commit:** T-10 (cierre de la nota). Código completo; falta la prueba en el celular.
 - **PR:** "feat(panel): solicitudes del albergue ordenadas por compatibilidad con "No Apto" (F-07, RF-04, RF-18)". No se fusiona.
 - **Línea base en `main` (25/11, después de `npm ci`):** typecheck ✅, lint ✅, Jest 24 suites / 213 pruebas ✅.
 
@@ -20,8 +20,8 @@ Nota para retomar el trabajo si se corta la sesión. Se actualiza en cada commit
 | T-6 | `FilaAnimal`, `TarjetaSolicitud`, `MenuUsuario` e `iconosPanel.ts` | ✅ Hecha (`4d12f56`; menú en un `Modal` transparente) |
 | T-7 | Pantalla "Solicitudes · lista de mis animales" | ✅ Hecha (`b4f47d9`; encabezado, nombre del albergue y "Tus animales" solo cuando hay datos o está vacía) |
 | T-8 | Pantalla "Solicitudes de un animal" | ✅ Hecha (`feacc50`; "←" visible en todos los estados; el título se ve mientras se leen las solicitudes) |
-| T-9 | Pestañas de los dos roles (PS-13, PO-34, PO-26) | ✅ Hecha (`useOpcionesPestanas` + `estiloBarraPestanas`; 5 pruebas) |
-| T-10 | Prueba en el celular y publicar reglas (Jennifer) | Pendiente |
+| T-9 | Pestañas de los dos roles (PS-13, PO-34, PO-26) | ✅ Hecha (`25013f8`; `useOpcionesPestanas` + `estiloBarraPestanas`; 5 pruebas) |
+| T-10 | Prueba en el celular y publicar reglas (Jennifer) | Pendiente (lo hace la autora). Verificado aquí: `npx expo export --platform android` arma el paquete sin errores |
 
 ## Decisiones aceptadas en el plan (Jennifer, 25/11/2026)
 1. `npm ci` para sincronizar `node_modules` con `package-lock.json` (faltaban `@expo/vector-icons`, `expo-image-picker` y `expo-image-manipulator`). Sin dependencias nuevas.
@@ -74,5 +74,24 @@ Datos del emulador: `usuarios/refugio-patitas` (`rol: 'albergue'`), `usuarios/ot
 - **Espacio inferior (PO-34):** con `height` fija, React Navigation no suma el espacio inferior a la altura, pero sí pone `paddingBottom = insets.bottom` (revisado en `expo-router/build/react-navigation/bottom-tabs/views/BottomTabBar.js`). `estiloBarraPestanas(inferior)` devuelve `height: 72 + inferior` y `paddingBottom: inferior`: es el único lugar que lo suma. `app/(adoptante)/(pestanas)/_layout.tsx` ya no lo suma (se quitó `ALTURA_BASE` del PR #32) y usa `useOpcionesPestanas()`, igual que el albergue.
 - **Aviso a Paulina (P-03):** cambiaron `estiloPestanas.ts` (export por defecto sin `height`, más `useOpcionesPestanas`, `ICONOS_PESTANAS`, `iconoDePestana`, `estiloBarraPestanas`) y `app/(adoptante)/(pestanas)/_layout.tsx` (íconos y hook). Si F-06 toca ese `_layout`, al hacer `git merge origin/main` conservar el hook y los íconos.
 
+## Verificaciones al cerrar (25/11)
+- `npm run typecheck` ✅ · `npm run lint` ✅ · `npm test` ✅ 27 suites / 254 pruebas (41 nuevas: 24 de `panel.test.ts`, 12 de `panelSolicitudes.test.ts`, 5 de `estiloPestanas.test.ts`).
+
+## Prueba en el celular (T-10, Jennifer)
+Antes: publicar `firestore.rules` de `main` en la consola (una sola vez, con lo que haya de F-06) y tener los datos de prueba s1 a s6.
+1. Iniciar sesión como Refugio Patitas → se abre `/solicitudes` con "Tus animales" y los 5 animales: Wini 2 solicitudes, Luna 1 solicitud, Rocky 2 solicitudes, Toby 1 solicitud, Canela 0 solicitudes (CA-05).
+2. Wini → "2 solicitudes nuevas", Ana Torres 90 % y Luis Pérez 70 %, en ese orden (CA-01).
+3. Toby → Luis Pérez 24 % "compatible · No Apto", tarjeta deslavada (CA-03).
+4. Rocky → Ana 77 % "Pre-aprobada" y Luis 31 % "compatible" sin "No Apto" (CA-04); "1 solicitud nueva".
+5. Luna → "0 solicitudes nuevas" y Luis "Rechazada". Canela → "Aún no hay solicitudes de adopción para este perfil" (CA-02).
+6. Tocar una tarjeta → pantalla provisional de F-08. "←" regresa.
+7. Modo avión: abrir la lista y un animal → a más tardar en 10 s "Error de conexión, verifica tu conexión a internet" (CA-08). Al quitarlo y volver a la pantalla, se leen los datos.
+8. Ícono de usuario → "Cerrar sesión" 8 px debajo; tocar fuera lo oculta; presionarlo vuelve a `/` y al reabrir no entra al panel (CA-09).
+9. Pestañas en Android con barra del sistema y en iPhone: ícono arriba y texto abajo, completos; también en el adoptante (CA-10).
+10. CA-06 y CA-07 se prueban con Jest (no hay cuenta de albergue sin animales ni animal de otro albergue en los datos de prueba).
+
 ## Qué falta
-- Todo lo de la tabla de arriba marcado como Pendiente.
+- **T-10 (Jennifer):** publicar las reglas y probar en el celular (lista de arriba).
+- **Viernes 27 (PO-31):** casos de CA-11 con el emulador (tabla de arriba).
+- **Spec v1.1 al cerrar:** registrar en PS-6 que las tres consultas usan `getDocsFromServer`; decidir si las iniciales van en mayúsculas; anotar el radio 16 de la miniatura (debajo del mínimo de Soft UI).
+- **P-03:** avisar a Paulina cuando el arreglo de pestañas llegue a `main` (va en la descripción del PR).
