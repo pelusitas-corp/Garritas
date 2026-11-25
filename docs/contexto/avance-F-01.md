@@ -1,11 +1,11 @@
-﻿# Avance de F-01 · Acceso y privacidad
+# Avance de F-01 · Acceso y privacidad
 
 Nota para retomar el trabajo si se corta la sesión. Se actualiza en cada commit.
 
 - **Spec:** `specs/features/F-01-acceso-privacidad.md` v1.1 (Aprobada)
 - **RF:** RF-25, RF-23, RF-09, RF-24 · RNF-02
 - **Rama:** `feature/F-01-acceso-privacidad` (desde `main` en `c242f1b`)
-- **Último commit:** T-3 (crear cuenta e iniciar sesión)
+- **Último commit:** T-4 (botón e íconos)
 - **PR:** todavía no se abre. Título: "F-01: Acceso y privacidad (RF-25, RF-23, RF-09, RF-24)". No se fusiona.
 
 > El intento anterior de F-01 (sobre un `main` viejo) quedó en la rama local
@@ -17,7 +17,7 @@ Nota para retomar el trabajo si se corta la sesión. Se actualiza en cada commit
 | T-1 | Mensajes nuevos en `src/compartido/mensajes.ts` | ✅ Hecha |
 | T-2 | Funciones puras: validar formulario y traducir errores de Firebase (`src/compartido/acceso/`) | ✅ Hecha |
 | T-3 | `src/firebase/acceso.ts` (crear cuenta e iniciar sesión, RN-11, RN-13) y `crearCuenta` en `useSesion.tsx` | ✅ Hecha |
-| T-4 | `BotonPildora` (`gris`, `desactivado`, `cargando`) e `@expo/vector-icons` | Pendiente |
+| T-4 | `BotonPildora` (`gris`, `desactivado`, `cargando`) e `@expo/vector-icons` | ✅ Hecha (`@expo/vector-icons` ^15.0.2) |
 | T-5 | `avisos.ts` (texto + lector corto de Markdown) y prueba contra los `.md` | Pendiente |
 | T-6 | Pantallas: Selección de Rol, Aviso de Privacidad, Aviso integral | Pendiente |
 | T-7 | Pantallas: Registro y los dos accesos | Pendiente |
@@ -42,5 +42,5 @@ Nota para retomar el trabajo si se corta la sesión. Se actualiza en cada commit
 - Firestore sin internet no falla al escribir: se queda esperando. Por eso `setDoc` tiene el límite de 10 s.
 
 ## Qué falta
-- T-4 a T-9.
+- T-5 a T-9.
 - Prueba en el celular (publicar reglas de F-01 + bloque de F-04 juntos, PO-30).
