@@ -5,7 +5,7 @@ Nota para retomar el trabajo si se corta la sesión. Se actualiza en cada commit
 - **Spec:** `specs/features/F-08-preaprobar-rechazar.md` v1.0 (Aprobada) · `02-navegacion` v1.2 · `03-modelo-datos` v1.6 · `F-07` v1.1
 - **RF:** RF-05, RF-21, RF-22, RF-12 · RC-05 · RNF-02
 - **Rama:** `feature/F-08-preaprobar-rechazar` (desde `main` en `622fdb3`)
-- **Último commit:** T-4
+- **Último commit:** T-5
 - **PR:** "feat(decision): pre-aprobar, rechazar y revelar el contacto del adoptante (F-08, RF-05, RF-21, RF-22, RF-12)". No se fusiona. Enlace: https://github.com/pelusitas-corp/garritas/pull/new/feature/F-08-preaprobar-rechazar
 
 ## Tareas (§10)
@@ -14,8 +14,8 @@ Nota para retomar el trabajo si se corta la sesión. Se actualiza en cada commit
 | T-1 | Mensajes `SOLICITUD_YA_ATENDIDA`, `PREADOPCION_EN_CURSO`, `CONTACTO_OCULTO`; `src/albergue/solicitud/textos.ts`; texto final de la lista en `panel/textos.ts` | ✅ Hecha (`7d71bdd`) |
 | T-2 | `src/albergue/solicitud/decision.ts` y `tests/albergue/decision.test.ts` | ✅ Hecha (`9b92642`) (24 pruebas) |
 | T-3 | `src/firebase/decisionSolicitud.ts` (`runTransaction`, 10 s) y `tests/firebase/decisionSolicitud.test.ts` | ✅ Hecha (`5113425`) (16 pruebas; transacción con 10 s; RN-01 no lee el animal si ya fue atendida) |
-| T-4 | Reglas de §9 y casos de CA-13 | ✅ Hecha (sin publicar; se prueba el viernes) |
-| T-5 | `ConfirmarDecision` y `BotonesDecision` | Pendiente |
+| T-4 | Reglas de §9 y casos de CA-13 | ✅ Hecha (`2d7fc38`) (sin publicar; se prueba el viernes) |
+| T-5 | `ConfirmarDecision` y `BotonesDecision` | ✅ Hecha (Modal propio; `iconosDecision.ts`; texto de los botones del Detalle en negrita 16 café, igual que la tarjeta) |
 | T-6 | Botones y píldoras en la tarjeta de F-07; volver a leer sin indicador | Pendiente |
 | T-7 | `useDetalleSolicitud` y pantalla "Detalle de Solicitud" | Pendiente |
 | T-8 | Prueba en el celular, publicar reglas y reiniciar datos (Jennifer) | Pendiente |
