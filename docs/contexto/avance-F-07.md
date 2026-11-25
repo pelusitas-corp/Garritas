@@ -5,7 +5,7 @@ Nota para retomar el trabajo si se corta la sesión. Se actualiza en cada commit
 - **Spec:** `specs/features/F-07-panel-solicitudes.md` v1.0 (Aprobada) · `02-navegacion` v1.1 · `03-modelo-datos` v1.6
 - **RF:** RF-04, RF-18 · RNF-02 · RF-24 (pestañas) · prepara RC-05
 - **Rama:** `feature/F-07-panel-solicitudes` (desde `main` en `a5de767`)
-- **Último commit:** T-3
+- **Último commit:** T-4
 - **PR:** "feat(panel): solicitudes del albergue ordenadas por compatibilidad con "No Apto" (F-07, RF-04, RF-18)". No se fusiona.
 - **Línea base en `main` (25/11, después de `npm ci`):** typecheck ✅, lint ✅, Jest 24 suites / 213 pruebas ✅.
 
@@ -14,8 +14,8 @@ Nota para retomar el trabajo si se corta la sesión. Se actualiza en cada commit
 |---|---|---|
 | T-1 | `SIN_ANIMALES_ALBERGUE` y `src/albergue/panel/textos.ts` | ✅ Hecha (`ac5d716`) |
 | T-2 | `src/albergue/panel/panel.ts` (funciones puras) y `tests/albergue/panel.test.ts` | ✅ Hecha (`79bfb02`; 24 pruebas; `PALABRAS_CONTEO` en `textos.ts`) |
-| T-3 | `src/firebase/panelSolicitudes.ts` y `tests/firebase/panelSolicitudes.test.ts` | ✅ Hecha (10 pruebas; `getDocsFromServer` + 10 s; `uidDelAlbergue`) |
-| T-4 | Bloque de `solicitudes` en `firestore.rules` y casos de CA-11 | Pendiente |
+| T-3 | `src/firebase/panelSolicitudes.ts` y `tests/firebase/panelSolicitudes.test.ts` | ✅ Hecha (`99127c7`; 10 pruebas; `getDocsFromServer` + 10 s; `uidDelAlbergue`) |
+| T-4 | Bloque de `solicitudes` en `firestore.rules` y casos de CA-11 | ✅ Hecha (sin publicar; se prueba el viernes) |
 | T-5 | `useMisAnimales` y `useSolicitudesDeAnimal` | Pendiente |
 | T-6 | `FilaAnimal`, `TarjetaSolicitud`, `MenuUsuario` e `iconosPanel.ts` | Pendiente |
 | T-7 | Pantalla "Solicitudes · lista de mis animales" | Pendiente |
@@ -39,6 +39,28 @@ Nota para retomar el trabajo si se corta la sesión. Se actualiza en cada commit
 5. Sin botón "Reintentar": se vuelve a leer al regresar a la pantalla (A4).
 6. `uidDelAlbergue()` vive en `src/firebase/panelSolicitudes.ts`. `decidirPantallaLista` se agrega a `panel.ts` para probar CA-06 y CA-08 con Jest.
 7. No se tocan `app/(albergue)/solicitud/[solicitudId].tsx` (F-08) ni `specs/`.
+
+## Casos de CA-11 para el emulador (viernes 27, PO-31)
+Datos del emulador: `usuarios/refugio-patitas` (`rol: 'albergue'`), `usuarios/otro-albergue` (`rol: 'albergue'`), `usuarios/adoptante-a` y `usuarios/adoptante-b` (`rol: 'adoptante'`) y las solicitudes s1 a s6 de 03 §8.3 (todas con `albergueId: 'refugio-patitas'`), cada una con su `privado/contacto`.
+
+| # | Caso | Esperado |
+|---|---|---|
+| 1 | Refugio Patitas consulta `solicitudes` donde `albergueId == 'refugio-patitas'` | ✅ Permitido |
+| 2 | Refugio Patitas consulta donde `albergueId == 'refugio-patitas'` y `animalId == 'wini'` | ✅ Permitido |
+| 3 | Refugio Patitas lee `solicitudes/s1` (un documento suyo) | ✅ Permitido |
+| 4 | Adoptante A consulta `solicitudes` donde `adoptanteId == 'adoptante-a'` (lo usará F-06) | ✅ Permitido |
+| 5 | Adoptante A lee `solicitudes/s1` (suya) | ✅ Permitido |
+| 6 | Refugio Patitas consulta `solicitudes` sin filtro | ❌ Negado |
+| 7 | Refugio Patitas consulta solo con `animalId == 'wini'` (sin `albergueId`) | ❌ Negado |
+| 8 | Otro albergue consulta donde `albergueId == 'refugio-patitas'` | ❌ Negado |
+| 9 | Otro albergue lee `solicitudes/s1` | ❌ Negado |
+| 10 | Adoptante A lee `solicitudes/s2` (de Adoptante B) | ❌ Negado |
+| 11 | Adoptante A consulta donde `adoptanteId == 'adoptante-b'` | ❌ Negado |
+| 12 | Sin sesión, lee `solicitudes/s1` o consulta la colección | ❌ Negado |
+| 13 | Adoptante A crea una solicitud (con cualquier dato) | ❌ Negado (lo abre F-06) |
+| 14 | Refugio Patitas cambia `estado` de `s1` a `"Pre-aprobada"` | ❌ Negado (lo abre F-08) |
+| 15 | Cualquiera borra `solicitudes/s1` | ❌ Negado |
+| 16 | Refugio Patitas lee `solicitudes/s4/privado/contacto` (aunque esté "Pre-aprobada") | ❌ Negado (lo abre F-08) |
 
 ## Notas técnicas
 - **PS-2 con los datos de prueba:** `npm run datos:prueba` escribe los 5 animales en un solo lote con `serverTimestamp()`, así que todos tienen el mismo `creadoEn`. Con el empate, `ordenarAnimales` deja el orden en que llegan de Firestore (por ID: Canela, Luna, Rocky, Toby, Wini). Un animal nuevo publicado desde la app sí sale arriba.

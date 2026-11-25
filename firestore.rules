@@ -141,6 +141,18 @@ service cloud.firestore {
       }
     }
 
+    // ── solicitudes · F-07 (RF-04, RNF-02; 03-modelo-datos §7 y §7.1) ────
+    // Leer: solo el albergue dueño (albergueId) o el adoptante que la envió
+    // (adoptanteId). Las consultas deben filtrar por ese campo (03 §7.1).
+    // Crear, modificar y borrar siguen negados: F-06 agrega aquí `allow
+    // create` (y el match de privado/contacto) y F-08 agrega `allow update`.
+    // privado/contacto NO entra en este bloque: sigue negado (último bloque).
+    match /solicitudes/{solicitudId} {
+      allow read: if haySesion()
+        && (resource.data.albergueId == request.auth.uid
+          || resource.data.adoptanteId == request.auth.uid);
+    }
+
     // ── Todo lo demás: nadie lee ni escribe ──────────────────────────────
     match /{document=**} {
       allow read, write: if false;
