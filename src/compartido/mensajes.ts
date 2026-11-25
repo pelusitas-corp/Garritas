@@ -98,6 +98,14 @@ const MENSAJES = {
   PREADOPCION_EN_CURSO: 'Este animal ya cuenta con una pre-adopción en curso',
   /** RF-12 (no válido): solicitud "Pendiente" o "Rechazada"; el contacto sigue oculto. */
   CONTACTO_OCULTO: 'Pre-aprueba la solicitud para ver los datos de contacto',
+
+  // ── Match y solicitud (specs/features/F-06-match-solicitud.md) ─────────
+  // RF-11 usa MASCOTA_NO_DISPONIBLE, RF-17 MASCOTA_NO_COMPATIBLE, RF-20
+  // MASCOTA_PODRIA_NO_ADAPTARSE, RF-27 SIN_SOLICITUDES_ADOPTANTE, RNF-01
+  // CALCULANDO_COMPATIBILIDAD, y los errores ERROR_CONEXION y SIN_PERMISO.
+  /** F-06 MS-1 (decisión del equipo; no está en el SRS): segunda solicitud al mismo animal. */
+  SOLICITUD_YA_ENVIADA:
+    'Ya enviaste una solicitud para esta mascota. Revisa su estado en Mis solicitudes',
 } as const;
 
 export type ClaveMensaje = keyof typeof MENSAJES;
