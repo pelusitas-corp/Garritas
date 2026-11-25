@@ -1,0 +1,44 @@
+# Avance de F-07 · Panel priorizado de solicitudes
+
+Nota para retomar el trabajo si se corta la sesión. Se actualiza en cada commit.
+
+- **Spec:** `specs/features/F-07-panel-solicitudes.md` v1.0 (Aprobada) · `02-navegacion` v1.1 · `03-modelo-datos` v1.6
+- **RF:** RF-04, RF-18 · RNF-02 · RF-24 (pestañas) · prepara RC-05
+- **Rama:** `feature/F-07-panel-solicitudes` (desde `main` en `a5de767`)
+- **Último commit:** T-1
+- **PR:** "feat(panel): solicitudes del albergue ordenadas por compatibilidad con "No Apto" (F-07, RF-04, RF-18)". No se fusiona.
+- **Línea base en `main` (25/11, después de `npm ci`):** typecheck ✅, lint ✅, Jest 24 suites / 213 pruebas ✅.
+
+## Tareas (§10)
+| # | Tarea | Estado |
+|---|---|---|
+| T-1 | `SIN_ANIMALES_ALBERGUE` y `src/albergue/panel/textos.ts` | ✅ Hecha |
+| T-2 | `src/albergue/panel/panel.ts` (funciones puras) y `tests/albergue/panel.test.ts` | Pendiente |
+| T-3 | `src/firebase/panelSolicitudes.ts` y `tests/firebase/panelSolicitudes.test.ts` | Pendiente |
+| T-4 | Bloque de `solicitudes` en `firestore.rules` y casos de CA-11 | Pendiente |
+| T-5 | `useMisAnimales` y `useSolicitudesDeAnimal` | Pendiente |
+| T-6 | `FilaAnimal`, `TarjetaSolicitud`, `MenuUsuario` e `iconosPanel.ts` | Pendiente |
+| T-7 | Pantalla "Solicitudes · lista de mis animales" | Pendiente |
+| T-8 | Pantalla "Solicitudes de un animal" | Pendiente |
+| T-9 | Pestañas de los dos roles (PS-13, PO-34, PO-26) | Pendiente |
+| T-10 | Prueba en el celular y publicar reglas (Jennifer) | Pendiente |
+
+## Decisiones aceptadas en el plan (Jennifer, 25/11/2026)
+1. `npm ci` para sincronizar `node_modules` con `package-lock.json` (faltaban `@expo/vector-icons`, `expo-image-picker` y `expo-image-manipulator`). Sin dependencias nuevas.
+2. **Medidas de Figma (solo colores de `tema.ts`):**
+   - Fila de animal: fondo azul grisáceo, radio 32, alto ~92, relleno 14; miniatura cuadrada 64 px con radio 16; nombre negrita 22; conteo negrita 13; "›" café.
+   - Tarjeta de solicitud: fondo azul grisáceo, radio 28, relleno 16, 12 entre tarjetas. Iniciales: círculo crema de 44 px, negrita 16 café. Nombre negrita 17; resumen regular 12. "90%" negrita 22 a la derecha y "compatible" negrita 11 debajo.
+   - "No Apto": la misma tarjeta con opacidad ~0.6.
+   - Estado: píldora crema (alto ~32, radio 16), negrita 13 café, debajo del nombre. También para "Pendiente" (F-08 la cambia por los botones).
+   - Encabezado: "Solicitudes" negrita 24 con huella de contorno (lista) o "←" (animal). Subtítulo (albergue) negrita 13; título negrita 26. "N solicitudes nuevas" (regular 12) y "Mayor compatibilidad" (negrita 12 con ícono de orden) en la misma línea, a los extremos.
+   - Ícono de usuario: círculo azul grisáceo 48 con ícono de contorno 24. "Cerrar sesión": píldora azul marino, texto crema negrita 15 con ícono de salida a la izquierda, 8 px debajo del ícono, a la derecha, con sombra suave.
+   - Márgenes laterales de 24.
+   - Pestañas: radio 24 (Soft UI), 72 px + espacio inferior, íconos de 24, rellenos en la activa y de contorno en las inactivas.
+3. Con 0 "Pendiente": "0 solicitudes nuevas".
+4. **Las tres consultas usan `getDocsFromServer`** (no `getDocs`), para que en modo avión salga el error de CA-08 y no la copia del teléfono, y para ver los cambios de F-08 al volver. **Se registra en la spec v1.1 (PS-6) al cerrar.**
+5. Sin botón "Reintentar": se vuelve a leer al regresar a la pantalla (A4).
+6. `uidDelAlbergue()` vive en `src/firebase/panelSolicitudes.ts`. `decidirPantallaLista` se agrega a `panel.ts` para probar CA-06 y CA-08 con Jest.
+7. No se tocan `app/(albergue)/solicitud/[solicitudId].tsx` (F-08) ni `specs/`.
+
+## Qué falta
+- Todo lo de la tabla de arriba marcado como Pendiente.
