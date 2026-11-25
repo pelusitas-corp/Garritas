@@ -42,6 +42,21 @@ const MENSAJES = {
   ETIQUETA_NO_APTO: 'No Apto',
   /** RF-20 (no válido): match con menos de 30 %. */
   MASCOTA_PODRIA_NO_ADAPTARSE: 'Esta mascota podría no adaptarse a tu estilo de vida',
+
+  // ── Acceso y privacidad (specs/features/F-01-acceso-privacidad.md) ─────
+  // RF-24 y RNF-02 (no válidos) reutilizan SIN_PERMISO, y CA-12 reutiliza
+  // ERROR_CONEXION, de navegación.
+  /** RF-25 (no válido): "Continuar" sin marcar la casilla del aviso. */
+  AVISO_SIN_ACEPTAR:
+    'Para continuar, acepta el aviso de privacidad y confirma que eres mayor de edad',
+  /** RF-23 (no válido): el correo ya pertenece a una cuenta. */
+  CORREO_YA_REGISTRADO: 'Este correo ya tiene una cuenta. Inicia sesión.',
+  /** RF-09 (no válido): contraseña incorrecta o correo no registrado. */
+  CREDENCIALES_INVALIDAS: 'Correo o contraseña inválidos',
+  /** F-01 CA-11 (P-03, decisión del equipo; no está en el SRS): contraseña corta. */
+  CONTRASENA_CORTA: 'Tu contraseña debe tener al menos 6 caracteres',
+  /** F-01 CA-13 (A-2, decisión del equipo; no está en el SRS): correo inválido al registrarse. */
+  CORREO_INVALIDO: 'Escribe un correo electrónico válido',
 } as const;
 
 export type ClaveMensaje = keyof typeof MENSAJES;
