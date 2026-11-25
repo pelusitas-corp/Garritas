@@ -8,13 +8,14 @@
  * Cuándo se calcula (RN-03, DE-5): cada vez que Descubrir recibe el foco,
  * salvo cuando regresa del Detalle con "←" o "✕" (el mazo sigue en la
  * misma tarjeta). Si llega con `?aviso=no-disponible` (G-8, DE-4), siempre
- * recalcula, muestra el aviso y el mazo empieza de nuevo.
+ * recalcula, muestra el aviso y el mazo empieza de nuevo. El aviso se quita
+ * solo a los 5 s o con la siguiente acción (DE-9, spec v1.1).
  *
  * No recibe nada. Devuelve `{ estado, avisoNoDisponible, pasar, verDeNuevo,
  * abrirDetalle, reintentar }`.
  */
-import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
-import { useCallback, useRef, useState } from 'react';
+import { router, useFocusEffect, useLocalSearchParams, useNavigation } from 'expo-router';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import {
   AVISO_NO_DISPONIBLE,
@@ -24,6 +25,7 @@ import {
 import { conTiempoLimite } from '../../firebase/acceso';
 import { leerAnimalesDisponibles } from '../../firebase/animales';
 import { ESPERA_GUARDAR_MS, leerCuestionario, uidDelAdoptante } from '../../firebase/cuestionario';
+import { programarQuitarAviso } from './aviso';
 import type { EstadoDescubrir } from './estados';
 import { armarMazo, crearMazo, pasar as pasarTarjeta, verDeNuevo as reiniciarMazo } from './mazo';
 
@@ -37,14 +39,21 @@ function leerCuestionarioConLimite(uid: string) {
   );
 }
 
+/** Lo único que este hook usa de la navegación de su pantalla. */
+interface NavegacionDescubrir {
+  setParams: (parametros: { aviso?: string }) => void;
+}
+
 export default function useDescubrir() {
   const { aviso } = useLocalSearchParams<{ aviso?: string }>();
+  // Solo se usa para borrar `?aviso` en la ruta de Descubrir (no en la que tenga el foco).
+  const navigation = useNavigation<NavegacionDescubrir>();
   const [uid] = useState(uidDelAdoptante);
   const [estado, setEstado] = useState<EstadoDescubrir>({ tipo: 'cargando' });
   const [avisoNoDisponible, setAvisoNoDisponible] = useState(false);
   /** Se prende justo antes de abrir el Detalle (DE-5). */
   const fuiAlDetalle = useRef(false);
-  /** Se prende al atender `?aviso=no-disponible`, hasta que el parámetro se borra. */
+  /** Se prende al atender `?aviso=no-disponible`; se apaga al salir, cuando se borra el parámetro. */
   const avisoAtendido = useRef(false);
   /** Número de la lectura más reciente: las respuestas viejas se ignoran. */
   const turno = useRef(0);
@@ -89,47 +98,63 @@ export default function useDescubrir() {
 
   useFocusEffect(
     useCallback(() => {
-      // G-8 (DE-4): llegó del Detalle con el aviso. Recalcula y el mazo empieza de nuevo.
       if (aviso === AVISO_NO_DISPONIBLE && !avisoAtendido.current) {
+        // G-8 (DE-4): llegó del Detalle con el aviso. Se muestra en este mismo
+        // momento y el mazo se recalcula (empieza de nuevo).
         avisoAtendido.current = true;
         fuiAlDetalle.current = false;
         setAvisoNoDisponible(true);
         calcular();
-        router.setParams({ aviso: undefined });
-        return;
-      }
-      // Se volvió a llamar solo porque se borró el parámetro: no es una apertura nueva.
-      if (aviso === undefined && avisoAtendido.current) {
-        avisoAtendido.current = false;
-        return;
-      }
-      // DE-5: regresa del Detalle con "←" o "✕": el mazo sigue en la misma tarjeta.
-      if (fuiAlDetalle.current) {
+      } else if (fuiAlDetalle.current) {
+        // DE-5: regresa del Detalle con "←" o "✕": el mazo sigue en la misma tarjeta.
         fuiAlDetalle.current = false;
-        return;
+      } else if (!avisoAtendido.current) {
+        // RN-03: abrió Descubrir (pestaña, Perfil Garritas o inicio de sesión).
+        setAvisoNoDisponible(false);
+        calcular();
       }
-      // RN-03: abrió Descubrir (pestaña, Perfil Garritas o inicio de sesión).
-      setAvisoNoDisponible(false);
-      calcular();
-    }, [aviso, calcular]),
+      // Al salir de Descubrir (o si cambia el parámetro estando aquí):
+      return () => {
+        setAvisoNoDisponible(false); // DE-9: salir de Descubrir quita el aviso.
+        if (avisoAtendido.current) {
+          // El parámetro se borra AQUÍ, ya fuera de Descubrir, y solo en su
+          // propia ruta. Antes se borraba al recibir el foco, en medio del
+          // `dismissTo` del Detalle, y la pantalla no se repintaba hasta que el
+          // adoptante tocaba algo (prueba en el celular de G-8).
+          avisoAtendido.current = false;
+          navigation.setParams({ aviso: undefined });
+        }
+      };
+    }, [aviso, calcular, navigation]),
   );
 
-  /** "Pasar" (N-2, RN-04): siguiente tarjeta. No guarda nada. */
+  // DE-9: el aviso de G-8 se quita solo a los 5 s.
+  useEffect(() => {
+    if (!avisoNoDisponible) {
+      return undefined;
+    }
+    return programarQuitarAviso(() => setAvisoNoDisponible(false));
+  }, [avisoNoDisponible]);
+
+  /** "Pasar" (N-2, RN-04): siguiente tarjeta. No guarda nada. Quita el aviso (DE-9). */
   const pasar = useCallback(() => {
+    setAvisoNoDisponible(false);
     setEstado((actual) =>
       actual.tipo === 'con-datos' ? { ...actual, mazo: pasarTarjeta(actual.mazo) } : actual,
     );
   }, []);
 
-  /** "Ver de nuevo" (DE-1): vuelve a la primera tarjeta sin leer Firestore. */
+  /** "Ver de nuevo" (DE-1): vuelve a la primera tarjeta sin leer Firestore. Quita el aviso (DE-9). */
   const verDeNuevo = useCallback(() => {
+    setAvisoNoDisponible(false);
     setEstado((actual) =>
       actual.tipo === 'con-datos' ? { ...actual, mazo: reiniciarMazo(actual.mazo) } : actual,
     );
   }, []);
 
-  /** Tarjeta, "ⓘ" o "Me encanta" (RF-28, N-2). Recibe el `animalId`. */
+  /** Tarjeta, "ⓘ" o "Me encanta" (RF-28, N-2). Recibe el `animalId`. Quita el aviso (DE-9). */
   const abrirDetalle = useCallback((animalId: string) => {
+    setAvisoNoDisponible(false);
     fuiAlDetalle.current = true;
     router.push(rutaAnimal(animalId));
   }, []);
