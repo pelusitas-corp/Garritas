@@ -78,6 +78,11 @@ const MENSAJES = {
   /** RI-02 (no válido): el sistema negó el permiso de la cámara. */
   CAMARA_SIN_PERMISO:
     'Habilita el acceso a la cámara desde los ajustes de tu teléfono o elige una foto de tu galería',
+
+  // ── Descubrir y detalle (specs/features/F-03-descubrir-detalle.md) ─────
+  // RF-10, RF-26, RF-28 y RNF-01 usan los mensajes de navegación.
+  /** F-03 DE-1 (decisión del equipo; no está en el SRS): el adoptante pasó todas las tarjetas. */
+  MAZO_TERMINADO: 'Ya viste a todas tus mascotas compatibles. Vuelve pronto para conocer nuevas',
 } as const;
 
 export type ClaveMensaje = keyof typeof MENSAJES;
