@@ -10,7 +10,8 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint . && prettier --check .",
     "format": "prettier --write .",
-    "test": "jest"
+    "test": "jest",
+    "datos:prueba": "tsx scripts/cargar-datos-prueba.ts"
   },
   "jest": {
     "preset": "jest-expo",
@@ -43,9 +44,11 @@
     "eslint": "^9.39.5",
     "eslint-config-airbnb-extended": "^3.3.0",
     "eslint-config-prettier": "^10.1.8",
+    "firebase-admin": "^14.5.1",
     "jest": "^30.5.2",
     "jest-expo": "~58.0.15",
     "prettier": "^3.10.1",
+    "tsx": "^4.23.15",
     "typescript": "~6.0.3"
   }
 }

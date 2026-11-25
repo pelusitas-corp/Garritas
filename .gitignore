@@ -34,3 +34,7 @@ npm-debug.*
 .DS_Store
 Thumbs.db
 .vscode/
+
+# Llave de servicio de Firebase para el script de datos de prueba (M-5).
+# Da acceso total al proyecto: NUNCA se sube ni se comparte por chat.
+scripts/llave-servicio.json

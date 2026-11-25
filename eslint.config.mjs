@@ -47,6 +47,16 @@ export default [
     },
   },
 
+  // Los scripts de scripts/ corren en la computadora, no en la app: pueden
+  // usar dependencias de desarrollo como firebase-admin (03-modelo-datos M-5).
+  {
+    name: 'garritas/scripts',
+    files: ['scripts/**/*.ts'],
+    rules: {
+      'import-x/no-extraneous-dependencies': ['error', { devDependencies: true }],
+    },
+  },
+
   // Siempre al final: deja el formato en manos de Prettier
   prettierConfig,
 ];
