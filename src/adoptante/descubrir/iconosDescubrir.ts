@@ -17,6 +17,23 @@ export const ICONOS_DESCUBRIR = {
   si: 'check-circle',
   /** Cuidado de salud que no tiene (✕, DE-7). */
   no: 'close-circle',
+  // Íconos del diseño (ajustes de F-03 después de la prueba en el celular):
+  /** Botón circular "Pasar" de Descubrir. */
+  pasar: 'close',
+  /** Botón circular "Me encanta" de Descubrir. */
+  meEncanta: 'heart-outline',
+  /** "←" del encabezado del Detalle. */
+  atras: 'arrow-left',
+  /** "✕" de la tarjeta del Detalle. */
+  cerrar: 'close',
+  /** Mosaico "Especie" del Detalle. */
+  especie: 'paw',
+  /** Mosaico "Edad" del Detalle. */
+  edad: 'cake-variant-outline',
+  /** Mosaico "Tamaño" del Detalle. */
+  tamano: 'ruler',
+  /** Línea del albergue en el Detalle. */
+  albergue: 'home-outline',
 } as const satisfies Record<string, NombreIcono>;
 
 /** Recibe si tiene el cuidado de salud. Devuelve el ícono de sí o de no (DE-7). */

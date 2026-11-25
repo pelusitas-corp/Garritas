@@ -2,16 +2,16 @@
  * Descubrir (spec F-03: RF-10, RF-26, RNF-01; ruta /descubrir; pestaña del adoptante).
  *
  * Muestra el mazo ordenado por compatibilidad, una tarjeta a la vez. El
- * ícono de usuario del encabezado abre Mi perfil. Si llega de G-8, muestra
+ * ícono de usuario (círculo azul claro, prototipo "Descubrir") abre Mi perfil. Si llega de G-8, muestra
  * arriba "Esta mascota ya no está disponible para adopción" (DE-4).
  * Los estados (cargando, vacía, mazo terminado, error y sin permiso) los
  * decide `pantallaDescubrir` y los dibuja `EstadoPantalla`.
  */
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import BotonCircular from '../../../src/adoptante/descubrir/BotonCircular';
 import { pantallaDescubrir } from '../../../src/adoptante/descubrir/estados';
 import { ICONOS_DESCUBRIR } from '../../../src/adoptante/descubrir/iconosDescubrir';
 import { tarjetaActual } from '../../../src/adoptante/descubrir/mazo';
@@ -41,7 +41,7 @@ const estilos = StyleSheet.create({
     backgroundColor: COLORES.menta,
   },
   textoAviso: { fontFamily: FUENTES.negrita, fontSize: 16, color: COLORES.cafe },
-  cuerpo: { flex: 1, padding: 24 },
+  cuerpo: { flex: 1, paddingHorizontal: 24, paddingTop: 20, paddingBottom: 16 },
 });
 
 export default function Descubrir() {
@@ -55,18 +55,13 @@ export default function Descubrir() {
         <Text accessibilityRole="header" style={estilos.titulo}>
           {TEXTO_DESCUBRIR}
         </Text>
-        <Pressable
-          onPress={() => router.navigate(RUTAS.miPerfil)}
-          accessibilityRole="button"
-          accessibilityLabel={TEXTO_MI_PERFIL}
-          hitSlop={12}
-        >
-          <MaterialCommunityIcons
-            name={ICONOS_DESCUBRIR.miPerfil}
-            size={36}
-            color={COLORES.azulMarino}
-          />
-        </Pressable>
+        <BotonCircular
+          icono={ICONOS_DESCUBRIR.miPerfil}
+          etiqueta={TEXTO_MI_PERFIL}
+          fondo="azulGrisaceo"
+          diametro={52}
+          alPresionar={() => router.navigate(RUTAS.miPerfil)}
+        />
       </View>
       {avisoNoDisponible ? (
         <View style={estilos.aviso}>
