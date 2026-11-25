@@ -118,7 +118,17 @@ service cloud.firestore {
         && request.resource.data.miniatura.size() <= 60000
         && request.resource.data.estado == 'Disponible'
         && request.resource.data.creadoEn == request.time;
-      allow update, delete: if false;
+      // Modificar · F-08 (RF-05, RF-22; PA-9): solo el albergue dueño, solo
+      // `estado` y solo de "Disponible" a "En pre-adopción". La regla de la
+      // solicitud exige este cambio al pre-aprobar (en la misma transacción).
+      // El reintento de F-02 (A9, `set` de la ficha completa) sigue negado:
+      // cambia `creadoEn`, que no está en la lista.
+      allow update: if esAlbergue()
+        && resource.data.albergueId == request.auth.uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['estado'])
+        && resource.data.estado == 'Disponible'
+        && request.resource.data.estado == 'En pre-adopción';
+      allow delete: if false;
 
       // Fotos: solo en la misma operación que crea el animal (getAfter: el
       // animal ya existe al terminar el lote y es de este albergue; !exists:
@@ -141,16 +151,39 @@ service cloud.firestore {
       }
     }
 
-    // ── solicitudes · F-07 (RF-04, RNF-02; 03-modelo-datos §7 y §7.1) ────
-    // Leer: solo el albergue dueño (albergueId) o el adoptante que la envió
-    // (adoptanteId). Las consultas deben filtrar por ese campo (03 §7.1).
-    // Crear, modificar y borrar siguen negados: F-06 agrega aquí `allow
-    // create` (y el match de privado/contacto) y F-08 agrega `allow update`.
-    // privado/contacto NO entra en este bloque: sigue negado (último bloque).
+    // ── solicitudes · F-07 y F-08 (RF-04, RF-05, RF-21, RF-22, RF-12; RNF-02;
+    //    03-modelo-datos §6.2, §7 y §7.1) ───────────────────────────────────
+    // Leer (F-07): solo el albergue dueño (albergueId) o el adoptante que la
+    // envió (adoptanteId). Las consultas deben filtrar por ese campo (03 §7.1).
+    // Modificar (F-08): solo el albergue dueño, solo `estado` y
+    // `actualizadaEn` (hora del servidor), y solo desde "Pendiente":
+    //   - a "Rechazada" (RF-21), o
+    //   - a "Pre-aprobada" (RF-05) si el animal estaba "Disponible" (get) y
+    //     queda "En pre-adopción" al terminar la operación (getAfter, RF-22).
+    // Crear y borrar siguen negados: F-06 agrega aquí `allow create` (en la
+    // solicitud y en privado).
     match /solicitudes/{solicitudId} {
       allow read: if haySesion()
         && (resource.data.albergueId == request.auth.uid
           || resource.data.adoptanteId == request.auth.uid);
+      allow update: if esAlbergue()
+        && resource.data.albergueId == request.auth.uid
+        && resource.data.estado == 'Pendiente'
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['estado', 'actualizadaEn'])
+        && request.resource.data.actualizadaEn == request.time
+        && (request.resource.data.estado == 'Rechazada'
+          || (request.resource.data.estado == 'Pre-aprobada'
+            && get(/databases/$(database)/documents/animales/$(resource.data.animalId)).data.estado == 'Disponible'
+            && getAfter(/databases/$(database)/documents/animales/$(resource.data.animalId)).data.estado == 'En pre-adopción'));
+
+      // privado/contacto · F-08 (RF-12, D-04): lo lee el adoptante dueño
+      // siempre, y el albergue dueño solo con la solicitud "Pre-aprobada".
+      match /privado/{documento} {
+        allow read: if haySesion()
+          && (get(/databases/$(database)/documents/solicitudes/$(solicitudId)).data.adoptanteId == request.auth.uid
+            || (get(/databases/$(database)/documents/solicitudes/$(solicitudId)).data.albergueId == request.auth.uid
+              && get(/databases/$(database)/documents/solicitudes/$(solicitudId)).data.estado == 'Pre-aprobada'));
+      }
     }
 
     // ── Todo lo demás: nadie lee ni escribe ──────────────────────────────

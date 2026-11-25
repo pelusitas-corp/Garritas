@@ -89,6 +89,15 @@ const MENSAJES = {
   // y los errores reutilizan ERROR_CONEXION y SIN_PERMISO.
   /** F-07 PS-4 (decisión del equipo; no está en el SRS): el albergue aún no tiene animales. */
   SIN_ANIMALES_ALBERGUE: 'Aún no tienes mascotas publicadas. Agrégalas en la pestaña Mascotas',
+
+  // ── Pre-aprobar, rechazar y contacto (specs/features/F-08-preaprobar-rechazar.md) ──
+  // Sin conexión reutiliza ERROR_CONEXION y el rechazo de las reglas, SIN_PERMISO.
+  /** RF-05 y RF-21 (no válidos): la solicitud ya no está "Pendiente". */
+  SOLICITUD_YA_ATENDIDA: 'Esta solicitud ya fue atendida',
+  /** RF-22 (no válido): el animal ya tiene una solicitud "Pre-aprobada". */
+  PREADOPCION_EN_CURSO: 'Este animal ya cuenta con una pre-adopción en curso',
+  /** RF-12 (no válido): solicitud "Pendiente" o "Rechazada"; el contacto sigue oculto. */
+  CONTACTO_OCULTO: 'Pre-aprueba la solicitud para ver los datos de contacto',
 } as const;
 
 export type ClaveMensaje = keyof typeof MENSAJES;

@@ -8,8 +8,13 @@
  * línea, "N solicitudes nuevas" en negrita 16 (PS-15, spec v1.1), y en la
  * línea siguiente, alineado a la derecha, "Mayor compatibilidad" (con el
  * ícono de orden; no es un botón, PS-8). Las tarjetas van de
- * mayor a menor % (RF-04) y con "No Apto" deslavadas (RF-18). Tocar una
- * tarjeta abre `/solicitud/{solicitudId}` (provisional hasta F-08).
+ * mayor a menor % (RF-04) y con "No Apto" deslavadas (RF-18). Tocar los
+ * datos de una tarjeta abre `/solicitud/{solicitudId}` (Detalle, F-08).
+ *
+ * F-08: cada tarjeta "Pendiente" tiene "✕ Rechazar" y "✓ Pre-aprobar" con
+ * su confirmación (RC-05: animal, botón y confirmar = 3 toques). Al final de
+ * la lista se lee "Al pre-aprobar, podrás coordinar una visita.", solo si
+ * queda al menos una "Pendiente" (PA-12 y decisión 4 del plan).
  *
  * `useSolicitudesDeAnimal` lee los datos cada vez que la pantalla se enfoca
  * (PS-6). Si el animal no es de este albergue o no existe, se ve "No tienes
@@ -55,6 +60,13 @@ const estilos = StyleSheet.create({
   orden: { flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-end', gap: 4 },
   textoOrden: { fontFamily: FUENTES.negrita, fontSize: 12, color: COLORES.cafe },
   lista: { gap: 12, paddingHorizontal: MARGEN, paddingBottom: MARGEN },
+  alPreAprobar: {
+    marginTop: 4,
+    fontFamily: FUENTES.regular,
+    fontSize: 13,
+    color: COLORES.cafe,
+    textAlign: 'center',
+  },
   separacion: { height: 16 },
 });
 
@@ -69,7 +81,7 @@ function regresar() {
 
 export default function SolicitudesDeUnAnimal() {
   const { animalId } = useLocalSearchParams<{ animalId: string }>();
-  const { estado } = useSolicitudesDeAnimal(animalId);
+  const { estado, decisiones, decidir } = useSolicitudesDeAnimal(animalId);
   const conTitulo =
     estado.tipo === 'leer-solicitudes' || estado.tipo === 'vacia' || estado.tipo === 'con-datos';
 
@@ -86,8 +98,16 @@ export default function SolicitudesDeUnAnimal() {
               <TarjetaSolicitud
                 solicitud={item}
                 alPresionar={() => router.push(rutaSolicitud(item.id))}
+                guardando={decisiones[item.id]?.guardando}
+                mensaje={decisiones[item.id]?.mensaje}
+                alDecidir={(accion) => decidir(item.id, accion)}
               />
             )}
+            ListFooterComponent={
+              estado.nuevas > 0 ? (
+                <Text style={estilos.alPreAprobar}>{TEXTOS_PANEL.alPreAprobar}</Text>
+              ) : undefined
+            }
           />
         );
       case 'cargando':
