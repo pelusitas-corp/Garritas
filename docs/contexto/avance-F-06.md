@@ -5,7 +5,7 @@ Nota para retomar el trabajo si se corta la sesión. Se actualiza en cada commit
 - **Spec:** `specs/features/F-06-match-solicitud.md` v1.0 (Aprobada) · `02-navegacion` v1.3 · `03-modelo-datos` v1.7 · `F-05` · `F-03` v1.2 · `F-08`
 - **RF:** RF-20, RF-11, RF-17 (no válido), RF-27, RF-18 · RNF-01 · RNF-02
 - **Rama:** `feature/F-06-match-solicitud` (desde `main` en `da09cc3`)
-- **Último commit:** T-4 (el anterior es `f249c35`)
+- **Último commit:** T-5 (el anterior es `204bada`)
 - **PR:** "feat(solicitud): match explicado, enviar solicitud y mis solicitudes (F-06, RF-20, RF-11, RF-17, RF-27)". No se fusiona. Enlace: https://github.com/pelusitas-corp/garritas/pull/new/feature/F-06-match-solicitud
 
 ## Tareas (§10)
@@ -14,8 +14,8 @@ Nota para retomar el trabajo si se corta la sesión. Se actualiza en cada commit
 | T-1 | Mensaje `SOLICITUD_YA_ENVIADA` y textos (`match/textos.ts`, `solicitudes/textos.ts`) | ✅ Hecha (`841ac12`; 3 pruebas en `tests/adoptante/textosMatch.test.ts`) |
 | T-2 | `decidirMatch`, `decidirEnvio`, `armarSolicitud` y sus pruebas | ✅ Hecha (`ccf9bfc`; 24 pruebas en `tests/adoptante/match.test.ts`; las dimensiones de Ana y Wini salen del motor real y coinciden con F-05 CA-09) |
 | T-3 | `ordenarMisSolicitudes`, estado de la pantalla y sus pruebas | ✅ Hecha (`f249c35`; 10 pruebas en `tests/adoptante/misSolicitudes.test.ts`; `MiSolicitud`, `ordenarMisSolicitudes`, `pantallaMisSolicitudes` y `apoyoDelEstado`) |
-| T-4 | `src/firebase/solicitudes.ts` (`leerCuentaAdoptante`, `leerMisSolicitudes`, `enviarSolicitud`) y sus pruebas | ✅ Hecha (12 pruebas en `tests/firebase/solicitudes.test.ts` con un `writeBatch` de mentira) |
-| T-5 | Reglas de `create` (§9) y casos de CA-10 | Pendiente |
+| T-4 | `src/firebase/solicitudes.ts` (`leerCuentaAdoptante`, `leerMisSolicitudes`, `enviarSolicitud`) y sus pruebas | ✅ Hecha (`204bada`; 12 pruebas en `tests/firebase/solicitudes.test.ts` con un `writeBatch` de mentira) |
+| T-5 | Reglas de `create` (§9) y casos de CA-10 | ✅ Hecha (reglas de §9 sin publicar; 19 casos de CA-10 abajo) |
 | T-6 | `useMatch` y `useMisSolicitudes` | Pendiente |
 | T-7 | Pantalla Match | Pendiente |
 | T-8 | Pantalla "¡Solicitud enviada!" (`useSolicitudEnviada`) | Pendiente |
@@ -40,9 +40,35 @@ Nota para retomar el trabajo si se corta la sesión. Se actualiza en cada commit
 - La prueba de RF-20 válido con Ana y Wini **no fija de antemano** las 3 dimensiones: usa las que devuelve el motor real con `tests/matchmaking/datos.ts` y las pone en el nombre solo si coinciden.
 
 ## Notas técnicas
+- **T-5:** las 4 funciones de ayuda (`camposSolicitud`, `animalDeLaSolicitud`, `respuestasDelUsuario`, `telefonoDelUsuario`) viven dentro de `match /solicitudes/{solicitudId}`; `privado` las ve porque está anidado. El lote lee 6 documentos distintos (límite: 20). No hay emulador ni `firebase-tools` en el repo: la sintaxis se revisa el viernes.
 - **T-4:** `enviarSolicitud` genera el ID con `doc(collection(...))` antes del lote y espera el `commit` 10 s (`ESPERA_ESCRITURA_MS`). Las lecturas usan `getDocFromServer` y `getDocsFromServer` con 10 s (`ESPERA_GUARDAR_MS`). `permission-denied` → `sin-permiso`; cualquier otro error o el tiempo agotado → `sin-conexion`. Los tipos `MiSolicitud`, `CuentaAdoptante` y `SolicitudNueva` viven en `src/adoptante/` (como F-07 con `SolicitudConId`), así el adoptante nunca importa de `src/albergue/`.
 - **T-2:** `decidirMatch` revisa: lecturas fallidas → A1 → cuestionario completo (G-5) → perfil completo (decisión 1) → filtro (A2) → motor. Para probar 29 % y 30 % se envuelve `evaluarAnimales` con `jest.mock` y la explicación se arma con el `explicarMatch` real de F-05. `armarSolicitud` devuelve `null` si falta p2, p12 o p19.
 - **T-1:** `solicitudes/textos.ts` usa `export default` (regla `prefer-default-export` de Airbnb con una sola exportación). "Garritas", "Mi perfil" y "Reintentar" se reutilizan de `src/adoptante/descubrir/textos.ts` (mismo lado, adoptante). El porcentaje de Match se escribe "90%" (sin espacio, Figma); en Descubrir es "90 % compatible" (F-03).
+
+## Casos de CA-10 para el emulador (viernes 27, PO-31)
+Con los datos de 03 §8. "Lote" = `writeBatch` con `solicitudes/{id}` y `solicitudes/{id}/privado/contacto`. Una cuenta nueva "Nueva" (adoptante, cuestionario completo, sin solicitudes).
+
+| # | Caso | Esperado |
+|---|---|---|
+| 1 | Nueva crea, en un lote, su solicitud "Pendiente" a Wini ("Disponible") con copias correctas, `noApto` coherente, `resumenHogar` de su cuestionario y su contacto | Permitido |
+| 2 | Igual que 1, con `adoptanteId` de Ana | Negado |
+| 3 | Igual que 1, con `estado: "Pre-aprobada"` | Negado |
+| 4 | Igual que 1, para Rocky ("En pre-adopción") | Negado |
+| 5 | Igual que 1, con `nombreAnimal`, `nombreAlbergue`, `miniaturaAnimal` o `albergueId` distintos al animal (un caso por campo) | Negado |
+| 6 | Igual que 1, con `nombreAdoptante` distinto al de `usuarios` | Negado |
+| 7 | Igual que 1, con `porcentaje: 24` y `noApto: false`, o `porcentaje: 30` y `noApto: true` | Negado |
+| 8 | Igual que 1, con `porcentaje` 101, -1 o 90.5 | Negado |
+| 9 | Igual que 1, con `resumenHogar.p2` distinto al cuestionario, o con una clave de más (`p3`) | Negado |
+| 10 | Igual que 1, con un campo de más o uno de menos | Negado |
+| 11 | Igual que 1, con `creadaEn` o `actualizadaEn` escrito desde el teléfono (no `serverTimestamp`) | Negado |
+| 12 | Solo la solicitud, sin `privado/contacto` en el mismo lote | Negado |
+| 13 | Refugio Patitas (albergue) crea una solicitud | Negado |
+| 14 | Crear `privado/contacto` después, en otra operación, de una solicitud que ya existe | Negado |
+| 15 | Igual que 1, con otro teléfono o con otro correo en el contacto, o con un campo de más | Negado |
+| 16 | Ana consulta `solicitudes` donde `adoptanteId == adoptante-a` | Permitido |
+| 17 | Ana consulta `solicitudes` sin filtro | Negado (ya lo cubre F-07 CA-11) |
+| 18 | Ana lee `solicitudes/s4` y `solicitudes/s2` (de Luis) | s4 permitido; s2 negado |
+| 19 | Borrar una solicitud o su contacto | Negado |
 
 ## Verificación
 | Tarea | typecheck | lint | test |
@@ -51,6 +77,7 @@ Nota para retomar el trabajo si se corta la sesión. Se actualiza en cada commit
 | T-2 | ✅ sin errores | ✅ sin errores (Prettier OK) | ✅ 31 suites, 321 pruebas |
 | T-3 | ✅ sin errores | ✅ sin errores (Prettier OK) | ✅ 32 suites, 331 pruebas |
 | T-4 | ✅ sin errores | ✅ sin errores (Prettier OK) | ✅ 33 suites, 343 pruebas |
+| T-5 | ✅ sin errores | ✅ sin errores (Prettier OK) | ✅ 33 suites, 343 pruebas (las reglas se prueban con el emulador) |
 
 ## Pendientes
 - CA-10 con el emulador el viernes 27 (PO-31). `npm run test:rules` no existe todavía.
