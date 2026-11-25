@@ -33,6 +33,25 @@ export const ESTADO_SOLICITUD = {
   rechazada: 'Rechazada',
 } as const satisfies Record<string, EstadoSolicitud>;
 
+// ----- Opciones del alta del animal (§4.3, §4.4; F-02 AL-1 a AL-3) -----
+
+/** Edad del animal. Se guarda el texto tal como se ve (F-02 AL-1, AL-5). */
+export const OPCIONES_EDAD = [
+  'Menos de 1 año',
+  '1 a 3 años',
+  '4 a 7 años',
+  '8 años o más',
+] as const;
+
+/** Tamaño del animal. Se guarda el texto tal como se ve (F-02 AL-2, AL-5). */
+export const OPCIONES_TAMANO = ['Pequeño', 'Mediano', 'Grande'] as const;
+
+export type Edad = (typeof OPCIONES_EDAD)[number];
+export type Tamano = (typeof OPCIONES_TAMANO)[number];
+
+/** Máximo de fotos por animal (F-02 AL-3; mínimo 1, RF-13). */
+export const MAX_FOTOS_ANIMAL = 3;
+
 // ----- usuarios/{uid} (§4.1) -----
 
 /** Aceptación del aviso de privacidad y de la mayoría de edad (RF-25). */
@@ -69,10 +88,8 @@ export interface Animal {
   nombreAlbergue: string;
   nombre: string;
   especie: Especie;
-  /** [PENDIENTE P-01: las opciones se fijan en F-02]. */
-  edad: string;
-  /** [PENDIENTE P-01: las opciones se fijan en F-02]. */
-  tamano: string;
+  edad: Edad;
+  tamano: Tamano;
   vacunado: boolean;
   esterilizado: boolean;
   perfilCompatibilidad: PerfilCompatibilidad;
@@ -84,10 +101,14 @@ export interface Animal {
 
 // ----- animales/{animalId}/fotos/{fotoId} (§4.4) -----
 
-/** Una foto por documento para no pasar de 1 MiB (D-36). */
+/**
+ * Una foto por documento para no pasar de 1 MiB (D-36). Su ID es
+ * `foto-{orden}` (`foto-0` a `foto-2`; decisión del plan de F-02, AL-13).
+ */
 export interface Foto {
   /** JPEG en base64 (M-2), comprimida a 300 KB o menos. */
   datos: string;
+  /** Entero de 0 a 2. La 0 es la primera del Detalle y de ella sale la miniatura. */
   orden: number;
 }
 

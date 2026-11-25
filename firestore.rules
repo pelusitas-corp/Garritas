@@ -3,7 +3,7 @@ rules_version = '2';
 // Reglas de seguridad de Cloud Firestore (arquitectura §5, 03-modelo-datos §7).
 // Todo lo que no tenga un bloque propio sigue NEGADO (último bloque).
 // Cada feature abre solo lo que su spec permite. Las pruebas con el
-// emulador de F-01 (CA-09) se hacen el viernes 27 (A-6, PO-31).
+// emulador de F-01 (CA-09) y F-02 (CA-11) se hacen el viernes 27 (PO-31).
 service cloud.firestore {
   match /databases/{database}/documents {
 
@@ -57,13 +57,87 @@ service cloud.firestore {
         && request.resource.data.completo is bool;
     }
 
-    // ── animales y fotos · F-01 A-6 (03-modelo-datos §7) ─────────────────
-    // Cualquier usuario con sesión puede leerlos. Escribir lo abre F-02.
+    // ── animales y fotos · F-02 (RF-01, RF-13, RF-14; RNF-02) ────────────
+    // Leer: cualquier usuario con sesión (F-01 A-6, sin cambios).
+    // Crear: solo un albergue, con la ficha completa (03 §4.3) y sus fotos
+    // en la MISMA operación (writeBatch). Modificar o borrar: nadie por
+    // ahora (F-08 abre el cambio de estado).
+
+    // ¿Quien hace la petición es un albergue? (usuarios/{uid}.rol)
+    function esAlbergue() {
+      return haySesion()
+        && get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data.rol == 'albergue';
+    }
+
+    // Nombre de quien hace la petición (usuarios/{uid}.nombre, RN-06)
+    function nombreDelUsuario() {
+      return get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data.nombre;
+    }
+
+    // Los 12 campos de animales/{animalId} (03 §4.3)
+    function camposAnimal() {
+      return ['albergueId', 'nombreAlbergue', 'nombre', 'especie', 'edad', 'tamano',
+              'vacunado', 'esterilizado', 'perfilCompatibilidad', 'miniatura',
+              'estado', 'creadoEn'];
+    }
+
+    // Las 6 dimensiones del perfil (03 §5.2)
+    function clavesPerfil() {
+      return ['energia', 'espacio', 'tiempo', 'experiencia', 'convivencia', 'temperamento'];
+    }
+
+    // Perfil con SOLO y TODAS las 6 claves, cada una con un valor de su lista (RF-14)
+    function perfilValido(perfil) {
+      return perfil is map
+        && perfil.keys().hasOnly(clavesPerfil())
+        && perfil.keys().hasAll(clavesPerfil())
+        && perfil.energia in ['baja', 'media', 'alta']
+        && perfil.espacio in ['poco', 'casa', 'patioBardeado']
+        && perfil.tiempo in ['variasHoras', 'unasHoras', 'compania']
+        && perfil.experiencia in ['facil', 'medio', 'especial']
+        && perfil.convivencia in ['sinNinosNiMascotas', 'soloConNinos', 'soloConMascotas', 'conNinosYMascotas']
+        && perfil.temperamento in ['timido', 'tranquilo', 'sociable'];
+    }
+
     match /animales/{animalId} {
       allow read: if haySesion();
+      allow create: if esAlbergue()
+        && request.resource.data.keys().hasOnly(camposAnimal())
+        && request.resource.data.keys().hasAll(camposAnimal())
+        && request.resource.data.albergueId == request.auth.uid
+        && request.resource.data.nombreAlbergue == nombreDelUsuario()
+        && request.resource.data.nombre is string
+        && request.resource.data.nombre.size() > 0
+        && request.resource.data.especie in ['perro', 'gato']
+        && request.resource.data.edad in ['Menos de 1 año', '1 a 3 años', '4 a 7 años', '8 años o más']
+        && request.resource.data.tamano in ['Pequeño', 'Mediano', 'Grande']
+        && request.resource.data.vacunado is bool
+        && request.resource.data.esterilizado is bool
+        && perfilValido(request.resource.data.perfilCompatibilidad)
+        && request.resource.data.miniatura is string
+        && request.resource.data.miniatura.size() <= 60000
+        && request.resource.data.estado == 'Disponible'
+        && request.resource.data.creadoEn == request.time;
+      allow update, delete: if false;
 
+      // Fotos: solo en la misma operación que crea el animal (getAfter: el
+      // animal ya existe al terminar el lote y es de este albergue; !exists:
+      // antes del lote no existía, así no se agregan fotos después). ID fijo
+      // foto-{orden} con orden de 0 a 2: máximo 3 fotos (AL-3, AL-13).
       match /fotos/{fotoId} {
         allow read: if haySesion();
+        allow create: if haySesion()
+          && getAfter(/databases/$(database)/documents/animales/$(animalId)).data.albergueId == request.auth.uid
+          && !exists(/databases/$(database)/documents/animales/$(animalId))
+          && request.resource.data.keys().hasOnly(['datos', 'orden'])
+          && request.resource.data.keys().hasAll(['datos', 'orden'])
+          && request.resource.data.datos is string
+          && request.resource.data.datos.size() <= 450000
+          && request.resource.data.orden is int
+          && request.resource.data.orden >= 0
+          && request.resource.data.orden <= 2
+          && fotoId == 'foto-' + string(request.resource.data.orden);
+        allow update, delete: if false;
       }
     }
 

@@ -8,6 +8,7 @@
 import { existsSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 
+import { OPCIONES_EDAD, OPCIONES_TAMANO } from '../src/compartido/modelo';
 import { evaluarAnimales, asignarPerfilGarritas, esNoApto } from '../src/matchmaking';
 import type { AnimalParaMatch, ResultadoMatch } from '../src/matchmaking';
 import { ADOPTANTES, ANIMALES, SOLICITUDES } from '../scripts/datos-prueba/datos';
@@ -95,6 +96,21 @@ describe('03-modelo-datos §8 · datos de prueba', () => {
     const preAprobadas = SOLICITUDES.filter((s) => s.estado === 'Pre-aprobada');
     expect(rocky?.estado).toBe('En pre-adopción');
     expect(preAprobadas.map((s) => s.animalId)).toEqual(['rocky']);
+  });
+
+  test.each(ANIMALES)(
+    'AL-1 · AL-2: la edad ($edad) y el tamaño ($tamano) de $nombre están en sus listas',
+    ({ edad, tamano }) => {
+      expect(OPCIONES_EDAD).toContain(edad);
+      expect(OPCIONES_TAMANO).toContain(tamano);
+    },
+  );
+
+  test('§8.2: Wini y Luna quedan en "1 a 3 años" y "Pequeño" (AL-1, AL-2)', () => {
+    const winiYLuna = ANIMALES.filter((animal) => ['wini', 'luna'].includes(animal.id));
+    winiYLuna.forEach((animal) => {
+      expect([animal.edad, animal.tamano]).toEqual(['1 a 3 años', 'Pequeño']);
+    });
   });
 
   test.each(ANIMALES)('§4.4 (D-36): $nombre tiene foto ≤ 300 KB y miniatura ≤ 30 KB', ({ id }) => {
