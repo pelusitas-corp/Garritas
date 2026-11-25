@@ -55,7 +55,13 @@ const estilos = StyleSheet.create({
     paddingHorizontal: MARGEN,
   },
   titulo: { flex: 1, fontFamily: FUENTES.negrita, fontSize: 24, color: COLORES.cafe },
-  contenido: { paddingHorizontal: MARGEN, paddingVertical: 16 },
+  // Centra la tarjeta entre el encabezado y el pie; si no cabe, se desplaza.
+  contenido: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    paddingHorizontal: MARGEN,
+    paddingVertical: 16,
+  },
   tarjeta: {
     gap: 14,
     padding: RELLENO_TARJETA,
