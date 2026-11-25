@@ -1,7 +1,7 @@
 <!-- Ruta: docs/privacidad/aviso-privacidad-integral.md -->
 # Aviso de privacidad integral de Garritas
 
-**Versión 1.0 (borrador)** · Última actualización: [PENDIENTE: fecha de publicación, PO-12]
+**Versión 1.0** · Última actualización: 25 de noviembre de 2026
 
 ## 1. ¿Quién cuida tus datos?
 Garritas es una app creada como proyecto académico por estudiantes de la
@@ -22,7 +22,6 @@ Tu contraseña la gestiona Firebase Authentication (de Google) y nosotras no pod
 tipo de vivienda, si es propia o rentada (y si tienes permiso del dueño), patio y bardas,
 tiempo disponible, experiencia con animales, con quién vives (niños, otras mascotas)
 y tus preferencias (por ejemplo, un animal que suelte poco pelo).
-[PENDIENTE: PO-04, lista final de preguntas]
 
 **Mientras usas Garritas:** tu perfil Garritas, tu porcentaje de compatibilidad con cada
 animal, y tus solicitudes de adopción con su estado.
@@ -64,7 +63,7 @@ No compartimos tus datos con nadie más, salvo que una autoridad lo exija confor
 - La información viaja por una conexión segura (HTTPS).
 
 ## 6. ¿Cuánto tiempo los guardamos?
-Hasta que termine el semestre 2026-2 de la UABC [PENDIENTE: fecha, PO-16].
+Hasta que termine el semestre 2026-2 de la UABC.
 Después borraremos tu cuenta y tus datos de Garritas.
 Los datos que el albergue ya recibió quedan bajo su propia responsabilidad.
 

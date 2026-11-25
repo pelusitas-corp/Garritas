@@ -3,7 +3,7 @@
      Debe coincidir siempre con el aviso integral. -->
 # Aviso de privacidad simplificado de Garritas
 
-**Versión 1.0 (borrador)** · Última actualización: [PENDIENTE: fecha de publicación, PO-12]
+**Versión 1.0** · Última actualización: 25 de noviembre de 2026
 
 **Quiénes somos:** Jennifer Salgado Pacheco y Paulina Mendoza Quiroz (equipo YENIWIWI,
 FIAD UABC), con domicilio en Carretera Transpeninsular Ensenada-Tijuana #3917,
