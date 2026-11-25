@@ -7,10 +7,14 @@
  * Opcionales (F-01, RN-09 y §3.1):
  * - `gris`: se ve gris, pero SÍ responde ("Continuar" sin la casilla, A1);
  * - `desactivado`: se ve gris y NO responde (campos vacíos, RN-09);
- * - `cargando`: muestra un indicador y NO responde (mientras contesta Firebase).
+ * - `cargando`: muestra un indicador y NO responde (mientras contesta Firebase);
+ * - `icono`: ícono a la izquierda del texto, del mismo color (F-06, decisión 3
+ *   del plan: el corazón de "Enviar solicitud" y "Ver mis solicitudes").
  * No devuelve datos: solo dibuja el botón.
  */
-import { ActivityIndicator, Pressable, StyleSheet, Text } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import type { ComponentProps } from 'react';
+import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { COLORES, FUENTES, RADIOS } from './tema';
 
@@ -21,6 +25,7 @@ interface Props {
   gris?: boolean;
   desactivado?: boolean;
   cargando?: boolean;
+  icono?: ComponentProps<typeof MaterialCommunityIcons>['name'];
 }
 
 const estilos = StyleSheet.create({
@@ -34,6 +39,7 @@ const estilos = StyleSheet.create({
   secundario: { backgroundColor: COLORES.menta },
   gris: { backgroundColor: COLORES.azulGrisaceo },
   presionado: { opacity: 0.8 },
+  contenido: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   texto: { fontFamily: FUENTES.negrita, fontSize: 18 },
   textoPrincipal: { color: COLORES.crema },
   textoSecundario: { color: COLORES.azulMarino },
@@ -46,6 +52,7 @@ export default function BotonPildora({
   gris = false,
   desactivado = false,
   cargando = false,
+  icono = undefined,
 }: Props) {
   const esPrincipal = variante === 'principal';
   const noResponde = desactivado || cargando;
@@ -67,14 +74,17 @@ export default function BotonPildora({
       {cargando ? (
         <ActivityIndicator color={colorTexto} />
       ) : (
-        <Text
-          style={[
-            estilos.texto,
-            esPrincipal && !seVeGris ? estilos.textoPrincipal : estilos.textoSecundario,
-          ]}
-        >
-          {texto}
-        </Text>
+        <View style={estilos.contenido}>
+          {icono ? <MaterialCommunityIcons name={icono} size={22} color={colorTexto} /> : null}
+          <Text
+            style={[
+              estilos.texto,
+              esPrincipal && !seVeGris ? estilos.textoPrincipal : estilos.textoSecundario,
+            ]}
+          >
+            {texto}
+          </Text>
+        </View>
       )}
     </Pressable>
   );

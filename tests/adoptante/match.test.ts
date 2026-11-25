@@ -2,7 +2,12 @@
 // RF-11, RF-17, RF-18; A1 a A4; MS-1). Usan el motor real (F-05) con los
 // datos de tests/matchmaking/datos.ts y los animales de 03 §8.2.
 // El nombre de cada prueba es su criterio de aceptación.
-import { armarSolicitud, decidirEnvio, decidirMatch } from '../../src/adoptante/match/match';
+import {
+  armarSolicitud,
+  decidirEnvio,
+  decidirMatch,
+  pantallaMatch,
+} from '../../src/adoptante/match/match';
 import type { LecturaCuestionario } from '../../src/adoptante/match/match';
 import MENSAJES from '../../src/compartido/mensajes';
 import type { AnimalConId } from '../../src/firebase/animales';
@@ -286,5 +291,48 @@ describe('armarSolicitud (03 §4.5)', () => {
         cuenta: CUENTA_ANA,
       }),
     ).toBeNull();
+  });
+});
+
+describe('pantallaMatch (estados de Match, §6)', () => {
+  const acciones = { reintentar: jest.fn(), irADescubrir: jest.fn() };
+
+  test('RNF-01: mientras carga, a los 3 s muestra "Calculando compatibilidad, verifica tu conexión a internet"', () => {
+    expect(pantallaMatch({ tipo: 'cargando' }, acciones)).toEqual({
+      estado: 'cargando',
+      mensajeSiTarda: MENSAJES.CALCULANDO_COMPATIBILIDAD,
+    });
+  });
+
+  test('CA-09: sin conexión muestra "Error de conexión, verifica tu conexión a internet" con Reintentar', () => {
+    const props = pantallaMatch({ tipo: 'error' }, acciones);
+    expect(props?.mensaje).toBe(MENSAJES.ERROR_CONEXION);
+    expect(props?.boton?.texto).toBe('Reintentar');
+    props?.boton?.alPresionar();
+    expect(acciones.reintentar).toHaveBeenCalledTimes(1);
+  });
+
+  test('RNF-02: si las reglas rechazan muestra "No tienes permiso para ver esta sección"', () => {
+    expect(pantallaMatch({ tipo: 'sin-permiso' }, acciones)).toEqual({
+      estado: 'sin-permiso',
+      mensaje: MENSAJES.SIN_PERMISO,
+    });
+  });
+
+  test('RF-17 no válido: muestra el mensaje con "Ir a Descubrir" en lugar del match, sin "Enviar solicitud"', () => {
+    const props = pantallaMatch(
+      { tipo: 'no-compatible', mensaje: MENSAJES.MASCOTA_NO_COMPATIBLE },
+      acciones,
+    );
+    expect(props?.mensaje).toBe(MENSAJES.MASCOTA_NO_COMPATIBLE);
+    expect(props?.boton?.texto).toBe('Ir a Descubrir');
+    props?.boton?.alPresionar();
+    expect(acciones.irADescubrir).toHaveBeenCalledTimes(1);
+  });
+
+  test('RF-20 válido: con el match dibuja el % y su explicación', () => {
+    const decision = decidirMatch(lecturaDe(ADOPTANTE_A), lecturaAnimal(WINI));
+    if (decision.tipo !== 'match') throw new Error(decision.tipo);
+    expect(pantallaMatch(decision, acciones)).toBeNull();
   });
 });

@@ -16,6 +16,9 @@ import type { AnimalConId, LecturaAnimal } from '../../firebase/animales';
 import { evaluarAnimales, revisarPostulacion, tienePerfilCompleto } from '../../matchmaking';
 import type { AnimalParaMatch, ResultadoMatch, Respuestas } from '../../matchmaking';
 import type { LecturaRemota } from '../cuestionario/recuperacion';
+import type { PropsEstado } from '../descubrir/estados';
+import { TEXTO_REINTENTAR } from '../descubrir/textos';
+import { TEXTOS_MATCH } from './textos';
 
 /** Lo que devuelve `leerCuestionario` (F-04). */
 export type LecturaCuestionario = LecturaRemota | { estado: 'sin-permiso' };
@@ -87,6 +90,48 @@ export function decidirMatch(
   const [resultado] = evaluacion.resultados;
   // Ya se revisaron el perfil y los filtros, así que el motor siempre lo devuelve.
   return resultado ? { tipo: 'match', animal, respuestas, resultado } : { tipo: 'no-disponible' };
+}
+
+/** Lo que dibuja Match, que entrega `useMatch` (A1 y G-5 no tienen estado: redirigen). */
+export type EstadoMatch =
+  | { tipo: 'cargando' }
+  | Extract<DecisionMatch, { tipo: 'match' | 'no-compatible' | 'error' | 'sin-permiso' }>;
+
+/** Acciones de los botones de los estados de Match. */
+export interface AccionesMatch {
+  reintentar: () => void;
+  irADescubrir: () => void;
+}
+
+/**
+ * Recibe el estado de Match y las acciones de sus botones. Devuelve las
+ * props de `EstadoPantalla`, o `null` si hay que dibujar el match:
+ * - cargando: indicador y, a los 3 s, el mensaje de RNF-01;
+ * - error: "Error de conexión, verifica tu conexión a internet" con "Reintentar" (A5, DE-6);
+ * - sin permiso: mensaje de RNF-02 (A6);
+ * - no compatible: mensaje de RF-17 con "Ir a Descubrir" y sin "Enviar solicitud" (A2, MS-2).
+ */
+export function pantallaMatch(estado: EstadoMatch, acciones: AccionesMatch): PropsEstado | null {
+  switch (estado.tipo) {
+    case 'cargando':
+      return { estado: 'cargando', mensajeSiTarda: MENSAJES.CALCULANDO_COMPATIBILIDAD };
+    case 'error':
+      return {
+        estado: 'error',
+        mensaje: MENSAJES.ERROR_CONEXION,
+        boton: { texto: TEXTO_REINTENTAR, alPresionar: acciones.reintentar },
+      };
+    case 'sin-permiso':
+      return { estado: 'sin-permiso', mensaje: MENSAJES.SIN_PERMISO };
+    case 'no-compatible':
+      return {
+        estado: 'vacia',
+        mensaje: estado.mensaje,
+        boton: { texto: TEXTOS_MATCH.irADescubrir, alPresionar: acciones.irADescubrir },
+      };
+    default:
+      return null;
+  }
 }
 
 /** Qué pasa al presionar "Enviar solicitud". */

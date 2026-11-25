@@ -26,25 +26,15 @@ import {
 } from '../../compartido/navegacion/rutas';
 import { conTiempoLimite } from '../../firebase/acceso';
 import { leerAnimal } from '../../firebase/animales';
-import type { AnimalConId } from '../../firebase/animales';
 import { ESPERA_GUARDAR_MS, leerCuestionario, uidDelAdoptante } from '../../firebase/cuestionario';
 import {
   enviarSolicitud,
   leerCuentaAdoptante,
   leerMisSolicitudes,
 } from '../../firebase/solicitudes';
-import type { ResultadoMatch, Respuestas } from '../../matchmaking';
 import { regresarSinDisponible } from '../descubrir/useDetalleAnimal';
 import { armarSolicitud, decidirEnvio, decidirMatch } from './match';
-import type { LecturaCuestionario } from './match';
-
-/** Lo que dibuja Match (A1 y G-5 no tienen estado: redirigen). */
-export type EstadoMatch =
-  | { tipo: 'cargando' }
-  | { tipo: 'match'; animal: AnimalConId; respuestas: Respuestas; resultado: ResultadoMatch }
-  | { tipo: 'no-compatible'; mensaje: string }
-  | { tipo: 'error' }
-  | { tipo: 'sin-permiso' };
+import type { EstadoMatch, LecturaCuestionario } from './match';
 
 /** Estado del botón "Enviar solicitud" y del mensaje que va encima. */
 export interface EnvioMatch {
