@@ -10,10 +10,10 @@ Nota para retomar el trabajo si se corta la sesión. Última actualización:
 | RF | RF-10, RF-26, RF-28 · RNF-01 (usa RF-17, RF-03 y RF-18 del motor F-05) |
 | PR #30 | Fusionado en `main` (`42b4a8c`): F-03 completa con la ronda de ajustes |
 | Rama actual | `style/F-03-diseno`, desde `main` en `42b4a8c` |
-| Último commit de código | `13a9a1d` style(detalle): tarjeta, mosaicos, píldoras y botón fijo |
+| Último commit de código | `b14cc02` fix(navegacion): las pestañas del adoptante suman el espacio inferior de Android |
 | Revisión automática en local | `typecheck`, `lint` y `test` (24 suites, 213 pruebas) en verde |
-| PR de diseño | Pendiente de abrir hacia `main` (no hay `gh` en esta computadora) |
-| Falta | Abrir el PR y probar el diseño en el celular (360 × 740 y el de la autora) |
+| PR de diseño | Abierto por la autora hacia `main` desde `style/F-03-diseno`, **sin fusionar**; se actualiza con cada push |
+| Falta | Volver a probar en el celular: centrado de Descubrir y del Detalle, y las pestañas |
 
 ## Ronda de diseño fiel al prototipo (spec v1.2, DE-10)
 | Cambio | Commit |
@@ -21,6 +21,14 @@ Nota para retomar el trabajo si se corta la sesión. Última actualización:
 | Spec v1.2 | `34c034e` |
 | Descubrir: huella y "Garritas", subtítulo, tarjeta de radio 32, foto de 270 que se encoge en pantallas bajas, píldoras de 26 (el % en menta), botones de 88. `RADIOS.tarjetaGrande` (32) en `tema.ts`; `Pildora.tsx` nuevo | `53016f8` |
 | Detalle: encabezado con flecha y círculo de usuario, tarjeta de radio 32 con ✕, carrusel de 180, nombre con corazón, `Mosaico.tsx` (110), cuidados como píldoras, albergue con casita, texto de apoyo | `13a9a1d` |
+
+**Ajustes después de probar en Android (25/11/2026):**
+
+| Cambio | Commit |
+|---|---|
+| Descubrir: tarjeta y botones centrados entre el subtítulo y las pestañas; la tarjeta mide el ancho menos 2 × 24 | `688b915` |
+| Detalle: tarjeta centrada entre el encabezado y el pie; si no cabe, se desplaza | `06f024b` |
+| Pestañas del adoptante (PO-34): altura = 72 + inset inferior y `paddingBottom` = inset inferior, en `app/(adoptante)/(pestanas)/_layout.tsx`. `estiloPestanas.ts` no cambia | `b14cc02` |
 
 **Lo que no se igualó al prototipo:**
 - **Radio 20** del carrusel y de los mosaicos: queda en 24, el mínimo de
