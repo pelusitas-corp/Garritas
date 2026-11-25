@@ -5,7 +5,7 @@ Nota para retomar el trabajo si se corta la sesión. Se actualiza en cada commit
 - **Spec:** `specs/features/F-08-preaprobar-rechazar.md` v1.0 (Aprobada) · `02-navegacion` v1.2 · `03-modelo-datos` v1.6 · `F-07` v1.1
 - **RF:** RF-05, RF-21, RF-22, RF-12 · RC-05 · RNF-02
 - **Rama:** `feature/F-08-preaprobar-rechazar` (desde `main` en `622fdb3`)
-- **Último commit:** T-7
+- **Último commit:** T-8 (cierre de la nota). Código completo; falta la prueba en el celular.
 - **PR:** "feat(decision): pre-aprobar, rechazar y revelar el contacto del adoptante (F-08, RF-05, RF-21, RF-22, RF-12)". No se fusiona. Enlace: https://github.com/pelusitas-corp/garritas/pull/new/feature/F-08-preaprobar-rechazar
 
 ## Tareas (§10)
@@ -17,8 +17,8 @@ Nota para retomar el trabajo si se corta la sesión. Se actualiza en cada commit
 | T-4 | Reglas de §9 y casos de CA-13 | ✅ Hecha (`2d7fc38`) (sin publicar; se prueba el viernes) |
 | T-5 | `ConfirmarDecision` y `BotonesDecision` | ✅ Hecha (`bed9090`) (Modal propio; `iconosDecision.ts`; texto de los botones del Detalle en negrita 16 café, igual que la tarjeta) |
 | T-6 | Botones y píldoras en la tarjeta de F-07; volver a leer sin indicador | ✅ Hecha (`d723678`) (datos y botones separados en la tarjeta; relectura en silencio; mensaje en negrita 13 café debajo de los botones; texto final regular 13 centrado) |
-| T-7 | `useDetalleSolicitud` y pantalla "Detalle de Solicitud" | ✅ Hecha (relectura en silencio después de decidir; contacto con su indicador; `npx expo export --platform android` arma el paquete) |
-| T-8 | Prueba en el celular, publicar reglas y reiniciar datos (Jennifer) | Pendiente |
+| T-7 | `useDetalleSolicitud` y pantalla "Detalle de Solicitud" | ✅ Hecha (`a693dbb`; relectura en silencio después de decidir; contacto con su indicador; `npx expo export --platform android` arma el paquete) |
+| T-8 | Prueba en el celular, publicar reglas y reiniciar datos (Jennifer) | Pendiente (lo hace la autora) |
 
 ## Decisiones aceptadas en el plan (Jennifer, 25/11/2026)
 1. **Medidas de Figma (solo colores de `tema.ts`):**
@@ -72,5 +72,28 @@ Datos: `usuarios/refugio-patitas` y `usuarios/otro-albergue` (`rol: 'albergue'`)
 
 Límite conocido (PA-9): las reglas no ligan el cambio del animal a una solicitud concreta. Un albergue podría pasar su propio animal a "En pre-adopción" sin pre-aprobar nada (no hay forma de regresarlo). Se acepta para el MVP.
 
+## Verificaciones al cerrar (25/11)
+- `npm run typecheck` ✅ · `npm run lint` ✅ · `npm test` ✅ 29 suites / 294 pruebas (40 nuevas: 24 de `decision.test.ts` y 16 de `decisionSolicitud.test.ts`).
+- `npx expo export --platform android` arma el paquete sin errores.
+
+## Prueba en el celular (T-8, Jennifer)
+Antes: publicar `firestore.rules` de `main` en la consola (una sola vez, con lo que haya de F-06) y tener los datos de prueba s1 a s6 recién cargados.
+1. Iniciar sesión como Refugio Patitas → `/solicitudes` → tocar **Wini** (toque 1).
+2. **CA-10:** en la tarjeta de Luis Pérez (s2) presionar "✕ Rechazar" → aparece "¿Rechazar la solicitud de Luis Pérez?" → "Cancelar": no cambia nada.
+3. **CA-03:** otra vez "✕ Rechazar" → "Rechazar". La tarjeta muestra "✕ Rechazada" y arriba "1 solicitud nueva".
+4. **CA-01 y CA-09:** en Ana Torres (s1) "✓ Pre-aprobar" (toque 2) → "Pre-aprobar" (toque 3). La tarjeta muestra "✓ Pre-aprobada", "0 solicitudes nuevas" y ya no se ve "Al pre-aprobar, podrás coordinar una visita.". En la consola: `s1` "Pre-aprobada" y `wini` "En pre-adopción". Con una cuenta de adoptante, Wini ya no sale en Descubrir.
+5. **CA-05 y CA-06:** volver y tocar **Rocky**. s5 (Luis, 31 %) tiene sus botones. "✓ Pre-aprobar" → confirmar → "Este animal ya cuenta con una pre-adopción en curso" dentro de la tarjeta; sigue "Pendiente". "✕ Rechazar" → confirmar → "✕ Rechazada".
+6. **CA-07:** en Rocky, tocar los datos de Ana (s4) → Detalle con "Pre-aprobada", "Tel. 646 000 0001", "ana.torres@example.com", "Contacto desbloqueado" y "Coordina la visita para conocerse.", sin botones.
+7. **CA-08:** en **Luna**, abrir s6 ("Rechazada") → "Pre-aprueba la solicitud para ver los datos de contacto", sin botones ni texto abajo (PA-5).
+8. **CA-07 desde el Detalle:** en **Toby**, abrir s3 (Luis, "24% compatible · No Apto") → "Al pre-aprobar, podrás coordinar una visita.", "Rechazar" y "✓ Pre-aprobar". Pre-aprobar y confirmar → sin salir, la píldora dice "Pre-aprobada" y aparecen "Tel. 646 000 0002" y "luis.perez@example.com". (También prueba PA-3: funciona con "No Apto".)
+9. **CA-02 / CA-04 (dos teléfonos o consola):** abrir una solicitud "Pendiente" en el teléfono, cambiarla a "Rechazada" desde la consola de Firebase y, sin salir, presionar "Pre-aprobar" → "Esta solicitud ya fue atendida" y la pantalla muestra "Rechazada".
+10. **CA-12:** modo avión, presionar "Rechazar" o "Pre-aprobar" y confirmar → a más tardar en 10 s "Error de conexión, verifica tu conexión a internet" y el estado no cambia.
+11. **CA-11:** se prueba con Jest (no hay solicitudes de otro albergue en los datos de prueba).
+12. **Al terminar (P-04):** `npm run datos:prueba` (con `scripts/llave-servicio.json`) para dejar s1 a s6, Wini y Toby como al inicio.
+
 ## Qué falta
-- Todo lo de la tabla de arriba marcado como Pendiente.
+- **T-8 (Jennifer):** publicar las reglas, probar en el celular (lista de arriba) y reiniciar los datos de prueba.
+- **Viernes 27 (PO-31):** casos de CA-13 con el emulador (tabla de arriba).
+- **Spec v1.1 al cerrar:** registrar las decisiones 2, 4 y 5 del plan (arriba) y las medidas sin dato de "Notas técnicas".
+- **P-02:** verificar "el adoptante lo ve en Mis solicitudes" cuando F-06 esté en `main`.
+- **P-03:** si F-06 entra antes, `git merge origin/main` y juntar `allow create` con los bloques de `solicitudes` y `privado`.
