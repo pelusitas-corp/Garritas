@@ -5,7 +5,7 @@ Nota para retomar el trabajo si se corta la sesión. Se actualiza en cada commit
 - **Spec:** `specs/features/F-02-alta-animal.md` v1.0 (Aprobada) · `03-modelo-datos` v1.4
 - **RF:** RF-01, RF-13, RF-14 · RI-02 · RNF-02
 - **Rama:** `feature/F-02-alta-animal` (desde `main` en `58e7a16`)
-- **Último commit:** T-2 (edad, tamaño y datos de prueba)
+- **Último commit:** T-3 (textos y opciones del perfil)
 - **PR:** todavía no se abre. Título: "feat(alta): alta del animal con fotos y perfil de compatibilidad (F-02, RF-01, RF-13, RF-14, RI-02)". No se fusiona.
 
 ## Tareas (§10)
@@ -13,7 +13,7 @@ Nota para retomar el trabajo si se corta la sesión. Se actualiza en cada commit
 |---|---|---|
 | T-1 | Mensajes `CAMPOS_OBLIGATORIOS`, `FOTO_OBLIGATORIA`, `PERFIL_INCOMPLETO`, `CAMARA_SIN_PERMISO` | ✅ Hecha |
 | T-2 | `Edad`, `Tamano`, `OPCIONES_EDAD`, `OPCIONES_TAMANO`, `MAX_FOTOS_ANIMAL`; datos de prueba (03 §8.2) y su prueba | ✅ Hecha |
-| T-3 | `src/albergue/alta/textos.ts` y `opcionesPerfil.ts` | Pendiente |
+| T-3 | `src/albergue/alta/textos.ts` y `opcionesPerfil.ts` | ✅ Hecha |
 | T-4 | `src/albergue/alta/validacion.ts` y sus pruebas | Pendiente |
 | T-5 | `expo-image-picker` y `expo-image-manipulator`; `fotos.ts` (puro) y `procesarFoto.ts` (nativo) | Pendiente |
 | T-6 | `src/firebase/altaAnimal.ts` (`writeBatch`, 10 s, ID fijo, A9) | Pendiente |
@@ -39,5 +39,5 @@ Nota para retomar el trabajo si se corta la sesión. Se actualiza en cada commit
 Se escriben en T-9.
 
 ## Qué falta
-- T-3 a T-10.
+- T-4 a T-10.
 - Después de fusionar: volver a correr `npm run datos:prueba` (Jennifer) para que Wini, Luna, Rocky, Toby y Canela tengan la edad y el tamaño nuevos.
