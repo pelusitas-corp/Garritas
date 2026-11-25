@@ -5,15 +5,15 @@ Nota para retomar el trabajo si se corta la sesión. Se actualiza en cada commit
 - **Spec:** `specs/features/F-06-match-solicitud.md` v1.0 (Aprobada) · `02-navegacion` v1.3 · `03-modelo-datos` v1.7 · `F-05` · `F-03` v1.2 · `F-08`
 - **RF:** RF-20, RF-11, RF-17 (no válido), RF-27, RF-18 · RNF-01 · RNF-02
 - **Rama:** `feature/F-06-match-solicitud` (desde `main` en `da09cc3`)
-- **Último commit:** T-2 (el anterior es `841ac12`)
+- **Último commit:** T-3 (el anterior es `ccf9bfc`)
 - **PR:** "feat(solicitud): match explicado, enviar solicitud y mis solicitudes (F-06, RF-20, RF-11, RF-17, RF-27)". No se fusiona. Enlace: https://github.com/pelusitas-corp/garritas/pull/new/feature/F-06-match-solicitud
 
 ## Tareas (§10)
 | # | Tarea | Estado |
 |---|---|---|
 | T-1 | Mensaje `SOLICITUD_YA_ENVIADA` y textos (`match/textos.ts`, `solicitudes/textos.ts`) | ✅ Hecha (`841ac12`; 3 pruebas en `tests/adoptante/textosMatch.test.ts`) |
-| T-2 | `decidirMatch`, `decidirEnvio`, `armarSolicitud` y sus pruebas | ✅ Hecha (24 pruebas en `tests/adoptante/match.test.ts`; las dimensiones de Ana y Wini salen del motor real y coinciden con F-05 CA-09) |
-| T-3 | `ordenarMisSolicitudes`, estado de la pantalla y sus pruebas | Pendiente |
+| T-2 | `decidirMatch`, `decidirEnvio`, `armarSolicitud` y sus pruebas | ✅ Hecha (`ccf9bfc`; 24 pruebas en `tests/adoptante/match.test.ts`; las dimensiones de Ana y Wini salen del motor real y coinciden con F-05 CA-09) |
+| T-3 | `ordenarMisSolicitudes`, estado de la pantalla y sus pruebas | ✅ Hecha (10 pruebas en `tests/adoptante/misSolicitudes.test.ts`; `MiSolicitud`, `ordenarMisSolicitudes`, `pantallaMisSolicitudes` y `apoyoDelEstado`) |
 | T-4 | `src/firebase/solicitudes.ts` (`leerCuentaAdoptante`, `leerMisSolicitudes`, `enviarSolicitud`) y sus pruebas | Pendiente |
 | T-5 | Reglas de `create` (§9) y casos de CA-10 | Pendiente |
 | T-6 | `useMatch` y `useMisSolicitudes` | Pendiente |
@@ -48,6 +48,7 @@ Nota para retomar el trabajo si se corta la sesión. Se actualiza en cada commit
 |---|---|---|---|
 | T-1 | ✅ sin errores | ✅ sin errores (Prettier OK) | ✅ 30 suites, 297 pruebas |
 | T-2 | ✅ sin errores | ✅ sin errores (Prettier OK) | ✅ 31 suites, 321 pruebas |
+| T-3 | ✅ sin errores | ✅ sin errores (Prettier OK) | ✅ 32 suites, 331 pruebas |
 
 ## Pendientes
 - CA-10 con el emulador el viernes 27 (PO-31). `npm run test:rules` no existe todavía.
