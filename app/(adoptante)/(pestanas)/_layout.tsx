@@ -2,35 +2,52 @@
  * Pestañas del adoptante (RF-24): Descubrir · Mis solicitudes · Mi perfil.
  * Solo se ven en estas tres pantallas (specs/02-navegacion.md §4.2).
  *
- * PO-34: en Android la barra de navegación del sistema tapaba la parte de
- * abajo de las pestañas. Aquí se le suma el espacio inferior seguro
- * (`useSafeAreaInsets().bottom`) a la altura y al relleno de abajo. El
- * estilo compartido (`estiloPestanas.ts`) no se toca: lo revisa F-07.
+ * Estilo e íconos compartidos con el albergue (F-07 PS-13, PO-34, PO-26):
+ * `useOpcionesPestanas()` ya suma el espacio inferior de Android UNA sola
+ * vez (antes lo sumaba este archivo, PR #32; ahora vive en
+ * `estiloPestanas.ts`). Cada pestaña lleva su ícono: relleno si está activa
+ * y de contorno si no.
  */
-import { StyleSheet } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router/tabs';
 
-import OPCIONES_PESTANAS from '../../../src/compartido/navegacion/estiloPestanas';
+import {
+  ICONOS_PESTANAS,
+  TAMANO_ICONO_PESTANA,
+  iconoDePestana,
+  useOpcionesPestanas,
+} from '../../../src/compartido/navegacion/estiloPestanas';
+import type { IconosPestana } from '../../../src/compartido/navegacion/estiloPestanas';
+import { COLORES } from '../../../src/compartido/tema';
 
-/** Altura de la barra en el estilo compartido (72), o 0 si no la define. */
-const ALTURA_BASE = Number(StyleSheet.flatten(OPCIONES_PESTANAS.tabBarStyle)?.height ?? 0);
+/** Recibe los íconos de una pestaña. Devuelve el componente que la dibuja (PS-13). */
+function iconoPestana(iconos: IconosPestana) {
+  return function IconoPestana({ focused }: { focused: boolean }) {
+    return (
+      <MaterialCommunityIcons
+        name={iconoDePestana(iconos, focused)}
+        size={TAMANO_ICONO_PESTANA}
+        color={COLORES.cafe}
+      />
+    );
+  };
+}
+
+const ICONO_DESCUBRIR = iconoPestana(ICONOS_PESTANAS.descubrir);
+const ICONO_MIS_SOLICITUDES = iconoPestana(ICONOS_PESTANAS.misSolicitudes);
+const ICONO_MI_PERFIL = iconoPestana(ICONOS_PESTANAS.miPerfil);
 
 export default function PestanasAdoptante() {
-  const { bottom } = useSafeAreaInsets();
-  const opciones = {
-    ...OPCIONES_PESTANAS,
-    tabBarStyle: [
-      OPCIONES_PESTANAS.tabBarStyle,
-      { height: ALTURA_BASE + bottom, paddingBottom: bottom },
-    ],
-  };
+  const opciones = useOpcionesPestanas();
 
   return (
     <Tabs screenOptions={opciones}>
-      <Tabs.Screen name="descubrir" options={{ title: 'Descubrir' }} />
-      <Tabs.Screen name="mis-solicitudes" options={{ title: 'Mis solicitudes' }} />
-      <Tabs.Screen name="mi-perfil" options={{ title: 'Mi perfil' }} />
+      <Tabs.Screen name="descubrir" options={{ title: 'Descubrir', tabBarIcon: ICONO_DESCUBRIR }} />
+      <Tabs.Screen
+        name="mis-solicitudes"
+        options={{ title: 'Mis solicitudes', tabBarIcon: ICONO_MIS_SOLICITUDES }}
+      />
+      <Tabs.Screen name="mi-perfil" options={{ title: 'Mi perfil', tabBarIcon: ICONO_MI_PERFIL }} />
     </Tabs>
   );
 }

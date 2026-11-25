@@ -5,7 +5,7 @@ Nota para retomar el trabajo si se corta la sesión. Se actualiza en cada commit
 - **Spec:** `specs/features/F-07-panel-solicitudes.md` v1.0 (Aprobada) · `02-navegacion` v1.1 · `03-modelo-datos` v1.6
 - **RF:** RF-04, RF-18 · RNF-02 · RF-24 (pestañas) · prepara RC-05
 - **Rama:** `feature/F-07-panel-solicitudes` (desde `main` en `a5de767`)
-- **Último commit:** T-8
+- **Último commit:** T-9
 - **PR:** "feat(panel): solicitudes del albergue ordenadas por compatibilidad con "No Apto" (F-07, RF-04, RF-18)". No se fusiona.
 - **Línea base en `main` (25/11, después de `npm ci`):** typecheck ✅, lint ✅, Jest 24 suites / 213 pruebas ✅.
 
@@ -19,8 +19,8 @@ Nota para retomar el trabajo si se corta la sesión. Se actualiza en cada commit
 | T-5 | `useMisAnimales` y `useSolicitudesDeAnimal` | ✅ Hecha (`d444b62`; `useFocusEffect` + turno; `leerNombreDelAlbergue` con 10 s en `panelSolicitudes.ts`, 2 pruebas más) |
 | T-6 | `FilaAnimal`, `TarjetaSolicitud`, `MenuUsuario` e `iconosPanel.ts` | ✅ Hecha (`4d12f56`; menú en un `Modal` transparente) |
 | T-7 | Pantalla "Solicitudes · lista de mis animales" | ✅ Hecha (`b4f47d9`; encabezado, nombre del albergue y "Tus animales" solo cuando hay datos o está vacía) |
-| T-8 | Pantalla "Solicitudes de un animal" | ✅ Hecha ("←" visible en todos los estados; el título se ve mientras se leen las solicitudes) |
-| T-9 | Pestañas de los dos roles (PS-13, PO-34, PO-26) | Pendiente |
+| T-8 | Pantalla "Solicitudes de un animal" | ✅ Hecha (`feacc50`; "←" visible en todos los estados; el título se ve mientras se leen las solicitudes) |
+| T-9 | Pestañas de los dos roles (PS-13, PO-34, PO-26) | ✅ Hecha (`useOpcionesPestanas` + `estiloBarraPestanas`; 5 pruebas) |
 | T-10 | Prueba en el celular y publicar reglas (Jennifer) | Pendiente |
 
 ## Decisiones aceptadas en el plan (Jennifer, 25/11/2026)
@@ -70,6 +70,9 @@ Datos del emulador: `usuarios/refugio-patitas` (`rol: 'albergue'`), `usuarios/ot
 
 - **Radios:** fila 32 (`RADIOS.tarjetaGrande`), tarjeta 28 (constante local, ≥ 24), píldoras con `RADIOS.pildora` (alto 32 → se ve igual que radio 16). **La miniatura usa radio 16** (constante local en `FilaAnimal`), debajo del mínimo de 24 de arquitectura §8: es la medida de Figma aprobada en el plan. Si se quiere en `tema.ts`, hay que ajustar `tests/tema.test.ts` (todos los `RADIOS` ≥ 24).
 - **MenuUsuario (PS-11):** el botón vive en un `Modal` transparente que cubre la pantalla; la capa de fondo cierra el menú (también al tocar el ícono otra vez, porque queda debajo de la capa). La posición se mide con `measureInWindow`. **Revisar en el celular** que el botón quede 8 px debajo del ícono en Android (barra de estado) y en iPhone.
+
+- **Espacio inferior (PO-34):** con `height` fija, React Navigation no suma el espacio inferior a la altura, pero sí pone `paddingBottom = insets.bottom` (revisado en `expo-router/build/react-navigation/bottom-tabs/views/BottomTabBar.js`). `estiloBarraPestanas(inferior)` devuelve `height: 72 + inferior` y `paddingBottom: inferior`: es el único lugar que lo suma. `app/(adoptante)/(pestanas)/_layout.tsx` ya no lo suma (se quitó `ALTURA_BASE` del PR #32) y usa `useOpcionesPestanas()`, igual que el albergue.
+- **Aviso a Paulina (P-03):** cambiaron `estiloPestanas.ts` (export por defecto sin `height`, más `useOpcionesPestanas`, `ICONOS_PESTANAS`, `iconoDePestana`, `estiloBarraPestanas`) y `app/(adoptante)/(pestanas)/_layout.tsx` (íconos y hook). Si F-06 toca ese `_layout`, al hacer `git merge origin/main` conservar el hook y los íconos.
 
 ## Qué falta
 - Todo lo de la tabla de arriba marcado como Pendiente.
