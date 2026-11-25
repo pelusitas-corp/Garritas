@@ -63,7 +63,7 @@ describe('F-03 · Estados de Descubrir', () => {
     const props = pantallaDescubrir({ tipo: 'con-datos', mazo }, ACCIONES);
 
     expect(props?.mensaje).toBe(
-      'Ya viste a todas tus mascotas compatibles. Vuelve pronto para conocer nuevas',
+      'Ya viste a todas tus mascotas compatibles. ¡Vuelve pronto para conocer nuevas!',
     );
     expect(props?.mensaje).not.toBe(MENSAJES.SIN_MASCOTAS_COMPATIBLES);
     expect(props?.boton?.texto).toBe(TEXTO_VER_DE_NUEVO);
