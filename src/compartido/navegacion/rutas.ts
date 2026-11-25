@@ -40,6 +40,17 @@ export function rutaCuestionarioConAviso(): Href {
   return { pathname: '/cuestionario', params: { aviso: 'incompleto' } };
 }
 
+/** Valor de `?aviso=` con el que G-8 regresa a Descubrir (F-03 DE-4). */
+export const AVISO_NO_DISPONIBLE = 'no-disponible';
+
+/**
+ * Descubrir mostrando arriba del mazo el mensaje de RF-28 ("Esta mascota ya
+ * no está disponible para adopción"). Lo usa el Detalle en G-8 (F-03 DE-4).
+ */
+export function rutaDescubrirConAviso(): Href {
+  return { pathname: '/descubrir', params: { aviso: AVISO_NO_DISPONIBLE } };
+}
+
 /** Detalle de un animal (RF-28). Recibe el id del animal. */
 export function rutaAnimal(animalId: string): Href {
   return { pathname: '/animal/[animalId]', params: { animalId } };
