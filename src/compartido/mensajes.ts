@@ -57,6 +57,19 @@ const MENSAJES = {
   CONTRASENA_CORTA: 'Tu contraseña debe tener al menos 6 caracteres',
   /** F-01 CA-13 (A-2, decisión del equipo; no está en el SRS): correo inválido al registrarse. */
   CORREO_INVALIDO: 'Escribe un correo electrónico válido',
+
+  // ── Alta del animal (specs/features/F-02-alta-animal.md) ───────────────
+  // Sin conexión al publicar reutiliza ERROR_CONEXION y el rechazo de las
+  // reglas, SIN_PERMISO.
+  /** RF-01 (no válido): falta nombre, especie, edad o tamaño. */
+  CAMPOS_OBLIGATORIOS: 'Completa los campos obligatorios marcados con asterisco',
+  /** RF-13 (no válido): publicar sin ninguna foto. */
+  FOTO_OBLIGATORIA: 'Añade al menos una foto de la mascota',
+  /** RF-14 (no válido): falta alguna dimensión del perfil de compatibilidad. */
+  PERFIL_INCOMPLETO: 'Completa el perfil de compatibilidad para publicar a la mascota',
+  /** RI-02 (no válido): el sistema negó el permiso de la cámara. */
+  CAMARA_SIN_PERMISO:
+    'Habilita el acceso a la cámara desde los ajustes de tu teléfono o elige una foto de tu galería',
 } as const;
 
 export type ClaveMensaje = keyof typeof MENSAJES;
