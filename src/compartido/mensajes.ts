@@ -83,6 +83,12 @@ const MENSAJES = {
   // RF-10, RF-26, RF-28 y RNF-01 usan los mensajes de navegación.
   /** F-03 DE-1 (decisión del equipo; no está en el SRS): el adoptante pasó todas las tarjetas. */
   MAZO_TERMINADO: 'Ya viste a todas tus mascotas compatibles. ¡Vuelve pronto para conocer nuevas!',
+
+  // ── Panel de solicitudes (specs/features/F-07-panel-solicitudes.md) ────
+  // RF-04 (no válido) usa SIN_SOLICITUDES_ANIMAL, RF-18 usa ETIQUETA_NO_APTO,
+  // y los errores reutilizan ERROR_CONEXION y SIN_PERMISO.
+  /** F-07 PS-4 (decisión del equipo; no está en el SRS): el albergue aún no tiene animales. */
+  SIN_ANIMALES_ALBERGUE: 'Aún no tienes mascotas publicadas. Agrégalas en la pestaña Mascotas',
 } as const;
 
 export type ClaveMensaje = keyof typeof MENSAJES;
