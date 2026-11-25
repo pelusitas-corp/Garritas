@@ -14,7 +14,15 @@
  * responde a tiempo, se trata como error de conexión.
  */
 import { FirebaseError } from 'firebase/app';
-import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore';
+import {
+  collection,
+  doc,
+  getDocFromServer,
+  getDocs,
+  getDocsFromServer,
+  query,
+  where,
+} from 'firebase/firestore';
 import type { DocumentData } from 'firebase/firestore';
 
 import { COLECCIONES, ESTADO_ANIMAL } from '../compartido/modelo';
@@ -81,14 +89,19 @@ export async function leerAnimalesDisponibles(): Promise<LecturaAnimales> {
 }
 
 /**
- * RF-28: lee `animales/{animalId}`. Recibe el `animalId` de la ruta.
- * Devuelve `ok` con la ficha, `no-existe`, `sin-conexion` o `sin-permiso`.
- * No revisa el estado: eso lo decide `decidirDetalle` (G-8).
+ * RF-28: lee `animales/{animalId}` **del servidor** (`getDocFromServer`), no
+ * de la copia que Firestore guarda en el teléfono: así el Detalle siempre ve
+ * el `estado` actual y G-8 funciona aunque el animal cambie mientras el
+ * adoptante está en Descubrir (RF-28 no válido). Sin conexión falla y el
+ * resultado es `sin-conexion`.
+ * Recibe el `animalId` de la ruta. Devuelve `ok` con la ficha, `no-existe`,
+ * `sin-conexion` o `sin-permiso`. No revisa el estado: eso lo decide
+ * `decidirDetalle` (G-8).
  */
 export async function leerAnimal(animalId: string): Promise<LecturaAnimal> {
   try {
     const instantanea = await conTiempoLimite(
-      getDoc(doc(db, COLECCIONES.animales, animalId)),
+      getDocFromServer(doc(db, COLECCIONES.animales, animalId)),
       ESPERA_GUARDAR_MS,
     );
     const datos = instantanea.data();
@@ -101,13 +114,14 @@ export async function leerAnimal(animalId: string): Promise<LecturaAnimal> {
 }
 
 /**
- * RN-07: lee `animales/{animalId}/fotos` (de 1 a 3, F-02). Recibe el `animalId`.
+ * RN-07: lee `animales/{animalId}/fotos` (de 1 a 3, F-02) del servidor, igual
+ * que `leerAnimal`. Recibe el `animalId`.
  * Devuelve `ok` con las fotos ordenadas por `orden`, `sin-conexion` o `sin-permiso`.
  */
 export async function leerFotos(animalId: string): Promise<LecturaFotos> {
   try {
     const instantanea = await conTiempoLimite(
-      getDocs(collection(db, COLECCIONES.animales, animalId, COLECCIONES.fotos)),
+      getDocsFromServer(collection(db, COLECCIONES.animales, animalId, COLECCIONES.fotos)),
       ESPERA_GUARDAR_MS,
     );
     const fotos = instantanea.docs.map((documento): Foto => {

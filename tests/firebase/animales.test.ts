@@ -1,7 +1,7 @@
 // Pruebas de las lecturas de animales y fotos (spec F-03 T-2: RF-10, RF-28, RNF-02, RN-08).
 // Firebase se reemplaza por "dobles" (jest.mock): no se lee nada real.
 // El nombre de cada prueba es su criterio de aceptación.
-import { getDoc, getDocs } from 'firebase/firestore';
+import { getDoc, getDocFromServer, getDocs, getDocsFromServer } from 'firebase/firestore';
 
 import { ESPERA_GUARDAR_MS } from '../../src/firebase/cuestionario';
 import {
@@ -31,6 +31,8 @@ jest.mock('firebase/firestore', () => ({
   doc: (_db: unknown, ...ruta: string[]) => ruta.join('/'),
   getDoc: jest.fn(),
   getDocs: jest.fn(),
+  getDocFromServer: jest.fn(),
+  getDocsFromServer: jest.fn(),
   query: (coleccion: string, filtro: string) => `${coleccion}?${filtro}`,
   where: (campo: string, operador: string, valor: string) => `${campo} ${operador} ${valor}`,
 }));
@@ -41,6 +43,8 @@ const { FirebaseError } = jest.requireMock<{
 
 const leerDocumento = jest.mocked(getDoc);
 const leerDocumentos = jest.mocked(getDocs);
+const leerDocumentoDelServidor = jest.mocked(getDocFromServer);
+const leerFotosDelServidor = jest.mocked(getDocsFromServer);
 
 /** Documento de Firestore de mentira. */
 function documento(id: string, datos: Record<string, unknown>) {
@@ -89,23 +93,40 @@ describe('F-03 · T-2 · Lecturas de Descubrir (RF-10)', () => {
 
 describe('F-03 · T-2 · Lecturas del Detalle (RF-28)', () => {
   test('RF-28 válido: lee animales/{animalId} y devuelve la ficha con su id', async () => {
-    leerDocumento.mockResolvedValue(documento('wini', WINI) as never);
+    leerDocumentoDelServidor.mockResolvedValue(documento('wini', WINI) as never);
 
     await expect(leerAnimal('wini')).resolves.toEqual({
       estado: 'ok',
       animal: { ...WINI, id: 'wini' },
     });
-    expect(leerDocumento).toHaveBeenCalledWith('animales/wini');
+    expect(leerDocumentoDelServidor).toHaveBeenCalledWith('animales/wini');
+  });
+
+  test('CA-06 RF-28 no válido: el Detalle lee el estado del servidor y no la copia del teléfono', async () => {
+    leerDocumentoDelServidor.mockResolvedValue(
+      documento('wini', { ...WINI, estado: 'En pre-adopción' }) as never,
+    );
+
+    await expect(leerAnimal('wini')).resolves.toMatchObject({
+      animal: { estado: 'En pre-adopción' },
+    });
+    expect(leerDocumento).not.toHaveBeenCalled();
+  });
+
+  test('CA-06: sin conexión, la lectura del servidor da sin-conexion', async () => {
+    leerDocumentoDelServidor.mockRejectedValue(new FirebaseError('unavailable'));
+
+    await expect(leerAnimal('wini')).resolves.toEqual({ estado: 'sin-conexion' });
   });
 
   test('RF-28 no válido: un animalId que no existe da no-existe', async () => {
-    leerDocumento.mockResolvedValue({ id: 'nadie', data: () => undefined } as never);
+    leerDocumentoDelServidor.mockResolvedValue({ id: 'nadie', data: () => undefined } as never);
 
     await expect(leerAnimal('nadie')).resolves.toEqual({ estado: 'no-existe' });
   });
 
   test('RF-28 válido: las fotos llegan ordenadas por orden (RN-07)', async () => {
-    leerDocumentos.mockResolvedValue({
+    leerFotosDelServidor.mockResolvedValue({
       docs: [
         documento('foto-2', { datos: 'c', orden: 2 }),
         documento('foto-0', { datos: 'a', orden: 0 }),
@@ -115,7 +136,7 @@ describe('F-03 · T-2 · Lecturas del Detalle (RF-28)', () => {
 
     const lectura = await leerFotos('wini');
 
-    expect(leerDocumentos).toHaveBeenCalledWith('animales/wini/fotos');
+    expect(leerFotosDelServidor).toHaveBeenCalledWith('animales/wini/fotos');
     expect(lectura).toEqual({
       estado: 'ok',
       fotos: [
@@ -127,7 +148,7 @@ describe('F-03 · T-2 · Lecturas del Detalle (RF-28)', () => {
   });
 
   test('A5: si fallan las fotos por la red, el resultado es sin-conexion', async () => {
-    leerDocumentos.mockRejectedValue(new Error('offline'));
+    leerFotosDelServidor.mockRejectedValue(new Error('offline'));
 
     await expect(leerFotos('wini')).resolves.toEqual({ estado: 'sin-conexion' });
   });
