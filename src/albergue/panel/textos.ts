@@ -6,6 +6,7 @@
  */
 import MENSAJES from '../../compartido/mensajes';
 import type { ResumenHogar } from '../../compartido/modelo';
+import { TEXTOS_DECISION } from '../solicitud/textos';
 
 export const TEXTOS_PANEL = {
   /** Encabezado de las dos pantallas y nombre de la pestaña (N-1). */
@@ -22,6 +23,11 @@ export const TEXTOS_PANEL = {
   atras: '←',
   /** Separador del resumen del hogar y de "compatible · No Apto" (Figma). */
   separador: ' · ',
+  /**
+   * Al final de la lista, solo si queda alguna "Pendiente" (F-08 PA-12 y
+   * decisión del plan de F-08). Es el mismo texto del Detalle.
+   */
+  alPreAprobar: TEXTOS_DECISION.alPreAprobar,
 } as const;
 
 /**
