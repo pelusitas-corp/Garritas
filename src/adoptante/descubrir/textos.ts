@@ -23,6 +23,10 @@ export const TEXTO_REINTENTAR = 'Reintentar';
 /** Botón del Detalle (RF-28, literal del SRS; D-30). */
 export const TEXTO_QUIERO_ADOPTARLO = '¡Quiero adoptarlo!';
 
+/** Botones del Detalle que regresan a Descubrir (flujo B paso 4; 02 §4.2). */
+export const TEXTO_ATRAS = '←';
+export const TEXTO_CERRAR = '✕';
+
 /** Ícono de usuario del encabezado: lleva a Mi perfil (02 §4.2). Es su nombre accesible. */
 export const TEXTO_MI_PERFIL = 'Mi perfil';
 
