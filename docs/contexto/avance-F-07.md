@@ -5,7 +5,7 @@ Nota para retomar el trabajo si se corta la sesión. Se actualiza en cada commit
 - **Spec:** `specs/features/F-07-panel-solicitudes.md` v1.0 (Aprobada) · `02-navegacion` v1.1 · `03-modelo-datos` v1.6
 - **RF:** RF-04, RF-18 · RNF-02 · RF-24 (pestañas) · prepara RC-05
 - **Rama:** `feature/F-07-panel-solicitudes` (desde `main` en `a5de767`)
-- **Último commit:** T-4
+- **Último commit:** T-5
 - **PR:** "feat(panel): solicitudes del albergue ordenadas por compatibilidad con "No Apto" (F-07, RF-04, RF-18)". No se fusiona.
 - **Línea base en `main` (25/11, después de `npm ci`):** typecheck ✅, lint ✅, Jest 24 suites / 213 pruebas ✅.
 
@@ -15,8 +15,8 @@ Nota para retomar el trabajo si se corta la sesión. Se actualiza en cada commit
 | T-1 | `SIN_ANIMALES_ALBERGUE` y `src/albergue/panel/textos.ts` | ✅ Hecha (`ac5d716`) |
 | T-2 | `src/albergue/panel/panel.ts` (funciones puras) y `tests/albergue/panel.test.ts` | ✅ Hecha (`79bfb02`; 24 pruebas; `PALABRAS_CONTEO` en `textos.ts`) |
 | T-3 | `src/firebase/panelSolicitudes.ts` y `tests/firebase/panelSolicitudes.test.ts` | ✅ Hecha (`99127c7`; 10 pruebas; `getDocsFromServer` + 10 s; `uidDelAlbergue`) |
-| T-4 | Bloque de `solicitudes` en `firestore.rules` y casos de CA-11 | ✅ Hecha (sin publicar; se prueba el viernes) |
-| T-5 | `useMisAnimales` y `useSolicitudesDeAnimal` | Pendiente |
+| T-4 | Bloque de `solicitudes` en `firestore.rules` y casos de CA-11 | ✅ Hecha (`d5df00b`; sin publicar; se prueba el viernes) |
+| T-5 | `useMisAnimales` y `useSolicitudesDeAnimal` | ✅ Hecha (`useFocusEffect` + turno; `leerNombreDelAlbergue` con 10 s en `panelSolicitudes.ts`, 2 pruebas más) |
 | T-6 | `FilaAnimal`, `TarjetaSolicitud`, `MenuUsuario` e `iconosPanel.ts` | Pendiente |
 | T-7 | Pantalla "Solicitudes · lista de mis animales" | Pendiente |
 | T-8 | Pantalla "Solicitudes de un animal" | Pendiente |

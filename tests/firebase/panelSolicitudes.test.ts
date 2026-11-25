@@ -4,6 +4,7 @@
 // El nombre de cada prueba es su criterio de aceptación.
 import {
   addDoc,
+  getDoc,
   getDocs,
   getDocsFromServer,
   setDoc,
@@ -14,6 +15,7 @@ import {
 import { ESPERA_GUARDAR_MS } from '../../src/firebase/cuestionario';
 import {
   leerMisAnimales,
+  leerNombreDelAlbergue,
   leerSolicitudesDeAnimal,
   leerSolicitudesDelAlbergue,
   uidDelAlbergue,
@@ -42,6 +44,8 @@ jest.mock('firebase/firestore', () => ({
   collection: (_db: unknown, ...ruta: string[]) => ruta.join('/'),
   query: (coleccion: string, ...filtros: string[]) => `${coleccion}?${filtros.join('&')}`,
   where: (campo: string, operador: string, valor: string) => `${campo} ${operador} ${valor}`,
+  doc: (_db: unknown, ...ruta: string[]) => ruta.join('/'),
+  getDoc: jest.fn(),
   getDocs: jest.fn(),
   getDocsFromServer: jest.fn(),
   // Escrituras: existen solo para comprobar que F-07 nunca las usa.
@@ -175,6 +179,29 @@ describe('F-07 · T-3 · Sin conexión y sin permiso (A4, A5)', () => {
 
     [addDoc, setDoc, updateDoc, writeBatch].forEach((escritura) => {
       expect(escritura).not.toHaveBeenCalled();
+    });
+  });
+
+  test('CA-08: si el nombre del albergue no responde en 10 s, el resultado es sin-conexion', async () => {
+    jest.useFakeTimers();
+    jest.mocked(getDoc).mockReturnValue(new Promise(jest.fn()) as never);
+
+    const lectura = leerNombreDelAlbergue('refugio-patitas');
+    jest.advanceTimersByTime(ESPERA_GUARDAR_MS);
+
+    await expect(lectura).resolves.toEqual({ estado: 'sin-conexion' });
+    jest.useRealTimers();
+  });
+
+  test('F-07 §3: el subtítulo es el nombre del albergue ("Refugio Patitas")', async () => {
+    jest.mocked(getDoc).mockResolvedValue({
+      exists: () => true,
+      get: () => 'Refugio Patitas',
+    } as never);
+
+    await expect(leerNombreDelAlbergue('refugio-patitas')).resolves.toEqual({
+      estado: 'ok',
+      nombre: 'Refugio Patitas',
     });
   });
 

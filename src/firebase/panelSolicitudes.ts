@@ -28,6 +28,8 @@ import { conTiempoLimite } from './acceso';
 import type { AnimalConId, LecturaAnimales, LecturaFallida } from './animales';
 import { auth, db } from './config';
 import { ESPERA_GUARDAR_MS } from './cuestionario';
+import { leerNombreUsuario } from './usuarios';
+import type { LecturaNombre } from './usuarios';
 
 /**
  * `uid` del albergue con sesión, o `null` si no hay sesión. Las guardas ya
@@ -35,6 +37,17 @@ import { ESPERA_GUARDAR_MS } from './cuestionario';
  */
 export function uidDelAlbergue(): string | null {
   return auth.currentUser ? auth.currentUser.uid : null;
+}
+
+/**
+ * Subtítulo de las dos pantallas ("Refugio Patitas", F-07 §3): reutiliza
+ * `leerNombreUsuario` (F-04), que no tiene tiempo límite, y le pone los 10 s (A4).
+ * Recibe el `uid` del albergue. Devuelve `ok` con el nombre, `sin-conexion` o `sin-permiso`.
+ */
+export function leerNombreDelAlbergue(uid: string): Promise<LecturaNombre> {
+  return conTiempoLimite(leerNombreUsuario(uid), ESPERA_GUARDAR_MS).catch((): LecturaNombre => ({
+    estado: 'sin-conexion',
+  }));
 }
 
 /** Recibe el error de una lectura. Devuelve `sin-permiso` si las reglas la rechazaron; si no, `sin-conexion`. */
