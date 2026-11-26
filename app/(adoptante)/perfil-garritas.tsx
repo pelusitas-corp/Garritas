@@ -7,6 +7,11 @@
  * error de conexión y sin permiso.
  *
  * F-11 AD-5: arriba a la izquierda va `EncabezadoMarca` con "Garritas".
+ *
+ * F-12 AE-3 (decisión del equipo, no está en el SRS): el perfil (círculo con
+ * decoraciones, nombre y frase) y "Ver mis matches" forman un solo grupo
+ * centrado verticalmente debajo del encabezado, con 32 entre la frase y el
+ * botón (Figma "Perfil Garritas · Caminante").
  */
 import { router } from 'expo-router';
 import { useCallback } from 'react';
@@ -26,8 +31,8 @@ import { COLORES } from '../../src/compartido/tema';
 
 const estilos = StyleSheet.create({
   pantalla: { flex: 1, backgroundColor: COLORES.crema },
-  contenido: { flex: 1, justifyContent: 'space-between', padding: 24 },
-  cuerpo: { flex: 1, justifyContent: 'center' },
+  // F-12 AE-3: un solo grupo al centro; antes el botón quedaba pegado abajo.
+  contenido: { flex: 1, justifyContent: 'center', gap: 32, padding: 24 },
 });
 
 export default function PerfilGarritas() {
@@ -50,9 +55,7 @@ export default function PerfilGarritas() {
     <SafeAreaView style={estilos.pantalla}>
       <EncabezadoMarca texto={TEXTO_GARRITAS} />
       <View style={estilos.contenido}>
-        <View style={estilos.cuerpo}>
-          <TarjetaPerfilGarritas perfil={estado.perfil} />
-        </View>
+        <TarjetaPerfilGarritas perfil={estado.perfil} />
         <BotonPildora texto={TEXTO_VER_MIS_MATCHES} alPresionar={alVerMisMatches} />
       </View>
     </SafeAreaView>

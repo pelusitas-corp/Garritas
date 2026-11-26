@@ -8,7 +8,7 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { StyleSheet, Text, View } from 'react-native';
 
-import { COLORES, FUENTES, RADIOS } from '../../compartido/tema';
+import { COLORES, FUENTES, RADIOS, TAMANOS_TEXTO } from '../../compartido/tema';
 import type { NombreIcono } from './iconosDescubrir';
 
 interface Props {
@@ -29,7 +29,7 @@ const estilos = StyleSheet.create({
     borderRadius: RADIOS.tarjeta,
     backgroundColor: COLORES.crema,
   },
-  etiqueta: { fontFamily: FUENTES.regular, fontSize: 12, color: COLORES.cafe },
+  etiqueta: { fontFamily: FUENTES.regular, fontSize: TAMANOS_TEXTO.minimo, color: COLORES.cafe },
   valor: { fontFamily: FUENTES.negrita, fontSize: 14, color: COLORES.cafe, textAlign: 'center' },
 });
 

@@ -3,17 +3,20 @@
  *
  * Diseño del prototipo "Descubrir" (390 × 844), con los textos de la spec:
  * - tarjeta de ancho completo, radio 32, sin borde ni sombra;
- * - foto (miniatura) arriba, de 270 de alto escalado al ancho; si la
- *   pantalla es baja, la foto se encoge (nunca los botones);
+ * - foto (miniatura) arriba; si la pantalla es baja, la foto se encoge
+ *   (nunca los botones);
  * - "ⓘ" en un círculo crema de 44 sobre la foto, abajo a la derecha;
  * - franja azul claro con el nombre y las píldoras de especie y
  *   "{n} % compatible" (esta en menta para destacar);
  * - debajo, "Pasar" y "Me encanta" en círculos de 88, con su texto.
  * No muestra "No Apto" (DE-3).
  *
- * F-11 AD-7: debajo de la tarjeta y debajo de los botones hay dos espacios
- * flexibles iguales (mínimo 12): así el hueco tarjeta ↔ botones mide lo mismo
- * que el de botones ↔ pestañas.
+ * F-12 AE-4 (decisión del equipo, no está en el SRS; reemplaza los espacios
+ * flexibles de F-11 AD-7): la tarjeta es más grande. Ocupa todo el ancho
+ * menos el margen de 24 y crece en alto para usar el espacio libre (la foto
+ * se estira; nunca menos de 120). Entre la tarjeta y los botones, y entre los
+ * botones y la barra de pestañas, hay 16 fijos, igual que entre el subtítulo
+ * y la tarjeta (`descubrir.tsx`).
  * F-11 AD-8: la tarjeta también se desliza (`useDeslizarTarjeta`): a la
  * izquierda hace lo mismo que "Pasar" y a la derecha lo mismo que
  * "Me encanta". Los botones no cambian y quedan fuera del gesto.
@@ -52,29 +55,25 @@ interface Props {
   alAbrir: (animalId: string) => void;
 }
 
-/** Ancho del prototipo y alto de su foto: la foto se escala con el ancho real. */
-const ANCHO_PROTOTIPO = 390;
-const ALTO_FOTO_PROTOTIPO = 270;
 /** Lo menos que se encoge la foto en pantallas bajas. */
 const ALTO_FOTO_MINIMO = 120;
 const DIAMETRO_ACCION = 88;
 /** Margen lateral del prototipo: la tarjeta mide el ancho de la pantalla menos 2 × 24. */
 const MARGEN = 24;
-/** Lo menos que mide cada espacio flexible (F-11 AD-7). */
-const ESPACIO_MINIMO = 12;
+/** Espacio fijo entre la tarjeta, los botones y la barra de pestañas (F-12 AE-4). */
+const ESPACIO = 16;
 
 const estilos = StyleSheet.create({
-  // Ocupa todo el cuerpo; si no cabe, la tarjeta (y su foto) se encoge, nunca los botones.
-  contenedor: { flex: 1 },
-  espacio: { flex: 1, minHeight: ESPACIO_MINIMO },
-  arrastre: { flexShrink: 1 },
+  // F-12 AE-4: ocupa todo el cuerpo; la tarjeta toma el alto que dejan los botones.
+  contenedor: { flex: 1, gap: ESPACIO, paddingBottom: ESPACIO },
+  arrastre: { flex: 1 },
   tarjeta: {
-    flexShrink: 1,
+    flex: 1,
     borderRadius: RADIOS.tarjetaGrande,
     backgroundColor: COLORES.azulGrisaceo,
     overflow: 'hidden',
   },
-  foto: { flexShrink: 1, minHeight: ALTO_FOTO_MINIMO, width: '100%' },
+  foto: { flex: 1, minHeight: ALTO_FOTO_MINIMO, width: '100%' },
   info: { position: 'absolute', right: 16, bottom: 16 },
   franja: { gap: 10, padding: 20 },
   nombre: { fontFamily: FUENTES.negrita, fontSize: 28, color: COLORES.cafe },
@@ -86,7 +85,6 @@ const estilos = StyleSheet.create({
 
 export default function TarjetaAnimal({ tarjeta, alPasar, alAbrir }: Props) {
   const { width } = useWindowDimensions();
-  const altoFoto = Math.round((ALTO_FOTO_PROTOTIPO * width) / ANCHO_PROTOTIPO);
   const abrir = useCallback(() => alAbrir(tarjeta.animalId), [alAbrir, tarjeta.animalId]);
   const { manejadores, estiloArrastre } = useDeslizarTarjeta({ alPasar, alMeEncanta: abrir });
 
@@ -99,7 +97,7 @@ export default function TarjetaAnimal({ tarjeta, alPasar, alAbrir }: Props) {
           accessibilityRole="button"
           accessibilityLabel={tarjeta.nombre}
         >
-          <View style={[estilos.foto, { height: altoFoto }]}>
+          <View style={estilos.foto}>
             <Image
               source={{ uri: tarjeta.miniatura }}
               style={StyleSheet.absoluteFill}
@@ -127,7 +125,6 @@ export default function TarjetaAnimal({ tarjeta, alPasar, alAbrir }: Props) {
           </View>
         </Pressable>
       </Animated.View>
-      <View style={estilos.espacio} />
       <View style={estilos.acciones}>
         <View style={estilos.accion}>
           <BotonCircular
@@ -152,7 +149,6 @@ export default function TarjetaAnimal({ tarjeta, alPasar, alAbrir }: Props) {
           <Text style={estilos.textoAccion}>{TEXTO_ME_ENCANTA}</Text>
         </View>
       </View>
-      <View style={estilos.espacio} />
     </View>
   );
 }

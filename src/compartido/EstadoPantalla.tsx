@@ -12,17 +12,30 @@
  *   por defecto);
  * - `mensajeSiTarda`: solo en 'cargando'; se muestra si pasan más de 3 s
  *   (RNF-01: "Calculando compatibilidad, verifica tu conexión a internet");
- * - `boton`: botón opcional debajo del mensaje.
+ * - `boton`: botón píldora opcional debajo del mensaje;
+ * - `botonTexto`: botón de texto con ícono opcional debajo del mensaje (F-12
+ *   AE-6: "Cerrar sesión" de Mi perfil en sus estados vacía y sin permiso);
+ * - `conLogo`: dibuja el logo del perrito y el gatito (200 de ancho) arriba
+ *   del mensaje (F-12 AE-8: "Solicitudes de un animal" sin solicitudes).
  */
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Image, StyleSheet, Text, View } from 'react-native';
+
+// Logo del perrito y el gatito (F-11 AD-1); su tipo está en imagenes.d.ts.
+import LOGO from '../../assets/images/logo-garritas.png';
 
 import BotonPildora from './BotonPildora';
+import BotonTexto from './BotonTexto';
+import type { IconoBotonTexto } from './BotonTexto';
 import MENSAJES from './mensajes';
 import { COLORES, FUENTES } from './tema';
 
 /** RNF-01: después de 3 segundos cargando se muestra el aviso. */
 export const ESPERA_MAXIMA_MS = 3000;
+
+/** Logo de 200 de ancho con su proporción (580 : 456, F-12 AE-8). */
+const ANCHO_LOGO = 200;
+const ALTO_LOGO = Math.round((ANCHO_LOGO * 456) / 580);
 
 export type TipoEstado = 'cargando' | 'vacia' | 'error' | 'sin-permiso';
 
@@ -31,6 +44,8 @@ interface Props {
   mensaje?: string;
   mensajeSiTarda?: string;
   boton?: { texto: string; alPresionar: () => void } | null;
+  botonTexto?: { texto: string; icono: IconoBotonTexto; alPresionar: () => void } | null;
+  conLogo?: boolean;
 }
 
 const estilos = StyleSheet.create({
@@ -49,6 +64,7 @@ const estilos = StyleSheet.create({
     textAlign: 'center',
   },
   boton: { alignSelf: 'stretch' },
+  logo: { width: ANCHO_LOGO, height: ALTO_LOGO },
 });
 
 /** Mensaje por defecto de cada estado (los de error y permiso son fijos). */
@@ -67,6 +83,8 @@ export default function EstadoPantalla({
   mensaje = '',
   mensajeSiTarda = '',
   boton = null,
+  botonTexto = null,
+  conLogo = false,
 }: Props) {
   const [tarda, setTarda] = useState(false);
 
@@ -87,6 +105,15 @@ export default function EstadoPantalla({
   return (
     <View style={estilos.contenedor}>
       {estado === 'cargando' && <ActivityIndicator size="large" color={COLORES.azulMarino} />}
+      {conLogo ? (
+        <Image
+          source={LOGO}
+          style={estilos.logo}
+          resizeMode="contain"
+          accessibilityRole="image"
+          accessibilityLabel="Logo de Garritas"
+        />
+      ) : null}
       {texto ? (
         <Text accessibilityRole="alert" style={estilos.mensaje}>
           {texto}
@@ -96,6 +123,13 @@ export default function EstadoPantalla({
         <View style={estilos.boton}>
           <BotonPildora texto={boton.texto} alPresionar={boton.alPresionar} />
         </View>
+      ) : null}
+      {botonTexto ? (
+        <BotonTexto
+          texto={botonTexto.texto}
+          icono={botonTexto.icono}
+          alPresionar={botonTexto.alPresionar}
+        />
       ) : null}
     </View>
   );

@@ -44,7 +44,7 @@ import useDetalleAnimal from '../../../src/adoptante/descubrir/useDetalleAnimal'
 import BotonPildora from '../../../src/compartido/BotonPildora';
 import EstadoPantalla from '../../../src/compartido/EstadoPantalla';
 import { RUTAS, rutaMatch } from '../../../src/compartido/navegacion/rutas';
-import { COLORES, FUENTES, RADIOS } from '../../../src/compartido/tema';
+import { COLORES, FUENTES, RADIOS, TAMANOS_TEXTO } from '../../../src/compartido/tema';
 
 /** Margen lateral del prototipo y relleno de la tarjeta: el carrusel ocupa lo que queda. */
 const MARGEN = 24;
@@ -82,11 +82,15 @@ const estilos = StyleSheet.create({
   mosaicos: { flexDirection: 'row', gap: 8 },
   cuidados: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   albergue: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  nombreAlbergue: { fontFamily: FUENTES.negrita, fontSize: 13, color: COLORES.cafe },
+  nombreAlbergue: {
+    fontFamily: FUENTES.negrita,
+    fontSize: TAMANOS_TEXTO.dato,
+    color: COLORES.cafe,
+  },
   pie: { gap: 8, paddingHorizontal: MARGEN, paddingTop: 8, paddingBottom: 12 },
   apoyo: {
     fontFamily: FUENTES.regular,
-    fontSize: 13,
+    fontSize: TAMANOS_TEXTO.minimo,
     color: COLORES.cafe,
     textAlign: 'center',
   },

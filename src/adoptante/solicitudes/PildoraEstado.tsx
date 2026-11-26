@@ -1,6 +1,7 @@
 /**
  * Píldora del estado de una solicitud en Mis solicitudes (Figma, F-06
- * flujo D y MS-12). Va a lo ancho de la tarjeta, alto 36, negrita 14 café:
+ * flujo D y MS-12). Va a lo ancho de la tarjeta, alto 36, negrita 16 café
+ * (el estado es un dato, F-12 AE-1):
  * - "Pendiente": sin relleno (se ve el azul grisáceo de la tarjeta) y borde café;
  * - "Pre-aprobada": relleno menta;
  * - "Rechazada": relleno crema con borde café.
@@ -12,7 +13,7 @@
 import { StyleSheet, Text, View } from 'react-native';
 
 import type { EstadoSolicitud } from '../../compartido/modelo';
-import { COLORES, FUENTES, RADIOS } from '../../compartido/tema';
+import { COLORES, FUENTES, RADIOS, TAMANOS_TEXTO } from '../../compartido/tema';
 
 const estilos = StyleSheet.create({
   pildora: {
@@ -22,7 +23,7 @@ const estilos = StyleSheet.create({
     borderRadius: RADIOS.pildora,
     borderWidth: 1,
   },
-  texto: { fontFamily: FUENTES.negrita, fontSize: 14, color: COLORES.cafe },
+  texto: { fontFamily: FUENTES.negrita, fontSize: TAMANOS_TEXTO.dato, color: COLORES.cafe },
 });
 
 /** Colores de cada estado (solo de `tema.ts`). */

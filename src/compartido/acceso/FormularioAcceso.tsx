@@ -10,6 +10,11 @@
  * Al iniciar sesión bien, Firebase avisa a `useSesion`, que lee el rol, y la
  * guarda G-2 abre el inicio de ESE rol, sin importar desde qué pantalla
  * entró (RN-05). Si falla, muestra CA-06 o CA-12 debajo del formulario.
+ *
+ * F-12 (AE-2; decisión del equipo, no está en el SRS): título, subtítulo,
+ * campos y botones quedan centrados verticalmente debajo del encabezado,
+ * con 24 entre los campos y los botones. Con el teclado abierto se sigue
+ * pudiendo desplazar, como antes.
  */
 import { router } from 'expo-router';
 import { useState } from 'react';
@@ -32,8 +37,11 @@ interface Props {
 }
 
 const estilos = StyleSheet.create({
+  // F-12 AE-2: el formulario completo va al centro del espacio libre.
+  centrado: { justifyContent: 'center' },
   campos: { gap: 12 },
-  abajo: { gap: 12, marginTop: 'auto' },
+  // 8 más el `gap` de 16 del contenido = 24 entre los campos y los botones.
+  abajo: { gap: 12, marginTop: 8 },
 });
 
 export default function FormularioAcceso({ subtitulo = '', conCrearCuenta = false }: Props) {
@@ -57,7 +65,7 @@ export default function FormularioAcceso({ subtitulo = '', conCrearCuenta = fals
     <SafeAreaView style={estilosAcceso.pantalla}>
       <EncabezadoAcceso conFlechaAtras />
       <ScrollView
-        contentContainerStyle={estilosAcceso.contenido}
+        contentContainerStyle={[estilosAcceso.contenido, estilos.centrado]}
         keyboardShouldPersistTaps="handled"
       >
         <Text accessibilityRole="header" style={estilosAcceso.titulo}>

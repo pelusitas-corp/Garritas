@@ -25,7 +25,7 @@ import { useMemo } from 'react';
 import type { ComponentProps } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { COLORES, FUENTES, RADIOS } from '../tema';
+import { COLORES, FUENTES, RADIOS, TAMANOS_TEXTO } from '../tema';
 
 type NombreIcono = ComponentProps<typeof MaterialCommunityIcons>['name'];
 
@@ -88,7 +88,7 @@ const OPCIONES_PESTANAS: TabsScreenOptions = {
     marginVertical: MARGENES_PESTANA.vertical,
     marginHorizontal: MARGENES_PESTANA.horizontal,
   },
-  tabBarLabelStyle: { fontFamily: FUENTES.negrita, fontSize: 12 },
+  tabBarLabelStyle: { fontFamily: FUENTES.negrita, fontSize: TAMANOS_TEXTO.minimo },
   tabBarLabelPosition: 'below-icon',
 };
 

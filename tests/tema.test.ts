@@ -3,10 +3,12 @@
 import {
   BORDE,
   COLORES,
+  FONDOS,
   FUENTES,
   OPACIDAD_DESVANECIDO,
   RADIOS,
   RADIO_MINIMO,
+  TAMANOS_TEXTO,
 } from '../src/compartido/tema';
 
 describe('Tema Soft UI (arquitectura §8)', () => {
@@ -38,5 +40,21 @@ describe('F-11 · T-1 · Opacidad de desvanecido y borde (AD-4, AD-12, RN-02)', 
 
   test('F-11 válido: el borde de los contenedores es positivo', () => {
     expect(BORDE).toBeGreaterThan(0);
+  });
+});
+
+/** Convierte "#A1B2D0" en [161, 178, 208]. */
+function hexARgb(hex: string): number[] {
+  return [1, 3, 5].map((inicio) => parseInt(hex.slice(inicio, inicio + 2), 16));
+}
+
+describe('F-12 · T-1 · Tamaños de texto y fondo de contenedor (AE-1, AE-11, RN-02)', () => {
+  test('F-12 válido: el texto mínimo es 14 y el de los datos 16', () => {
+    expect(TAMANOS_TEXTO).toEqual({ minimo: 14, dato: 16 });
+  });
+
+  test('F-12 válido: el relleno de los contenedores es el azul grisáceo de la paleta al 25 %', () => {
+    const [rojo, verde, azul] = hexARgb(COLORES.azulGrisaceo);
+    expect(FONDOS.contenedor).toBe(`rgba(${rojo}, ${verde}, ${azul}, 0.25)`);
   });
 });

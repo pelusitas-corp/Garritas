@@ -52,7 +52,7 @@ const estilos = StyleSheet.create({
   pie: { gap: 8, paddingHorizontal: MARGEN, paddingTop: 8, paddingBottom: 12 },
   mensaje: {
     fontFamily: FUENTES.negrita,
-    fontSize: 13,
+    fontSize: 14,
     color: COLORES.cafe,
     textAlign: 'center',
   },

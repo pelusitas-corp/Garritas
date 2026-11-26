@@ -18,7 +18,7 @@ import TarjetaMiSolicitud from '../../../src/adoptante/solicitudes/TarjetaMiSoli
 import TEXTOS_MIS_SOLICITUDES from '../../../src/adoptante/solicitudes/textos';
 import useMisSolicitudes from '../../../src/adoptante/solicitudes/useMisSolicitudes';
 import EstadoPantalla from '../../../src/compartido/EstadoPantalla';
-import { COLORES, FUENTES } from '../../../src/compartido/tema';
+import { COLORES, FUENTES, TAMANOS_TEXTO } from '../../../src/compartido/tema';
 
 const MARGEN = 24;
 
@@ -37,7 +37,7 @@ const estilos = StyleSheet.create({
   cierre: {
     marginTop: 4,
     fontFamily: FUENTES.regular,
-    fontSize: 13,
+    fontSize: TAMANOS_TEXTO.minimo,
     color: COLORES.cafe,
     textAlign: 'center',
   },

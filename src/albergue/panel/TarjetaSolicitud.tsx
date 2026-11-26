@@ -22,15 +22,16 @@
  * los botones de decisión están aparte, para que tocarlos no abra el Detalle.
  *
  * Medidas de Figma (planes de F-07 y F-08): fondo azul grisáceo, radio 28,
- * relleno 16; círculo crema de 44 px con letras en negrita 16; nombre
- * negrita 17; resumen regular 12; píldora de alto 32 con negrita 13; "90%"
- * en negrita 22 y "compatible" en negrita 11; botones 12 px debajo de los
- * datos. Todo en café.
+ * relleno 20 (F-12 AE-8; antes 16); círculo crema de 44 px con letras en negrita 16; nombre
+ * negrita 17; resumen regular 16; píldora de alto 36 con negrita 16; "90%"
+ * en negrita 22 y "compatible" en negrita 14; botones 12 px debajo de los
+ * datos. Todo en café. F-12 AE-1: el resumen y el estado son datos (16) y
+ * los demás textos no bajan de 14.
  */
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { COLORES, FUENTES, RADIOS } from '../../compartido/tema';
+import { COLORES, FUENTES, RADIOS, TAMANOS_TEXTO } from '../../compartido/tema';
 import BotonesDecision from '../solicitud/BotonesDecision';
 import { vistaDelEstado } from '../solicitud/decision';
 import { ICONOS_DECISION } from '../solicitud/iconosDecision';
@@ -51,7 +52,8 @@ const OPACIDAD_NO_APTO = 0.6;
 const estilos = StyleSheet.create({
   tarjeta: {
     gap: 12,
-    padding: 16,
+    // F-12 AE-8: relleno 20 y 12 entre filas (datos, botones y mensaje).
+    padding: 20,
     borderRadius: RADIO_TARJETA,
     backgroundColor: COLORES.azulGrisaceo,
   },
@@ -69,9 +71,9 @@ const estilos = StyleSheet.create({
   iniciales: { fontFamily: FUENTES.negrita, fontSize: 16, color: COLORES.cafe },
   centro: { flex: 1, alignItems: 'flex-start', gap: 4 },
   nombre: { fontFamily: FUENTES.negrita, fontSize: 17, color: COLORES.cafe },
-  hogar: { fontFamily: FUENTES.regular, fontSize: 12, color: COLORES.cafe },
+  hogar: { fontFamily: FUENTES.regular, fontSize: TAMANOS_TEXTO.dato, color: COLORES.cafe },
   pildora: {
-    height: 32,
+    height: 36,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
@@ -81,11 +83,11 @@ const estilos = StyleSheet.create({
   },
   pildoraPreAprobada: { backgroundColor: COLORES.menta },
   pildoraRechazada: { backgroundColor: COLORES.crema },
-  estado: { fontFamily: FUENTES.negrita, fontSize: 13, color: COLORES.cafe },
+  estado: { fontFamily: FUENTES.negrita, fontSize: TAMANOS_TEXTO.dato, color: COLORES.cafe },
   derecha: { alignItems: 'flex-end' },
   porcentaje: { fontFamily: FUENTES.negrita, fontSize: 22, color: COLORES.cafe },
-  compatible: { fontFamily: FUENTES.negrita, fontSize: 11, color: COLORES.cafe },
-  mensaje: { fontFamily: FUENTES.negrita, fontSize: 13, color: COLORES.cafe },
+  compatible: { fontFamily: FUENTES.negrita, fontSize: TAMANOS_TEXTO.minimo, color: COLORES.cafe },
+  mensaje: { fontFamily: FUENTES.negrita, fontSize: TAMANOS_TEXTO.minimo, color: COLORES.cafe },
 });
 
 interface Props {

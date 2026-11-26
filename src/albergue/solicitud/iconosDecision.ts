@@ -17,6 +17,8 @@ export const ICONOS_DECISION = {
   rechazar: 'close',
   /** "←" del encabezado del Detalle. */
   atras: 'arrow-left',
+  /** Junto al teléfono que se toca para llamar (F-12 AE-10). */
+  llamar: 'phone-outline',
 } as const satisfies Record<string, NombreIcono>;
 
 /** Íconos de "Su hogar y sus cuidados" (PA-7): casa, reloj y huella. */
