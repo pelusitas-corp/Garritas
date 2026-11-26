@@ -151,7 +151,7 @@ service cloud.firestore {
       }
     }
 
-    // ── solicitudes · F-07 y F-08 (RF-04, RF-05, RF-21, RF-22, RF-12; RNF-02;
+    // ── solicitudes · F-06, F-07 y F-08 (RF-11, RF-18, RF-04, RF-05, RF-21, RF-22, RF-12; RNF-02;
     //    03-modelo-datos §6.2, §7 y §7.1) ───────────────────────────────────
     // Leer (F-07): solo el albergue dueño (albergueId) o el adoptante que la
     // envió (adoptanteId). Las consultas deben filtrar por ese campo (03 §7.1).
@@ -160,12 +160,65 @@ service cloud.firestore {
     //   - a "Rechazada" (RF-21), o
     //   - a "Pre-aprobada" (RF-05) si el animal estaba "Disponible" (get) y
     //     queda "En pre-adopción" al terminar la operación (getAfter, RF-22).
-    // Crear y borrar siguen negados: F-06 agrega aquí `allow create` (en la
-    // solicitud y en privado).
+    // Crear (F-06 §9; RF-11, RF-18, MS-4, MS-9): solo un adoptante, para sí
+    // mismo, con estado "Pendiente", el animal "Disponible", las copias
+    // iguales al animal, a su cuenta y a su cuestionario, `noApto` coherente
+    // con el % y su privado/contacto en la MISMA operación (writeBatch).
+    // Los filtros (RF-17) y el % del motor no los pueden revisar las reglas
+    // (el motor corre en el teléfono, MS-9): los revisa la app antes de
+    // escribir. El duplicado (MS-1) también lo revisa la app.
+    // Borrar sigue negado.
     match /solicitudes/{solicitudId} {
+      // Los 13 campos de solicitudes/{solicitudId} (03 §4.5)
+      function camposSolicitud() {
+        return ['animalId', 'albergueId', 'adoptanteId', 'nombreAdoptante', 'nombreAnimal',
+                'nombreAlbergue', 'miniaturaAnimal', 'porcentaje', 'noApto', 'resumenHogar',
+                'estado', 'creadaEn', 'actualizadaEn'];
+      }
+
+      // Animal de la solicitud que se crea (animales/{animalId})
+      function animalDeLaSolicitud() {
+        return get(/databases/$(database)/documents/animales/$(request.resource.data.animalId)).data;
+      }
+
+      // Respuestas del cuestionario de quien hace la petición (M-1)
+      function respuestasDelUsuario() {
+        return get(/databases/$(database)/documents/cuestionarios/$(request.auth.uid)).data.respuestas;
+      }
+
+      // Teléfono de quien hace la petición (usuarios/{uid}.telefono, RF-12)
+      function telefonoDelUsuario() {
+        return get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data.telefono;
+      }
+
       allow read: if haySesion()
         && (resource.data.albergueId == request.auth.uid
           || resource.data.adoptanteId == request.auth.uid);
+      allow create: if haySesion() && esAdoptante()
+        && request.resource.data.keys().hasOnly(camposSolicitud())
+        && request.resource.data.keys().hasAll(camposSolicitud())
+        && request.resource.data.adoptanteId == request.auth.uid
+        && request.resource.data.estado == 'Pendiente'
+        // El animal está "Disponible" y las copias coinciden (RF-11)
+        && animalDeLaSolicitud().estado == 'Disponible'
+        && request.resource.data.albergueId == animalDeLaSolicitud().albergueId
+        && request.resource.data.nombreAnimal == animalDeLaSolicitud().nombre
+        && request.resource.data.nombreAlbergue == animalDeLaSolicitud().nombreAlbergue
+        && request.resource.data.miniaturaAnimal == animalDeLaSolicitud().miniatura
+        && request.resource.data.nombreAdoptante == nombreDelUsuario()
+        // % entero de 0 a 100 y "No Apto" coherente (RF-18)
+        && request.resource.data.porcentaje is int
+        && request.resource.data.porcentaje >= 0 && request.resource.data.porcentaje <= 100
+        && request.resource.data.noApto == (request.resource.data.porcentaje < 30)
+        // resumenHogar = p2, p12 y p19 de su cuestionario (M-1)
+        && request.resource.data.resumenHogar.keys().hasOnly(['p2', 'p12', 'p19'])
+        && request.resource.data.resumenHogar.p2 == respuestasDelUsuario().p2
+        && request.resource.data.resumenHogar.p12 == respuestasDelUsuario().p12
+        && request.resource.data.resumenHogar.p19 == respuestasDelUsuario().p19
+        && request.resource.data.creadaEn == request.time
+        && request.resource.data.actualizadaEn == request.time
+        // El contacto se crea en el mismo lote (MS-4)
+        && existsAfter(/databases/$(database)/documents/solicitudes/$(solicitudId)/privado/contacto);
       allow update: if esAlbergue()
         && resource.data.albergueId == request.auth.uid
         && resource.data.estado == 'Pendiente'
@@ -183,6 +236,18 @@ service cloud.firestore {
           && (get(/databases/$(database)/documents/solicitudes/$(solicitudId)).data.adoptanteId == request.auth.uid
             || (get(/databases/$(database)/documents/solicitudes/$(solicitudId)).data.albergueId == request.auth.uid
               && get(/databases/$(database)/documents/solicitudes/$(solicitudId)).data.estado == 'Pre-aprobada'));
+        // Crear · F-06 (MS-4, RF-12): solo el adoptante dueño de la
+        // solicitud, en la MISMA operación que la crea (!exists: antes del
+        // lote no existía; getAfter: al terminar es suya), con su correo de
+        // Authentication y su teléfono de usuarios. Modificar o borrar: nadie.
+        allow create: if haySesion()
+          && documento == 'contacto'
+          && !exists(/databases/$(database)/documents/solicitudes/$(solicitudId))
+          && getAfter(/databases/$(database)/documents/solicitudes/$(solicitudId)).data.adoptanteId == request.auth.uid
+          && request.resource.data.keys().hasOnly(['telefono', 'correo'])
+          && request.resource.data.keys().hasAll(['telefono', 'correo'])
+          && request.resource.data.correo == request.auth.token.email
+          && request.resource.data.telefono == telefonoDelUsuario();
       }
     }
 

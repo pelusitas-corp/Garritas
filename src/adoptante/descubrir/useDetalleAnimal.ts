@@ -27,8 +27,9 @@ export type EstadoHookDetalle =
  * G-8 (DE-4): regresa a `/descubrir?aviso=no-disponible` y el Detalle sale
  * de la pila. Si se abrió desde Descubrir, vuelve a ese mismo Descubrir
  * (`dismissTo`); si se abrió con un enlace directo, lo reemplaza.
+ * También la usa Match en A1 (F-06 MS-11, decisión 5 del plan de F-06).
  */
-function regresarSinDisponible() {
+export function regresarSinDisponible() {
   if (router.canDismiss()) {
     router.dismissTo(rutaDescubrirConAviso());
   } else {
