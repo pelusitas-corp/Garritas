@@ -15,7 +15,7 @@
 | T-2 | `BotonPildora`: tamaño chico y desactivado desvanecido | Hecha |
 | T-3 | Logo y "Iniciar sesión" chico (Selección de Rol y "Crea tu cuenta") | Hecha |
 | T-4 | Casilla al final del aviso y desplazamiento con el error | Hecha |
-| T-5 | `EncabezadoMarca` y su uso en Descubrir | Pendiente |
+| T-5 | `EncabezadoMarca` y su uso en Descubrir | Hecha |
 | T-6 | Decoraciones del perfil y encabezado de marca | Pendiente |
 | T-7 | Subtítulo de Descubrir y espacios parejos | Pendiente |
 | T-8 | Deslizar la tarjeta para "Pasar" o "Me encanta" | Pendiente |
@@ -25,7 +25,7 @@
 | T-12 | Nueva mascota en 4 contenedores | Pendiente |
 | T-13 | Cierre de la nota con la guía de prueba en el celular | Pendiente |
 
-**Último commit:** T-4 (ver `git log`).
+**Último commit:** T-5 (ver `git log`).
 
 ## Decisiones del plan (confirmadas por Jennifer el 25/11/2026)
 
@@ -49,7 +49,15 @@
 
 ## Qué falta
 
-T-5 a T-13, las verificaciones finales, el push y el PR (sin fusionar).
+T-6 a T-13, las verificaciones finales, el push y el PR (sin fusionar).
+
+## Pendientes
+
+- **Unir `EncabezadoGarritas` y `EncabezadoMarca`** (tarea aparte, para
+  después de la entrega). F-06 creó `src/adoptante/match/EncabezadoGarritas.tsx`
+  (huella, "Garritas" y el círculo de usuario) con las mismas medidas que
+  `src/compartido/EncabezadoMarca.tsx`. F-11 no toca `src/adoptante/match/`,
+  así que por ahora existen los dos.
 
 ## Notas por tarea
 
@@ -72,3 +80,8 @@ T-5 a T-13, las verificaciones finales, el push y el PR (sin fusionar).
   `intentosSinCasilla` sube en cada "Continuar" sin la casilla y un
   `useEffect` llama a `scrollToEnd` cuando cambia: así también baja la
   segunda vez. En RN 0.88 el ref usa el tipo `ScrollViewInstance`.
+- **T-5:** `EncabezadoMarca({ texto, derecha? })` dibuja la huella `paw` de
+  24 y el texto en negrita 24 café, con alto 48, `marginTop 8` y margen
+  lateral 24; `derecha` es opcional. El nombre del ícono vive en el mismo
+  archivo porque `src/compartido` no importa `ICONOS_DESCUBRIR`. Descubrir
+  le pasa `TEXTO_GARRITAS` y su botón de usuario: se ve igual que antes.

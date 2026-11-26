@@ -8,8 +8,9 @@
  * ya no está disponible para adopción" (DE-4).
  * Los estados (cargando, vacía, mazo terminado, error y sin permiso) los
  * decide `pantallaDescubrir` y los dibuja `EstadoPantalla`.
+ *
+ * F-11 AD-5: el encabezado es `EncabezadoMarca` (se ve igual que antes).
  */
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -25,6 +26,7 @@ import {
   TEXTO_SUBTITULO_DESCUBRIR,
 } from '../../../src/adoptante/descubrir/textos';
 import useDescubrir from '../../../src/adoptante/descubrir/useDescubrir';
+import EncabezadoMarca from '../../../src/compartido/EncabezadoMarca';
 import EstadoPantalla from '../../../src/compartido/EstadoPantalla';
 import MENSAJES from '../../../src/compartido/mensajes';
 import { RUTAS } from '../../../src/compartido/navegacion/rutas';
@@ -35,16 +37,6 @@ const MARGEN = 24;
 
 const estilos = StyleSheet.create({
   pantalla: { flex: 1, backgroundColor: COLORES.crema },
-  encabezado: {
-    height: 48,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginTop: 8,
-    paddingHorizontal: MARGEN,
-  },
-  marca: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  titulo: { fontFamily: FUENTES.negrita, fontSize: 24, color: COLORES.cafe },
   subtitulo: {
     marginTop: 16,
     paddingHorizontal: MARGEN,
@@ -71,22 +63,19 @@ export default function Descubrir() {
 
   return (
     <SafeAreaView style={estilos.pantalla} edges={['top']}>
-      <View style={estilos.encabezado}>
-        <View style={estilos.marca}>
-          <MaterialCommunityIcons name={ICONOS_DESCUBRIR.marca} size={24} color={COLORES.cafe} />
-          <Text accessibilityRole="header" style={estilos.titulo}>
-            {TEXTO_GARRITAS}
-          </Text>
-        </View>
-        <BotonCircular
-          icono={ICONOS_DESCUBRIR.miPerfil}
-          etiqueta={TEXTO_MI_PERFIL}
-          fondo="azulGrisaceo"
-          diametro={48}
-          tamanoIcono={24}
-          alPresionar={() => router.navigate(RUTAS.miPerfil)}
-        />
-      </View>
+      <EncabezadoMarca
+        texto={TEXTO_GARRITAS}
+        derecha={
+          <BotonCircular
+            icono={ICONOS_DESCUBRIR.miPerfil}
+            etiqueta={TEXTO_MI_PERFIL}
+            fondo="azulGrisaceo"
+            diametro={48}
+            tamanoIcono={24}
+            alPresionar={() => router.navigate(RUTAS.miPerfil)}
+          />
+        }
+      />
       <Text style={estilos.subtitulo}>{TEXTO_SUBTITULO_DESCUBRIR}</Text>
       {avisoNoDisponible ? (
         <View style={estilos.aviso}>
