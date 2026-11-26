@@ -20,6 +20,12 @@
  * (PS-6). Si el animal no es de este albergue o no existe, se ve "No tienes
  * permiso para ver esta sección" (PS-5, G-11). La "←" se ve en todos los
  * estados para poder regresar.
+ *
+ * F-12 AE-7 y AE-8 (decisión del equipo, no está en el SRS): el nombre del
+ * refugio pasa a 28 y "Un hogar para…" a 20, igual que en la lista (F-11
+ * AD-11); "Mayor compatibilidad" pasa a negrita 16 con su ícono de ordenar.
+ * Sin solicitudes, el logo del perrito y el gatito queda al centro con el
+ * mensaje de RF-04 debajo (18, de mensajes.ts).
  */
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -52,13 +58,15 @@ const estilos = StyleSheet.create({
   presionado: { opacity: 0.6 },
   textoEncabezado: { fontFamily: FUENTES.negrita, fontSize: 24, color: COLORES.cafe },
   titulos: { gap: 2, marginTop: 16, paddingHorizontal: MARGEN },
-  subtitulo: { fontFamily: FUENTES.negrita, fontSize: TAMANOS_TEXTO.minimo, color: COLORES.cafe },
-  titulo: { fontFamily: FUENTES.negrita, fontSize: 26, color: COLORES.cafe },
+  // F-12 AE-7: el nombre del refugio más grande que el título, como en la lista.
+  subtitulo: { fontFamily: FUENTES.negrita, fontSize: 28, color: COLORES.cafe },
+  titulo: { fontFamily: FUENTES.negrita, fontSize: 20, color: COLORES.cafe },
   resumen: { gap: 8, marginTop: 12, marginBottom: 16, paddingHorizontal: MARGEN },
   // PS-15 (spec v1.1): el conteo de nuevas se destaca en su propia línea.
   nuevas: { fontFamily: FUENTES.negrita, fontSize: 16, color: COLORES.cafe },
   orden: { flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-end', gap: 4 },
-  textoOrden: { fontFamily: FUENTES.negrita, fontSize: TAMANOS_TEXTO.minimo, color: COLORES.cafe },
+  // F-12 AE-7: el texto de orden en 16, con su ícono de ordenar al lado.
+  textoOrden: { fontFamily: FUENTES.negrita, fontSize: 16, color: COLORES.cafe },
   lista: { gap: 12, paddingHorizontal: MARGEN, paddingBottom: MARGEN },
   alPreAprobar: {
     marginTop: 4,
@@ -114,7 +122,14 @@ export default function SolicitudesDeUnAnimal() {
       case 'leer-solicitudes':
         return <EstadoPantalla estado="cargando" />;
       default:
-        return <EstadoPantalla estado={estado.tipo} mensaje={estado.mensaje} />;
+        // F-12 AE-8: sin solicitudes, el logo al centro con el mensaje de RF-04.
+        return (
+          <EstadoPantalla
+            estado={estado.tipo}
+            mensaje={estado.mensaje}
+            conLogo={estado.tipo === 'vacia'}
+          />
+        );
     }
   };
 
@@ -146,7 +161,7 @@ export default function SolicitudesDeUnAnimal() {
         <View style={estilos.resumen}>
           <Text style={estilos.nuevas}>{textoConteo(estado.nuevas, 'nuevas')}</Text>
           <View style={estilos.orden}>
-            <MaterialCommunityIcons name={ICONOS_PANEL.orden} size={16} color={COLORES.cafe} />
+            <MaterialCommunityIcons name={ICONOS_PANEL.orden} size={18} color={COLORES.cafe} />
             <Text style={estilos.textoOrden}>{TEXTOS_PANEL.mayorCompatibilidad}</Text>
           </View>
         </View>

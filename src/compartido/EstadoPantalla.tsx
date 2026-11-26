@@ -14,10 +14,15 @@
  *   (RNF-01: "Calculando compatibilidad, verifica tu conexión a internet");
  * - `boton`: botón píldora opcional debajo del mensaje;
  * - `botonTexto`: botón de texto con ícono opcional debajo del mensaje (F-12
- *   AE-6: "Cerrar sesión" de Mi perfil en sus estados vacía y sin permiso).
+ *   AE-6: "Cerrar sesión" de Mi perfil en sus estados vacía y sin permiso);
+ * - `conLogo`: dibuja el logo del perrito y el gatito (200 de ancho) arriba
+ *   del mensaje (F-12 AE-8: "Solicitudes de un animal" sin solicitudes).
  */
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Image, StyleSheet, Text, View } from 'react-native';
+
+// Logo del perrito y el gatito (F-11 AD-1); su tipo está en imagenes.d.ts.
+import LOGO from '../../assets/images/logo-garritas.png';
 
 import BotonPildora from './BotonPildora';
 import BotonTexto from './BotonTexto';
@@ -28,6 +33,10 @@ import { COLORES, FUENTES } from './tema';
 /** RNF-01: después de 3 segundos cargando se muestra el aviso. */
 export const ESPERA_MAXIMA_MS = 3000;
 
+/** Logo de 200 de ancho con su proporción (580 : 456, F-12 AE-8). */
+const ANCHO_LOGO = 200;
+const ALTO_LOGO = Math.round((ANCHO_LOGO * 456) / 580);
+
 export type TipoEstado = 'cargando' | 'vacia' | 'error' | 'sin-permiso';
 
 interface Props {
@@ -36,6 +45,7 @@ interface Props {
   mensajeSiTarda?: string;
   boton?: { texto: string; alPresionar: () => void } | null;
   botonTexto?: { texto: string; icono: IconoBotonTexto; alPresionar: () => void } | null;
+  conLogo?: boolean;
 }
 
 const estilos = StyleSheet.create({
@@ -54,6 +64,7 @@ const estilos = StyleSheet.create({
     textAlign: 'center',
   },
   boton: { alignSelf: 'stretch' },
+  logo: { width: ANCHO_LOGO, height: ALTO_LOGO },
 });
 
 /** Mensaje por defecto de cada estado (los de error y permiso son fijos). */
@@ -73,6 +84,7 @@ export default function EstadoPantalla({
   mensajeSiTarda = '',
   boton = null,
   botonTexto = null,
+  conLogo = false,
 }: Props) {
   const [tarda, setTarda] = useState(false);
 
@@ -93,6 +105,15 @@ export default function EstadoPantalla({
   return (
     <View style={estilos.contenedor}>
       {estado === 'cargando' && <ActivityIndicator size="large" color={COLORES.azulMarino} />}
+      {conLogo ? (
+        <Image
+          source={LOGO}
+          style={estilos.logo}
+          resizeMode="contain"
+          accessibilityRole="image"
+          accessibilityLabel="Logo de Garritas"
+        />
+      ) : null}
       {texto ? (
         <Text accessibilityRole="alert" style={estilos.mensaje}>
           {texto}

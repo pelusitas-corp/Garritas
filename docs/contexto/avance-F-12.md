@@ -1,4 +1,4 @@
-Hecha |Hecha |Hecha |Hecha |Hecha |Hecha |# Avance F-12 · Ajustes de diseño, ronda 2 · Parte A
+Hecha |Hecha |Hecha |Hecha |Hecha |Hecha |Hecha |# Avance F-12 · Ajustes de diseño, ronda 2 · Parte A
 
 - **Spec:** `specs/features/F-12-ajustes-diseno-2.md` (v1.0 Aprobada), solo la
   Parte A (§4.1 a §4.11, T-1 a T-11). La corrección a 9 animales va aparte en
@@ -25,7 +25,7 @@ Hecha |Hecha |Hecha |Hecha |Hecha |Hecha |# Avance F-12 · Ajustes de diseño, r
 | T-10 | `enlaceTelefono` y Detalle de solicitud unificado | Pendiente |
 | T-11 | Relleno de los contenedores de Nueva mascota | Pendiente |
 
-**Último commit:** T-8 (ver `git log`).
+**Último commit:** T-9 (ver `git log`).
 
 **Pushes acordados:** después de T-4, T-8 y T-11, con typecheck, lint y test
 en verde. Entre T-1 y T-2 la prueba de accesibilidad queda en rojo a
@@ -116,3 +116,13 @@ propósito (marca los textos que T-2 corrige), así que no hay push hasta T-2.
   igual) y el nombre del animal pierde `numberOfLines={1}`: si no cabe en una
   línea, sigue en la siguiente y no se corta. El nombre del albergue (16) y el
   estado (16) ya se subieron en T-2. Tocar la tarjeta sigue sin abrir nada.
+- **T-9:** en Solicitudes de un animal el nombre del refugio pasa a 28 y
+  "Un hogar para…" a 20 (como la lista, F-11 AD-11); "Mayor compatibilidad"
+  pasa a negrita 16 y su ícono de ordenar (`sort-descending`) de 16 a 18.
+  `EstadoPantalla` tiene la prop opcional `conLogo`, que dibuja el logo de 200
+  de ancho (proporción 580 : 456) arriba del mensaje; la pantalla la usa solo
+  en el estado vacía, con el mensaje de RF-04 en 18 que ya salía de
+  `mensajes.ts`. En `TarjetaSolicitud` el relleno pasa de 16 a 20; las filas ya
+  iban a 12 y las iniciales, el bloque nombre + hogar y el % ya estaban
+  centrados en la fila (`alignItems: 'center'`). Los textos de la tarjeta se
+  subieron en T-2 (hogar 16, "compatible" 14, estado 16).

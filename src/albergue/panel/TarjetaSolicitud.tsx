@@ -22,7 +22,7 @@
  * los botones de decisión están aparte, para que tocarlos no abra el Detalle.
  *
  * Medidas de Figma (planes de F-07 y F-08): fondo azul grisáceo, radio 28,
- * relleno 16; círculo crema de 44 px con letras en negrita 16; nombre
+ * relleno 20 (F-12 AE-8; antes 16); círculo crema de 44 px con letras en negrita 16; nombre
  * negrita 17; resumen regular 16; píldora de alto 36 con negrita 16; "90%"
  * en negrita 22 y "compatible" en negrita 14; botones 12 px debajo de los
  * datos. Todo en café. F-12 AE-1: el resumen y el estado son datos (16) y
@@ -52,7 +52,8 @@ const OPACIDAD_NO_APTO = 0.6;
 const estilos = StyleSheet.create({
   tarjeta: {
     gap: 12,
-    padding: 16,
+    // F-12 AE-8: relleno 20 y 12 entre filas (datos, botones y mensaje).
+    padding: 20,
     borderRadius: RADIO_TARJETA,
     backgroundColor: COLORES.azulGrisaceo,
   },
