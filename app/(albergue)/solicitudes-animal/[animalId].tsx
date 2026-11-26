@@ -33,7 +33,7 @@ import { TEXTOS_PANEL, textoUnHogarPara } from '../../../src/albergue/panel/text
 import useSolicitudesDeAnimal from '../../../src/albergue/panel/useSolicitudesDeAnimal';
 import EstadoPantalla from '../../../src/compartido/EstadoPantalla';
 import { RUTAS, rutaSolicitud } from '../../../src/compartido/navegacion/rutas';
-import { COLORES, FUENTES } from '../../../src/compartido/tema';
+import { COLORES, FUENTES, TAMANOS_TEXTO } from '../../../src/compartido/tema';
 
 /** Margen lateral (Figma). */
 const MARGEN = 24;
@@ -52,18 +52,18 @@ const estilos = StyleSheet.create({
   presionado: { opacity: 0.6 },
   textoEncabezado: { fontFamily: FUENTES.negrita, fontSize: 24, color: COLORES.cafe },
   titulos: { gap: 2, marginTop: 16, paddingHorizontal: MARGEN },
-  subtitulo: { fontFamily: FUENTES.negrita, fontSize: 13, color: COLORES.cafe },
+  subtitulo: { fontFamily: FUENTES.negrita, fontSize: TAMANOS_TEXTO.minimo, color: COLORES.cafe },
   titulo: { fontFamily: FUENTES.negrita, fontSize: 26, color: COLORES.cafe },
   resumen: { gap: 8, marginTop: 12, marginBottom: 16, paddingHorizontal: MARGEN },
   // PS-15 (spec v1.1): el conteo de nuevas se destaca en su propia línea.
   nuevas: { fontFamily: FUENTES.negrita, fontSize: 16, color: COLORES.cafe },
   orden: { flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-end', gap: 4 },
-  textoOrden: { fontFamily: FUENTES.negrita, fontSize: 12, color: COLORES.cafe },
+  textoOrden: { fontFamily: FUENTES.negrita, fontSize: TAMANOS_TEXTO.minimo, color: COLORES.cafe },
   lista: { gap: 12, paddingHorizontal: MARGEN, paddingBottom: MARGEN },
   alPreAprobar: {
     marginTop: 4,
     fontFamily: FUENTES.regular,
-    fontSize: 13,
+    fontSize: TAMANOS_TEXTO.minimo,
     color: COLORES.cafe,
     textAlign: 'center',
   },

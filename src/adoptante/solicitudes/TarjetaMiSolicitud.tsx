@@ -1,16 +1,17 @@
 /**
  * Tarjeta de una solicitud en Mis solicitudes (Figma, F-06 flujo D, RF-27):
  * azul grisáceo de radio 32 con la miniatura cuadrada (76, radio 16), el
- * nombre del animal en negrita 28, el albergue en negrita 14 y, debajo, la
+ * nombre del animal en negrita 28, el albergue en negrita 16 (dato, F-12
+ * AE-1) y, debajo, la
  * píldora del estado a lo ancho. Con "Pre-aprobada" lleva debajo "El
- * albergue te contactará para conocerse." (regular 13, centrado).
+ * albergue te contactará para conocerse." (regular 14, centrado; F-12 AE-1).
  * No lleva a ninguna parte (N-4): no es un botón.
  *
  * Recibe la solicitud. No devuelve datos: solo dibuja.
  */
 import { Image, StyleSheet, Text, View } from 'react-native';
 
-import { COLORES, FUENTES, RADIOS } from '../../compartido/tema';
+import { COLORES, FUENTES, RADIOS, TAMANOS_TEXTO } from '../../compartido/tema';
 import { apoyoDelEstado } from './misSolicitudes';
 import type { MiSolicitud } from './misSolicitudes';
 import PildoraEstado from './PildoraEstado';
@@ -30,8 +31,13 @@ const estilos = StyleSheet.create({
   miniatura: { width: MINIATURA, height: MINIATURA, borderRadius: RADIO_MINIATURA },
   datos: { flexShrink: 1 },
   nombre: { fontFamily: FUENTES.negrita, fontSize: 28, color: COLORES.cafe },
-  albergue: { fontFamily: FUENTES.negrita, fontSize: 14, color: COLORES.cafe },
-  apoyo: { fontFamily: FUENTES.regular, fontSize: 13, color: COLORES.cafe, textAlign: 'center' },
+  albergue: { fontFamily: FUENTES.negrita, fontSize: TAMANOS_TEXTO.dato, color: COLORES.cafe },
+  apoyo: {
+    fontFamily: FUENTES.regular,
+    fontSize: TAMANOS_TEXTO.minimo,
+    color: COLORES.cafe,
+    textAlign: 'center',
+  },
 });
 
 export default function TarjetaMiSolicitud({ solicitud }: { solicitud: MiSolicitud }) {

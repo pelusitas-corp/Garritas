@@ -43,7 +43,7 @@ import {
 import useDetalleSolicitud from '../../../src/albergue/solicitud/useDetalleSolicitud';
 import EstadoPantalla from '../../../src/compartido/EstadoPantalla';
 import { RUTAS, rutaSolicitudesAnimal } from '../../../src/compartido/navegacion/rutas';
-import { COLORES, FUENTES, RADIOS } from '../../../src/compartido/tema';
+import { COLORES, FUENTES, RADIOS, TAMANOS_TEXTO } from '../../../src/compartido/tema';
 
 /** Margen lateral (Figma). */
 const MARGEN = 24;
@@ -107,22 +107,31 @@ const estilos = StyleSheet.create({
   iniciales: { fontFamily: FUENTES.negrita, fontSize: 16, color: COLORES.cafe },
   datosAdoptante: { flex: 1, alignItems: 'flex-start', gap: 4 },
   nombre: { fontFamily: FUENTES.negrita, fontSize: 22, color: COLORES.cafe },
-  contacto: { fontFamily: FUENTES.negrita, fontSize: 13, color: COLORES.cafe },
-  desbloqueado: { fontFamily: FUENTES.regular, fontSize: 12, color: COLORES.cafe },
+  contacto: { fontFamily: FUENTES.negrita, fontSize: TAMANOS_TEXTO.dato, color: COLORES.cafe },
+  desbloqueado: {
+    fontFamily: FUENTES.regular,
+    fontSize: TAMANOS_TEXTO.minimo,
+    color: COLORES.cafe,
+  },
   lineaConIcono: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   seccion: { gap: 12 },
   tituloSeccion: { fontFamily: FUENTES.negrita, fontSize: 20, color: COLORES.cafe },
-  textoHogar: { flexShrink: 1, fontFamily: FUENTES.negrita, fontSize: 15, color: COLORES.cafe },
+  textoHogar: {
+    flexShrink: 1,
+    fontFamily: FUENTES.negrita,
+    fontSize: TAMANOS_TEXTO.dato,
+    color: COLORES.cafe,
+  },
   abajo: { gap: 12, paddingHorizontal: MARGEN, paddingTop: 12, paddingBottom: MARGEN },
   textoAbajo: {
     fontFamily: FUENTES.regular,
-    fontSize: 13,
+    fontSize: TAMANOS_TEXTO.minimo,
     color: COLORES.cafe,
     textAlign: 'center',
   },
   mensaje: {
     fontFamily: FUENTES.negrita,
-    fontSize: 13,
+    fontSize: TAMANOS_TEXTO.minimo,
     color: COLORES.cafe,
     textAlign: 'center',
   },

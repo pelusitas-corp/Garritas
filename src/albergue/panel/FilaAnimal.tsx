@@ -13,7 +13,7 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { COLORES, FUENTES, RADIOS } from '../../compartido/tema';
+import { COLORES, FUENTES, RADIOS, TAMANOS_TEXTO } from '../../compartido/tema';
 import type { AnimalConId } from '../../firebase/animales';
 import { ICONOS_PANEL } from './iconosPanel';
 import { textoConteo } from './panel';
@@ -47,7 +47,7 @@ const estilos = StyleSheet.create({
   },
   textos: { flex: 1, gap: 2 },
   nombre: { fontFamily: FUENTES.negrita, fontSize: 22, color: COLORES.cafe },
-  conteo: { fontFamily: FUENTES.negrita, fontSize: 13, color: COLORES.cafe },
+  conteo: { fontFamily: FUENTES.negrita, fontSize: TAMANOS_TEXTO.minimo, color: COLORES.cafe },
 });
 
 interface Props {

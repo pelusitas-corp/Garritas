@@ -14,7 +14,7 @@
 | # | Tarea | Estado |
 |---|---|---|
 | T-1 | `TAMANOS_TEXTO` y `FONDOS.contenedor` en `tema.ts`; prueba de `fontSize` mínimo | Hecha |
-| T-2 | Subir a 14/16 todos los textos chicos | Pendiente |
+| T-2 | Subir a 14/16 todos los textos chicos | Hecha |
 | T-3 | Selección de Rol y accesos centrados | Pendiente |
 | T-4 | Perfil Garritas centrado | Pendiente |
 | T-5 | Tarjeta de Descubrir más grande | Pendiente |
@@ -25,7 +25,7 @@
 | T-10 | `enlaceTelefono` y Detalle de solicitud unificado | Pendiente |
 | T-11 | Relleno de los contenedores de Nueva mascota | Pendiente |
 
-**Último commit:** T-1 (ver `git log`).
+**Último commit:** T-2 (ver `git log`).
 
 **Pushes acordados:** después de T-4, T-8 y T-11, con typecheck, lint y test
 en verde. Entre T-1 y T-2 la prueba de accesibilidad queda en rojo a
@@ -68,4 +68,13 @@ propósito (marca los textos que T-2 corrige), así que no hay push hasta T-2.
   revisa cada `fontSize:`: acepta un número o una constante conocida
   (`TAMANOS_TEXTO.minimo`, `TAMANOS_TEXTO.dato`, `MEDIDAS_BOTON.x.tamanoTexto`)
   y falla con archivo y línea si mide menos de 14 o si no sabe de dónde sale.
-  Hoy marca los 20 textos de la lista del plan.
+  Antes de T-2 marcaba los 20 textos de la lista del plan.
+- **T-2:** los textos de apoyo y etiquetas suben a `TAMANOS_TEXTO.minimo` (14) y los
+  datos a `TAMANOS_TEXTO.dato` (16): vivienda y tiempo solo del Detalle de solicitud,
+  teléfono y correo, nombre del albergue en Mis solicitudes y en el Detalle del
+  animal, resumen del hogar y estado de la tarjeta de solicitud, y el estado de
+  Mis solicitudes. La píldora chica (`Pildora.tsx`) pasa de 26 a 30 de alto y la
+  de estado de `TarjetaSolicitud` de 32 a 36. En `match/[animalId].tsx` (13 → 14)
+  y `solicitud-enviada/[solicitudId].tsx` (14 → 16) solo cambió el número del
+  `fontSize`, sin tocar los imports (respuesta 3). Las medidas propias de cada
+  pantalla (28 del refugio, 18 del contacto…) llegan en T-9 y T-10.

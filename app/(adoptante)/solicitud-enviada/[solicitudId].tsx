@@ -58,7 +58,7 @@ const estilos = StyleSheet.create({
   miniatura: { width: MINIATURA, height: MINIATURA, borderRadius: RADIOS.pildora },
   datos: { flexShrink: 1 },
   nombre: { fontFamily: FUENTES.negrita, fontSize: 28, color: COLORES.cafe },
-  estadoSolicitud: { fontFamily: FUENTES.negrita, fontSize: 14, color: COLORES.cafe },
+  estadoSolicitud: { fontFamily: FUENTES.negrita, fontSize: 16, color: COLORES.cafe },
   pie: { paddingHorizontal: MARGEN, paddingTop: 8, paddingBottom: 12 },
 });
 
