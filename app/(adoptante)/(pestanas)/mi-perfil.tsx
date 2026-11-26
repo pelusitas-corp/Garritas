@@ -6,14 +6,19 @@
  * Sin terminar (G-6, RF-19 no válido): NO redirige; muestra el mensaje
  * "Termina tu cuestionario para descubrir tu perfil Garritas" y "Cerrar sesión".
  * Otros estados (§8): cargando, error de conexión y sin permiso.
+ *
+ * F-11 AD-5 y AD-6: arriba a la izquierda va `EncabezadoMarca` con "Mi perfil";
+ * el nombre y la tarjeta quedan centrados entre el encabezado y "Cerrar sesión".
  */
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { TEXTO_MI_PERFIL } from '../../../src/adoptante/descubrir/textos';
 import TarjetaPerfilGarritas from '../../../src/adoptante/perfil/TarjetaPerfilGarritas';
 import { useNombreAdoptante } from '../../../src/adoptante/perfil/useNombreAdoptante';
 import { usePerfilGarritas } from '../../../src/adoptante/perfil/usePerfilGarritas';
 import BotonPildora from '../../../src/compartido/BotonPildora';
+import EncabezadoMarca from '../../../src/compartido/EncabezadoMarca';
 import EstadoPantalla from '../../../src/compartido/EstadoPantalla';
 import MENSAJES from '../../../src/compartido/mensajes';
 import { useSesion } from '../../../src/compartido/navegacion/useSesion';
@@ -25,7 +30,8 @@ const TEXTO_CERRAR_SESION = 'Cerrar sesión';
 const estilos = StyleSheet.create({
   pantalla: { flex: 1, backgroundColor: COLORES.crema },
   contenido: { flexGrow: 1, gap: 32, padding: 24, justifyContent: 'space-between' },
-  cuerpo: { gap: 32 },
+  // F-11 AD-6: centrado vertical y horizontal en el espacio libre.
+  cuerpo: { flex: 1, gap: 32, justifyContent: 'center', alignItems: 'center' },
   nombre: { fontFamily: FUENTES.negrita, fontSize: 28, color: COLORES.cafe, textAlign: 'center' },
 });
 
@@ -60,6 +66,7 @@ export default function MiPerfil() {
 
   return (
     <SafeAreaView style={estilos.pantalla} edges={['top']}>
+      <EncabezadoMarca texto={TEXTO_MI_PERFIL} />
       <ScrollView contentContainerStyle={estilos.contenido}>
         <View style={estilos.cuerpo}>
           {nombre.nombre ? (

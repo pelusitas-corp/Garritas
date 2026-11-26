@@ -5,6 +5,8 @@
  * nombre y la frase del perfil, y "Ver mis matches" lleva a Descubrir.
  * Estados (§8): cargando, con datos, vacía (cuestionario incompleto),
  * error de conexión y sin permiso.
+ *
+ * F-11 AD-5: arriba a la izquierda va `EncabezadoMarca` con "Garritas".
  */
 import { router } from 'expo-router';
 import { useCallback } from 'react';
@@ -14,7 +16,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import TarjetaPerfilGarritas from '../../src/adoptante/perfil/TarjetaPerfilGarritas';
 import { usePerfilGarritas } from '../../src/adoptante/perfil/usePerfilGarritas';
 import { TEXTO_VER_MIS_MATCHES } from '../../src/adoptante/cuestionario/textos';
+import { TEXTO_GARRITAS } from '../../src/adoptante/descubrir/textos';
 import BotonPildora from '../../src/compartido/BotonPildora';
+import EncabezadoMarca from '../../src/compartido/EncabezadoMarca';
 import EstadoPantalla from '../../src/compartido/EstadoPantalla';
 import MENSAJES from '../../src/compartido/mensajes';
 import { RUTAS } from '../../src/compartido/navegacion/rutas';
@@ -44,6 +48,7 @@ export default function PerfilGarritas() {
 
   return (
     <SafeAreaView style={estilos.pantalla}>
+      <EncabezadoMarca texto={TEXTO_GARRITAS} />
       <View style={estilos.contenido}>
         <View style={estilos.cuerpo}>
           <TarjetaPerfilGarritas perfil={estado.perfil} />

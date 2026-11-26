@@ -8,8 +8,11 @@
  * ya no está disponible para adopción" (DE-4).
  * Los estados (cargando, vacía, mazo terminado, error y sin permiso) los
  * decide `pantallaDescubrir` y los dibuja `EstadoPantalla`.
+ *
+ * F-11 AD-5: el encabezado es `EncabezadoMarca` (se ve igual que antes).
+ * F-11 AD-7: subtítulo de 22 más pegado al encabezado; la tarjeta empieza 12
+ * debajo y `TarjetaAnimal` reparte el resto en espacios iguales.
  */
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -25,6 +28,7 @@ import {
   TEXTO_SUBTITULO_DESCUBRIR,
 } from '../../../src/adoptante/descubrir/textos';
 import useDescubrir from '../../../src/adoptante/descubrir/useDescubrir';
+import EncabezadoMarca from '../../../src/compartido/EncabezadoMarca';
 import EstadoPantalla from '../../../src/compartido/EstadoPantalla';
 import MENSAJES from '../../../src/compartido/mensajes';
 import { RUTAS } from '../../../src/compartido/navegacion/rutas';
@@ -35,21 +39,11 @@ const MARGEN = 24;
 
 const estilos = StyleSheet.create({
   pantalla: { flex: 1, backgroundColor: COLORES.crema },
-  encabezado: {
-    height: 48,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+  subtitulo: {
     marginTop: 8,
     paddingHorizontal: MARGEN,
-  },
-  marca: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  titulo: { fontFamily: FUENTES.negrita, fontSize: 24, color: COLORES.cafe },
-  subtitulo: {
-    marginTop: 16,
-    paddingHorizontal: MARGEN,
     fontFamily: FUENTES.negrita,
-    fontSize: 18,
+    fontSize: 22,
     color: COLORES.cafe,
   },
   aviso: {
@@ -60,8 +54,8 @@ const estilos = StyleSheet.create({
     backgroundColor: COLORES.menta,
   },
   textoAviso: { fontFamily: FUENTES.negrita, fontSize: 16, color: COLORES.cafe },
-  // Centra la tarjeta y los botones entre el subtítulo y la barra de pestañas.
-  cuerpo: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingVertical: 12 },
+  // F-11 AD-7: la tarjeta empieza 12 debajo del subtítulo (sin hueco grande).
+  cuerpo: { flex: 1, alignItems: 'center', paddingTop: 12 },
 });
 
 export default function Descubrir() {
@@ -71,22 +65,19 @@ export default function Descubrir() {
 
   return (
     <SafeAreaView style={estilos.pantalla} edges={['top']}>
-      <View style={estilos.encabezado}>
-        <View style={estilos.marca}>
-          <MaterialCommunityIcons name={ICONOS_DESCUBRIR.marca} size={24} color={COLORES.cafe} />
-          <Text accessibilityRole="header" style={estilos.titulo}>
-            {TEXTO_GARRITAS}
-          </Text>
-        </View>
-        <BotonCircular
-          icono={ICONOS_DESCUBRIR.miPerfil}
-          etiqueta={TEXTO_MI_PERFIL}
-          fondo="azulGrisaceo"
-          diametro={48}
-          tamanoIcono={24}
-          alPresionar={() => router.navigate(RUTAS.miPerfil)}
-        />
-      </View>
+      <EncabezadoMarca
+        texto={TEXTO_GARRITAS}
+        derecha={
+          <BotonCircular
+            icono={ICONOS_DESCUBRIR.miPerfil}
+            etiqueta={TEXTO_MI_PERFIL}
+            fondo="azulGrisaceo"
+            diametro={48}
+            tamanoIcono={24}
+            alPresionar={() => router.navigate(RUTAS.miPerfil)}
+          />
+        }
+      />
       <Text style={estilos.subtitulo}>{TEXTO_SUBTITULO_DESCUBRIR}</Text>
       {avisoNoDisponible ? (
         <View style={estilos.aviso}>
@@ -104,7 +95,13 @@ export default function Descubrir() {
         />
       ) : (
         <View style={estilos.cuerpo}>
-          <TarjetaAnimal tarjeta={tarjeta} alPasar={pasar} alAbrir={abrirDetalle} />
+          {/* F-11 AD-8: key = animalId, así cada tarjeta nueva empieza centrada. */}
+          <TarjetaAnimal
+            key={tarjeta.animalId}
+            tarjeta={tarjeta}
+            alPasar={pasar}
+            alAbrir={abrirDetalle}
+          />
         </View>
       )}
     </SafeAreaView>

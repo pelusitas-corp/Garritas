@@ -12,14 +12,20 @@
  * tarjeta azul claro de radio 32 con "✕", el carrusel, el nombre con un
  * corazón, tres mosaicos crema, los cuidados de salud como píldoras y el
  * albergue con su casita; fijo abajo, "¡Quiero adoptarlo!" y el texto de apoyo.
+ *
+ * F-11 AD-9: la foto ocupa todo el espacio libre de la tarjeta (mínimo 180)
+ * y se ve completa. Su contenedor mide ese espacio con `onLayout` y se lo
+ * pasa a `CarruselFotos`. En un teléfono bajo queda en 180 y se desplaza.
  */
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
+import { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import type { LayoutChangeEvent } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import BotonCircular from '../../../src/adoptante/descubrir/BotonCircular';
-import CarruselFotos from '../../../src/adoptante/descubrir/CarruselFotos';
+import CarruselFotos, { ALTO_FOTO_MINIMO } from '../../../src/adoptante/descubrir/CarruselFotos';
 import { pantallaDetalle } from '../../../src/adoptante/descubrir/estados';
 import { ICONOS_DESCUBRIR, iconoCuidado } from '../../../src/adoptante/descubrir/iconosDescubrir';
 import Mosaico from '../../../src/adoptante/descubrir/Mosaico';
@@ -55,20 +61,22 @@ const estilos = StyleSheet.create({
     paddingHorizontal: MARGEN,
   },
   titulo: { flex: 1, fontFamily: FUENTES.negrita, fontSize: 24, color: COLORES.cafe },
-  // Centra la tarjeta entre el encabezado y el pie; si no cabe, se desplaza.
+  // F-11 AD-9: la tarjeta llena el espacio entre el encabezado y el pie; si no cabe, se desplaza.
   contenido: {
     flexGrow: 1,
-    justifyContent: 'center',
     paddingHorizontal: MARGEN,
     paddingVertical: 16,
   },
   tarjeta: {
+    flex: 1,
     gap: 14,
     padding: RELLENO_TARJETA,
     borderRadius: RADIOS.tarjetaGrande,
     backgroundColor: COLORES.azulGrisaceo,
   },
   cerrar: { alignSelf: 'flex-end' },
+  // F-11 AD-9: toma el espacio que sobra en la tarjeta, nunca menos de 180.
+  zonaFoto: { flex: 1, minHeight: ALTO_FOTO_MINIMO },
   filaNombre: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   nombre: { flexShrink: 1, fontFamily: FUENTES.negrita, fontSize: 30, color: COLORES.cafe },
   mosaicos: { flexDirection: 'row', gap: 8 },
@@ -123,6 +131,8 @@ export default function DetalleAnimal() {
   const { animalId } = useLocalSearchParams<{ animalId: string }>();
   const { estado, reintentar } = useDetalleAnimal(animalId);
   const { width } = useWindowDimensions();
+  /** Alto libre para la foto, medido por `onLayout` (F-11 AD-9). */
+  const [altoFoto, setAltoFoto] = useState(ALTO_FOTO_MINIMO);
   const propsEstado = pantallaDetalle(estado.tipo, reintentar);
 
   if (propsEstado || estado.tipo !== 'con-datos') {
@@ -141,6 +151,8 @@ export default function DetalleAnimal() {
   const { animal, fotos } = estado;
   // RN-07: mientras llegan las fotos completas se ve la miniatura.
   const imagenes = fotos ? fotos.map((foto) => foto.datos) : [animal.miniatura];
+  const medirZonaFoto = (evento: LayoutChangeEvent) =>
+    setAltoFoto(Math.max(ALTO_FOTO_MINIMO, Math.floor(evento.nativeEvent.layout.height)));
 
   return (
     <SafeAreaView style={estilos.pantalla}>
@@ -157,7 +169,13 @@ export default function DetalleAnimal() {
               alPresionar={regresar}
             />
           </View>
-          <CarruselFotos imagenes={imagenes} ancho={width - MARGEN * 2 - RELLENO_TARJETA * 2} />
+          <View style={estilos.zonaFoto} onLayout={medirZonaFoto}>
+            <CarruselFotos
+              imagenes={imagenes}
+              ancho={width - MARGEN * 2 - RELLENO_TARJETA * 2}
+              alto={altoFoto}
+            />
+          </View>
           <View style={estilos.filaNombre}>
             <Text style={estilos.nombre} numberOfLines={1}>
               {animal.nombre}

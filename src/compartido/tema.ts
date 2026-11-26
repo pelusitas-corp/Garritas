@@ -41,4 +41,16 @@ export const RADIOS = {
   pildora: 999,
 } as const;
 
+/**
+ * Opacidad de un botón desactivado (F-11 AD-4, decisión del equipo; no está
+ * en el SRS): conserva su color, pero se ve desvanecido.
+ */
+export const OPACIDAD_DESVANECIDO = 0.4;
+
+/**
+ * Grosor del borde de los contenedores, en px (F-11 AD-12, decisión del
+ * equipo; no está en el SRS). Va aparte de `RADIOS`: es un grosor, no un radio.
+ */
+export const BORDE = 2;
+
 export type NombreColor = keyof typeof COLORES;
