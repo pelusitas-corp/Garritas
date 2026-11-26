@@ -13,7 +13,7 @@
 |---|---|---|
 | T-1 | `OPACIDAD_DESVANECIDO` y `BORDE` en `tema.ts` con sus pruebas | Hecha |
 | T-2 | `BotonPildora`: tamaño chico y desactivado desvanecido | Hecha |
-| T-3 | Logo y "Iniciar sesión" chico (Selección de Rol y "Crea tu cuenta") | Pendiente |
+| T-3 | Logo y "Iniciar sesión" chico (Selección de Rol y "Crea tu cuenta") | Hecha |
 | T-4 | Casilla al final del aviso y desplazamiento con el error | Pendiente |
 | T-5 | `EncabezadoMarca` y su uso en Descubrir | Pendiente |
 | T-6 | Decoraciones del perfil y encabezado de marca | Pendiente |
@@ -25,7 +25,7 @@
 | T-12 | Nueva mascota en 4 contenedores | Pendiente |
 | T-13 | Cierre de la nota con la guía de prueba en el celular | Pendiente |
 
-**Último commit:** T-2 (ver `git log`).
+**Último commit:** T-3 (ver `git log`).
 
 ## Decisiones del plan (confirmadas por Jennifer el 25/11/2026)
 
@@ -49,7 +49,7 @@
 
 ## Qué falta
 
-T-3 a T-13, las verificaciones finales, el push y el PR (sin fusionar).
+T-4 a T-13, las verificaciones finales, el push y el PR (sin fusionar).
 
 ## Notas por tarea
 
@@ -59,3 +59,10 @@ T-3 a T-13, las verificaciones finales, el push y el PR (sin fusionar).
   responde }` y `MEDIDAS_BOTON` guarda las medidas de cada tamaño; las dos se
   prueban en `tests/compartido/botonPildora.test.ts`. `cargando` no se
   desvanece: solo muestra el indicador.
+- **T-3:** logo de 240 × 189 (`Math.round(240 × 456 / 580)`) centrado, con
+  `marginTop 8`, antes de "Bienvenido a Garritas" (que pasa a `marginTop 16`),
+  con `accessibilityLabel` "Logo de Garritas". "Iniciar sesión" usa
+  `tamano="chico"` en Selección de Rol y en "Crea tu cuenta". Expo 58 ya no
+  declara los `.png` para TypeScript y ESLint prohíbe `require()`, así que se
+  agregó `src/compartido/imagenes.d.ts` (solo tipos) para poder hacer
+  `import LOGO from '…/logo-garritas.png'`.

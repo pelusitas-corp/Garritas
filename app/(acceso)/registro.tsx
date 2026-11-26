@@ -7,6 +7,8 @@
  * - Crea la cuenta con `useSesion().crearCuenta` (RN-13). Si sale bien, borra
  *   la aceptación de memoria (P6) y la guarda G-2 abre el cuestionario.
  * - Si falla, muestra CA-04, CA-11, CA-12 o CA-13 debajo del formulario.
+ * - F-11 (AD-2, AD-4): "Iniciar sesión" usa el tamaño chico y "Crear cuenta"
+ *   con un campo vacío se ve desvanecido (lo hace `BotonPildora`).
  */
 import { Redirect, router } from 'expo-router';
 import { useState } from 'react';
@@ -116,6 +118,7 @@ export default function Registro() {
             texto="Iniciar sesión"
             alPresionar={() => router.push(RUTAS.accesoAdoptante)}
             variante="secundario"
+            tamano="chico"
           />
         </View>
       </ScrollView>
