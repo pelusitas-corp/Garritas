@@ -23,9 +23,9 @@
 | T-10 | Pestaña activa en píldora | Hecha |
 | T-11 | Nombre del albergue más grande que "Tus animales" | Hecha |
 | T-12 | Nueva mascota en 4 contenedores | Hecha |
-| T-13 | Cierre de la nota con la guía de prueba en el celular | Pendiente |
+| T-13 | Cierre de la nota con la guía de prueba en el celular | Hecha |
 
-**Último commit:** T-12 (ver `git log`).
+**Último commit:** T-13, el cierre de esta nota (ver `git log`).
 
 ## Decisiones del plan (confirmadas por Jennifer el 25/11/2026)
 
@@ -49,7 +49,7 @@
 
 ## Qué falta
 
-T-13, las verificaciones finales, el push y el PR (sin fusionar).
+Nada de código. Quedan la prueba en el celular (Jennifer), la v1.1 de la spec (Jennifer) y fusionar el PR cuando se cumpla D-47.
 
 ## Pendientes
 
@@ -150,3 +150,67 @@ T-13, las verificaciones finales, el push y el PR (sin fusionar).
   azul grisáceo, `RADIOS.tarjeta`, relleno 16 y `gap` 12. Entre contenedores
   quedan 20 (el `gap` que ya tenía el formulario) y dentro del perfil, 16. El
   borde superior del pie usa `BORDE` en lugar del 2 escrito a mano.
+- **T-13:** cierre de la nota con la guía de prueba.
+
+## Verificaciones finales
+
+`npm run typecheck`, `npm run lint` y `npm test` en verde: 35 suites y 372
+pruebas. `firestore.rules` no cambió y no se agregaron dependencias.
+
+## Guía de prueba en el celular (Expo Go)
+
+Antes de probar: `npx expo start` y abrir el QR con Expo Go. Usa las cuentas
+ficticias de los datos de prueba: Ana Torres (adoptante con el cuestionario
+terminado) y Refugio Patitas (albergue).
+
+**Sin sesión**
+1. **CA-01:** en Selección de Rol se ve el logo del perrito y el gatito entre
+   "Garritas" y "Bienvenido a Garritas".
+2. **CA-02:** "Iniciar sesión" es más chico que "Quiero adoptar", no ocupa
+   todo el ancho y abre Acceso de Adoptante.
+3. **CA-04:** "Quiero adoptar" → en el aviso, sin bajar ni marcar nada, toca
+   "Continuar". No avanza, el recuadro baja solo hasta la casilla y debajo
+   aparece "Para continuar, acepta el aviso de privacidad y confirma que eres
+   mayor de edad". Súbelo y vuelve a tocar "Continuar": baja otra vez.
+4. **CA-03:** marca la casilla (al final del recuadro) y toca "Continuar":
+   se abre "Crea tu cuenta".
+5. **CA-05 y CA-02:** en "Crea tu cuenta", con un campo vacío, "Crear cuenta"
+   se ve azul marino desvanecido y no responde. Al llenar los 4 campos se ve
+   con su color completo (no hace falta crear la cuenta). "Iniciar sesión" se
+   ve chico aquí también.
+
+**Ana Torres**
+
+6. **CA-07:** pestaña Mi perfil. Arriba a la izquierda están la huella y
+   "Mi perfil". El nombre y el perfil quedan centrados, con un círculo más
+   grande, 2 estrellitas y 2 puntitos.
+7. **CA-11:** en Descubrir, el subtítulo "Tu próximo mejor amigo." es más
+   grande y no queda un hueco notorio debajo. Los espacios tarjeta ↔ botones
+   y botones ↔ pestañas se ven iguales.
+8. **CA-10:** desliza la tarjeta un poco (menos de un cuarto de pantalla) y
+   suelta: regresa al centro. Toca la tarjeta: abre el Detalle. Regresa y
+   toca el "ⓘ": también abre el Detalle. Desliza en vertical: no se mueve.
+9. **CA-12:** en el Detalle de Wini, la foto ocupa el espacio libre y se ve
+   completa, sin recortarse; el sobrante es azul grisáceo. Se siguen viendo
+   los datos y "¡Quiero adoptarlo!".
+10. **CA-08:** en Descubrir, desliza a Wini a la derecha más de un cuarto de
+    pantalla y suelta: sale y se abre su Detalle, igual que con
+    "Me encanta". Al regresar, la tarjeta está en su lugar.
+11. **CA-09:** desliza la tarjeta a la izquierda más de un cuarto y suelta:
+    sale y aparece la siguiente, igual que con "Pasar".
+12. **CA-13:** la pestaña activa es una píldora redonda y "Mis solicitudes"
+    cabe sin cortarse (revísalo también en un teléfono de 360 de ancho si hay
+    uno a la mano).
+13. **CA-06:** Perfil Garritas se abre al terminar el cuestionario con una
+    cuenta nueva ficticia (p. ej. "Carla Ruiz", `carla.ruiz@example.com`).
+    Arriba a la izquierda están la huella y "Garritas"; el círculo tiene las
+    estrellitas y los puntitos, y "Ver mis matches" sigue abajo.
+
+**Refugio Patitas**
+
+14. **CA-14 y CA-13:** en Solicitudes, "Refugio Patitas" se ve más grande que
+    "Tus animales", y la pestaña activa es una píldora.
+15. **CA-15:** en la pestaña Mascotas, Fotos, Datos básicos, Cuidados de
+    salud y Perfil de compatibilidad están en 4 contenedores con borde. Con 3
+    fotos, "Añadir una foto" se ve desvanecido (decisión 1). Publicar a Max
+    funciona igual que en F-02.
