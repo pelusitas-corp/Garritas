@@ -1,4 +1,4 @@
-Hecha |# Avance F-12 · Ajustes de diseño, ronda 2 · Parte A
+Hecha |Hecha |# Avance F-12 · Ajustes de diseño, ronda 2 · Parte A
 
 - **Spec:** `specs/features/F-12-ajustes-diseno-2.md` (v1.0 Aprobada), solo la
   Parte A (§4.1 a §4.11, T-1 a T-11). La corrección a 9 animales va aparte en
@@ -25,7 +25,7 @@ Hecha |# Avance F-12 · Ajustes de diseño, ronda 2 · Parte A
 | T-10 | `enlaceTelefono` y Detalle de solicitud unificado | Pendiente |
 | T-11 | Relleno de los contenedores de Nueva mascota | Pendiente |
 
-**Último commit:** T-3 (ver `git log`).
+**Último commit:** T-4 (ver `git log`).
 
 **Pushes acordados:** después de T-4, T-8 y T-11, con typecheck, lint y test
 en verde. Entre T-1 y T-2 la prueba de accesibilidad queda en rojo a
@@ -84,3 +84,7 @@ propósito (marca los textos que T-2 corrige), así que no hay push hasta T-2.
   su `marginTop: 8` (lo centra el `flex`). En `FormularioAcceso` (lo usan
   Acceso de Adoptante y Acceso de Albergue) el `ScrollView` centra todo el
   formulario y los botones quedan a 24 de los campos (8 + el `gap` de 16).
+- **T-4:** en Perfil Garritas se quitó el `space-between` que dejaba
+  "Ver mis matches" pegado abajo. Ahora el contenido es un solo grupo con
+  `justifyContent: 'center'` y `gap: 32`: el perfil y el botón quedan juntos a
+  media pantalla. El botón sigue a lo ancho, con el margen de 24.
