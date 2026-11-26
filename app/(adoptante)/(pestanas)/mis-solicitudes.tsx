@@ -13,6 +13,9 @@
  * - el estado de cada tarjeta es texto con puntito (`EstadoConPuntito`);
  * - al final de la lista, "Descubrir más animales" lleva a la pestaña Descubrir;
  * - deslizar hacia abajo vuelve a leer del servidor (`RefreshControl`).
+ * F-13 AF-18: con solicitudes, el subtítulo va dentro de la lista (se
+ * desplaza con ella y desaparece al bajar); el título se queda arriba. Sin
+ * lista (cargando, vacía, error o sin permiso) va debajo del título.
  */
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
@@ -42,13 +45,13 @@ const estilos = StyleSheet.create({
     paddingHorizontal: MARGEN,
   },
   titulo: { fontFamily: FUENTES.negrita, fontSize: 24, color: COLORES.cafe },
+  subtituloFijo: { paddingHorizontal: MARGEN },
   subtitulo: {
-    paddingHorizontal: MARGEN,
     fontFamily: FUENTES.regular,
     fontSize: TAMANOS_TEXTO.dato,
     color: COLORES.cafe,
   },
-  lista: { gap: 12, paddingHorizontal: MARGEN, paddingTop: 16, paddingBottom: 24 },
+  lista: { gap: 12, paddingHorizontal: MARGEN, paddingBottom: 24 },
   cierre: {
     marginTop: 4,
     fontFamily: FUENTES.regular,
@@ -70,13 +73,17 @@ export default function MisSolicitudes() {
           {TEXTOS_MIS_SOLICITUDES.encabezado}
         </Text>
       </View>
-      <Text style={estilos.subtitulo}>{TEXTOS_MIS_SOLICITUDES.subtitulo}</Text>
       {propsEstado || estado.tipo !== 'con-datos' ? (
-        <EstadoPantalla
-          estado={propsEstado?.estado ?? 'cargando'}
-          mensaje={propsEstado?.mensaje}
-          boton={propsEstado?.boton}
-        />
+        <>
+          <Text style={[estilos.subtitulo, estilos.subtituloFijo]}>
+            {TEXTOS_MIS_SOLICITUDES.subtitulo}
+          </Text>
+          <EstadoPantalla
+            estado={propsEstado?.estado ?? 'cargando'}
+            mensaje={propsEstado?.mensaje}
+            boton={propsEstado?.boton}
+          />
+        </>
       ) : (
         <ScrollView
           contentContainerStyle={estilos.lista}
@@ -89,6 +96,8 @@ export default function MisSolicitudes() {
             />
           }
         >
+          {/* F-13 AF-18: el subtítulo se desplaza con la lista. */}
+          <Text style={estilos.subtitulo}>{TEXTOS_MIS_SOLICITUDES.subtitulo}</Text>
           {estado.solicitudes.map((solicitud) => (
             <TarjetaMiSolicitud key={solicitud.id} solicitud={solicitud} />
           ))}
