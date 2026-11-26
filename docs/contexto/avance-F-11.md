@@ -20,12 +20,12 @@
 | T-7 | Subtítulo de Descubrir y espacios parejos | Hecha |
 | T-8 | Deslizar la tarjeta para "Pasar" o "Me encanta" | Hecha |
 | T-9 | Foto completa del Detalle con alto flexible | Hecha |
-| T-10 | Pestaña activa en píldora | Pendiente |
+| T-10 | Pestaña activa en píldora | Hecha |
 | T-11 | Nombre del albergue más grande que "Tus animales" | Pendiente |
 | T-12 | Nueva mascota en 4 contenedores | Pendiente |
 | T-13 | Cierre de la nota con la guía de prueba en el celular | Pendiente |
 
-**Último commit:** T-9 (ver `git log`).
+**Último commit:** T-10 (ver `git log`).
 
 ## Decisiones del plan (confirmadas por Jennifer el 25/11/2026)
 
@@ -49,7 +49,7 @@
 
 ## Qué falta
 
-T-10 a T-13, las verificaciones finales, el push y el PR (sin fusionar).
+T-11 a T-13, las verificaciones finales, el push y el PR (sin fusionar).
 
 ## Pendientes
 
@@ -134,3 +134,10 @@ T-10 a T-13, las verificaciones finales, el push y el PR (sin fusionar).
   recibe el alto, usa `resizeMode="contain"` y fondo azul grisáceo, y exporta
   `ALTO_FOTO_MINIMO = 180`. En un teléfono bajo, la foto queda en 180 y la
   pantalla se desplaza como antes.
+- **T-10:** `tabBarItemStyle` usa `RADIOS.pildora` con `overflow: 'hidden'`
+  y los márgenes de `MARGENES_PESTANA` (6 vertical y 8 horizontal). La altura
+  de 72 más el espacio inferior de Android no cambia. La prueba de F-07
+  `PS-13: … radio 24 …` ya no revisa el radio y se llama
+  `PS-13: sin borde, fondo crema, activa en azul grisáceo y texto café`; el
+  radio pasó a `CA-13 F-11 válido: la pestaña activa usa el radio de
+  píldora`, junto con la prueba de los márgenes y la de la altura.

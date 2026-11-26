@@ -9,7 +9,7 @@ import OPCIONES_PESTANAS, {
   estiloBarraPestanas,
   iconoDePestana,
 } from '../../src/compartido/navegacion/estiloPestanas';
-import { COLORES, RADIO_MINIMO } from '../../src/compartido/tema';
+import { COLORES, RADIOS } from '../../src/compartido/tema';
 
 jest.mock('react-native-safe-area-context', () => ({
   useSafeAreaInsets: () => ({ top: 0, right: 0, bottom: 0, left: 0 }),
@@ -34,14 +34,12 @@ describe('F-07 · T-9 · Pestañas de los dos roles', () => {
     expect(StyleSheet.flatten(OPCIONES_PESTANAS.tabBarIconStyle)).toBeUndefined();
   });
 
-  test('PS-13: sin borde, fondo crema, activa en píldora azul grisáceo de radio 24 y texto café', () => {
+  // F-11 cambió el radio de la píldora: se revisa en 'F-11 válido: la pestaña activa usa el radio de píldora'.
+  test('PS-13: sin borde, fondo crema, activa en azul grisáceo y texto café', () => {
     const barra = StyleSheet.flatten(OPCIONES_PESTANAS.tabBarStyle);
 
     expect(barra).toMatchObject({ backgroundColor: COLORES.crema, borderTopWidth: 0 });
     expect(OPCIONES_PESTANAS.tabBarActiveBackgroundColor).toBe(COLORES.azulGrisaceo);
-    expect(StyleSheet.flatten(OPCIONES_PESTANAS.tabBarItemStyle)).toMatchObject({
-      borderRadius: RADIO_MINIMO,
-    });
     expect(OPCIONES_PESTANAS.tabBarActiveTintColor).toBe(COLORES.cafe);
     expect(OPCIONES_PESTANAS.tabBarInactiveTintColor).toBe(COLORES.cafe);
   });
@@ -58,5 +56,25 @@ describe('F-07 · T-9 · Pestañas de los dos roles', () => {
     expect(iconoDePestana(ICONOS_PESTANAS.solicitudes, false)).toBe('clipboard-text-outline');
     expect(iconoDePestana(ICONOS_PESTANAS.descubrir, false)).toBe('paw-outline');
     expect(iconoDePestana(ICONOS_PESTANAS.miPerfil, true)).toBe('account');
+  });
+});
+
+describe('F-11 · T-10 · Pestaña activa en píldora (AD-10)', () => {
+  test('CA-13 F-11 válido: la pestaña activa usa el radio de píldora', () => {
+    expect(StyleSheet.flatten(OPCIONES_PESTANAS.tabBarItemStyle)).toMatchObject({
+      borderRadius: RADIOS.pildora,
+      overflow: 'hidden',
+    });
+  });
+
+  test('CA-13 F-11: la pestaña tiene márgenes de 6 vertical y 8 horizontal', () => {
+    expect(StyleSheet.flatten(OPCIONES_PESTANAS.tabBarItemStyle)).toMatchObject({
+      marginVertical: 6,
+      marginHorizontal: 8,
+    });
+  });
+
+  test('CA-13 F-11: la altura de la barra y el espacio inferior de Android no cambian', () => {
+    expect(estiloBarraPestanas(48)).toEqual({ height: 72 + 48, paddingBottom: 48 });
   });
 });

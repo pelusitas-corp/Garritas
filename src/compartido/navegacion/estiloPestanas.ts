@@ -7,6 +7,11 @@
  * (Nunito negrita 12, café). El ícono va relleno en la activa y de contorno
  * en las inactivas (MaterialCommunityIcons de @expo/vector-icons, D-51).
  *
+ * F-11 AD-10 (decisión del equipo; no está en el SRS): la pestaña activa es
+ * una píldora de verdad (`RADIOS.pildora` con `overflow: 'hidden'`), con
+ * márgenes de 6 vertical y 8 horizontal (8 y no 12, para que "Mis solicitudes"
+ * quepa en teléfonos de 360 de ancho; confirmado por Jennifer).
+ *
  * Espacio inferior de Android (PO-34): si la barra tiene altura fija,
  * React Navigation ya NO le suma el espacio de la barra del sistema, pero sí
  * le pone ese espacio como relleno de abajo. Por eso la altura debe crecer
@@ -20,12 +25,15 @@ import { useMemo } from 'react';
 import type { ComponentProps } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { COLORES, FUENTES, RADIO_MINIMO } from '../tema';
+import { COLORES, FUENTES, RADIOS } from '../tema';
 
 type NombreIcono = ComponentProps<typeof MaterialCommunityIcons>['name'];
 
 /** Altura de la barra sin el espacio inferior del sistema (plan de F-07). */
 export const ALTURA_BARRA = 72;
+
+/** Márgenes de cada pestaña (F-11 AD-10): 6 arriba y abajo, 8 a los lados. */
+export const MARGENES_PESTANA = { vertical: 6, horizontal: 8 } as const;
 
 /** Tamaño de los íconos de las pestañas (plan de F-07). */
 export const TAMANO_ICONO_PESTANA = 24;
@@ -74,7 +82,12 @@ const OPCIONES_PESTANAS: TabsScreenOptions = {
     elevation: 0,
     shadowOpacity: 0,
   },
-  tabBarItemStyle: { borderRadius: RADIO_MINIMO, margin: 8 },
+  tabBarItemStyle: {
+    borderRadius: RADIOS.pildora,
+    overflow: 'hidden',
+    marginVertical: MARGENES_PESTANA.vertical,
+    marginHorizontal: MARGENES_PESTANA.horizontal,
+  },
   tabBarLabelStyle: { fontFamily: FUENTES.negrita, fontSize: 12 },
   tabBarLabelPosition: 'below-icon',
 };
