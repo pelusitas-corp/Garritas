@@ -53,4 +53,26 @@ export const OPACIDAD_DESVANECIDO = 0.4;
  */
 export const BORDE = 2;
 
+/**
+ * Tamaños de texto mínimos, en px (F-12 AE-1, decisión del equipo; no está
+ * en el SRS). Ningún texto de la app baja de `minimo` (apoyo y etiquetas);
+ * los datos (vivienda, tiempo solo, experiencia, teléfono, correo, nombre
+ * del albergue en las tarjetas y el texto del estado) usan `dato`.
+ * `tests/accesibilidad.test.ts` lo revisa en todo `app/` y `src/`.
+ */
+export const TAMANOS_TEXTO = {
+  minimo: 14,
+  dato: 16,
+} as const;
+
+/**
+ * Fondos con transparencia (F-12 AE-11, decisión del equipo; no está en el
+ * SRS). Van aparte de `COLORES` porque no son colores nuevos: son colores de
+ * la paleta con opacidad.
+ */
+export const FONDOS = {
+  /** Relleno de los contenedores de Nueva mascota: azul grisáceo (#A1B2D0) al 25 %. */
+  contenedor: 'rgba(161, 178, 208, 0.25)',
+} as const;
+
 export type NombreColor = keyof typeof COLORES;
