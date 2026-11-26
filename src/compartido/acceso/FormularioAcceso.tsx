@@ -15,15 +15,35 @@
  * campos y botones quedan centrados verticalmente debajo del encabezado,
  * con 24 entre los campos y los botones. Con el teclado abierto se sigue
  * pudiendo desplazar, como antes.
+ *
+ * F-13 AF-21 (decisión del equipo, no está en el SRS):
+ * - el formulario va dentro de `KeyboardAvoidingView` ("padding" en iOS y
+ *   "height" en Android) con `ScrollView`, así al abrir el teclado el campo
+ *   activo y "Iniciar sesión" siguen visibles y se puede desplazar;
+ * - arriba del título, centrado, el logo de Garritas del mismo tamaño que en
+ *   Selección de Rol (`ANCHO_LOGO`), sin "Bienvenido a Garritas" y oculto
+ *   para el lector de pantalla.
  */
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import {
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+
+// Logo del perrito y el gatito (F-11 AD-1); su tipo está en imagenes.d.ts.
+import LOGO from '../../../assets/images/logo-garritas.png';
 
 import { iniciarSesion } from '../../firebase/acceso';
 import BotonPildora from '../BotonPildora';
 import { RUTAS } from '../navegacion/rutas';
+import { ANCHO_LOGO, altoLogo } from '../tema';
 import CampoTexto from './CampoTexto';
 import EncabezadoAcceso from './EncabezadoAcceso';
 import { mensajeErrorAcceso } from './errores';
@@ -39,6 +59,8 @@ interface Props {
 const estilos = StyleSheet.create({
   // F-12 AE-2: el formulario completo va al centro del espacio libre.
   centrado: { justifyContent: 'center' },
+  // F-13 AF-21: el logo del mismo tamaño que en Selección de Rol.
+  logo: { width: ANCHO_LOGO, height: altoLogo(ANCHO_LOGO), alignSelf: 'center' },
   campos: { gap: 12 },
   // 8 más el `gap` de 16 del contenido = 24 entre los campos y los botones.
   abajo: { gap: 12, marginTop: 8 },
@@ -64,50 +86,63 @@ export default function FormularioAcceso({ subtitulo = '', conCrearCuenta = fals
   return (
     <SafeAreaView style={estilosAcceso.pantalla}>
       <EncabezadoAcceso conFlechaAtras />
-      <ScrollView
-        contentContainerStyle={[estilosAcceso.contenido, estilos.centrado]}
-        keyboardShouldPersistTaps="handled"
+      <KeyboardAvoidingView
+        style={estilosAcceso.teclado}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
-        <Text accessibilityRole="header" style={estilosAcceso.titulo}>
-          Ingresa a tu cuenta
-        </Text>
-        {subtitulo ? <Text style={estilosAcceso.subtitulo}>{subtitulo}</Text> : null}
-        <View style={estilos.campos}>
-          <CampoTexto
-            valor={correo}
-            alCambiar={setCorreo}
-            marcador="Correo electrónico"
-            tipo="correo"
-            editable={!enviando}
+        <ScrollView
+          contentContainerStyle={[estilosAcceso.contenido, estilos.centrado]}
+          keyboardShouldPersistTaps="handled"
+        >
+          {/* F-13 AF-21: el logo es decoración; el lector de pantalla no lo lee. */}
+          <Image
+            source={LOGO}
+            style={estilos.logo}
+            resizeMode="contain"
+            accessibilityElementsHidden
+            importantForAccessibility="no-hide-descendants"
           />
-          <CampoTexto
-            valor={contrasena}
-            alCambiar={setContrasena}
-            marcador="Contraseña"
-            tipo="contrasena"
-            editable={!enviando}
-          />
-        </View>
-        {error ? <MensajeError texto={error} /> : null}
-        <View style={estilos.abajo}>
-          <BotonPildora
-            texto="Iniciar sesión"
-            alPresionar={entrar}
-            desactivado={!camposLlenos([correo, contrasena])}
-            cargando={enviando}
-          />
-          {conCrearCuenta ? (
-            <>
-              <Text style={estilosAcceso.pregunta}>¿Aún no tienes cuenta?</Text>
-              <BotonPildora
-                texto="Crear cuenta"
-                alPresionar={() => router.push(RUTAS.avisoPrivacidad)}
-                variante="secundario"
-              />
-            </>
-          ) : null}
-        </View>
-      </ScrollView>
+          <Text accessibilityRole="header" style={estilosAcceso.titulo}>
+            Ingresa a tu cuenta
+          </Text>
+          {subtitulo ? <Text style={estilosAcceso.subtitulo}>{subtitulo}</Text> : null}
+          <View style={estilos.campos}>
+            <CampoTexto
+              valor={correo}
+              alCambiar={setCorreo}
+              marcador="Correo electrónico"
+              tipo="correo"
+              editable={!enviando}
+            />
+            <CampoTexto
+              valor={contrasena}
+              alCambiar={setContrasena}
+              marcador="Contraseña"
+              tipo="contrasena"
+              editable={!enviando}
+            />
+          </View>
+          {error ? <MensajeError texto={error} /> : null}
+          <View style={estilos.abajo}>
+            <BotonPildora
+              texto="Iniciar sesión"
+              alPresionar={entrar}
+              desactivado={!camposLlenos([correo, contrasena])}
+              cargando={enviando}
+            />
+            {conCrearCuenta ? (
+              <>
+                <Text style={estilosAcceso.pregunta}>¿Aún no tienes cuenta?</Text>
+                <BotonPildora
+                  texto="Crear cuenta"
+                  alPresionar={() => router.push(RUTAS.avisoPrivacidad)}
+                  variante="secundario"
+                />
+              </>
+            ) : null}
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
