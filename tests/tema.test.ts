@@ -83,7 +83,7 @@ describe('F-13 · T-1 · Fondos, opacidad y medidas nuevas (AF-10, AF-11, AF-14,
   });
 
   test('F-13 válido: ya no hay relleno transparente de contenedores (AF-15 reemplaza AE-11)', () => {
-    expect(Object.keys(FONDOS).sort()).toEqual(['noApto', 'nuevas']);
+    expect(Object.keys(FONDOS).sort()).toEqual(['noApto', 'nuevas', 'velo']);
   });
 
   test('F-13 no válido: ningún tamaño de texto nuevo baja de 14', () => {

@@ -89,6 +89,8 @@ export const FONDOS = {
   nuevas: 'rgba(37, 49, 76, 0.15)',
   /** Círculo del % cuando es "No Apto": azul grisáceo (#A1B2D0) al 50 % (F-13 AF-11). */
   noApto: 'rgba(161, 178, 208, 0.5)',
+  /** Velo detrás del modal "¿Quieres cerrar sesión?": azul marino (#25314C) al 40 % (F-13 AF-17). */
+  velo: 'rgba(37, 49, 76, 0.4)',
 } as const;
 
 /**
@@ -118,14 +120,6 @@ export const CIRCULOS = {
 export const PUNTITOS = {
   /** Estado de Mis solicitudes (AF-3) y píldora de solicitudes nuevas (AF-10). */
   estado: 12,
-  /** Decoración junto al subtítulo de Descubrir (AF-5). */
-  decoracion: 8,
-} as const;
-
-/** Estrellitas de contorno de Descubrir, en px (F-13 AF-5). */
-export const ESTRELLITAS = {
-  grande: 16,
-  chica: 12,
 } as const;
 
 /** Tamaños de íconos de F-13, en px (decisión del equipo; no está en el SRS). */
@@ -144,5 +138,22 @@ export const ALTO_PILDORA_GRANDE = 40;
 
 /** Margen lateral de las tarjetas de solicitud del albergue (F-13 AF-12; antes 24). */
 export const MARGEN_TARJETA_SOLICITUD = 16;
+
+/**
+ * Separación entre el encabezado del animal y el bloque vacío de "Solicitudes
+ * de un animal" sin solicitudes (F-13 AF-22).
+ */
+export const SEPARACION_VACIA = 40;
+
+/**
+ * Ancho del logo grande de Garritas, el de Selección de Rol (F-11 §4.1). F-13
+ * AF-21 lo usa también en "Ingresa a tu cuenta". El alto sale de su proporción.
+ */
+export const ANCHO_LOGO = 240;
+
+/** Proporción del logo (580 : 456). Recibe el ancho y devuelve el alto. */
+export function altoLogo(ancho: number): number {
+  return Math.round((ancho * 456) / 580);
+}
 
 export type NombreColor = keyof typeof COLORES;

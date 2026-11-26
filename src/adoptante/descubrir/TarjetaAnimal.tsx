@@ -13,8 +13,10 @@
  *
  * F-13 (decisión del equipo, no está en el SRS):
  * - AF-4: la foto es `foto` (la completa si ya llegó, si no la miniatura; lo
- *   decide `fotoDeTarjeta`) y usa `resizeMode="contain"` sobre el azul
- *   grisáceo de la tarjeta, para que siempre se vea el animal completo.
+ *   decide `fotoDeTarjeta`).
+ * - AF-19 (reemplaza el `contain` de AF-4): la foto vuelve a `cover`, con el
+ *   mismo tamaño y posición de antes de F-13 (`main` en 24cbd26): llena la
+ *   tarjeta y puede recortar un poco los bordes.
  * - AF-5: la píldora del % va en menta con texto azul marino y una estrellita.
  *
  * F-12 AE-4 (decisión del equipo, no está en el SRS; reemplaza los espacios
@@ -106,7 +108,7 @@ export default function TarjetaAnimal({ tarjeta, foto, alPasar, alAbrir }: Props
           accessibilityLabel={tarjeta.nombre}
         >
           <View style={estilos.foto}>
-            <Image source={{ uri: foto }} style={StyleSheet.absoluteFill} resizeMode="contain" />
+            <Image source={{ uri: foto }} style={StyleSheet.absoluteFill} resizeMode="cover" />
             <View style={estilos.info}>
               <BotonCircular
                 icono={ICONOS_DESCUBRIR.info}

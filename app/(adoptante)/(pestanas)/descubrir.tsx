@@ -15,10 +15,9 @@
  * deja otros 16 hasta los botones y 16 hasta la barra de pestañas.
  * F-13 AF-4: la tarjeta recibe la foto completa en cuanto llega
  * (`useFotosCompletas` y `fotoDeTarjeta`); mientras, la miniatura.
- * F-13 AF-5: junto al subtítulo, 2 estrellitas de contorno (16 y 12) y un
- * puntito azul marino de 8. Sin animaciones y ocultas para accesibilidad.
+ * F-13 AF-19 (reemplaza la decoración de AF-5): sin estrellitas ni puntito
+ * junto a "Tu próximo mejor amigo."; el subtítulo queda como antes de F-13.
  */
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -40,28 +39,19 @@ import EncabezadoMarca from '../../../src/compartido/EncabezadoMarca';
 import EstadoPantalla from '../../../src/compartido/EstadoPantalla';
 import MENSAJES from '../../../src/compartido/mensajes';
 import { RUTAS } from '../../../src/compartido/navegacion/rutas';
-import { COLORES, ESTRELLITAS, FUENTES, PUNTITOS, RADIOS } from '../../../src/compartido/tema';
+import { COLORES, FUENTES, RADIOS } from '../../../src/compartido/tema';
 
 /** Margen lateral del prototipo. */
 const MARGEN = 24;
 
 const estilos = StyleSheet.create({
   pantalla: { flex: 1, backgroundColor: COLORES.crema },
-  // F-13 AF-5: el subtítulo y su decoración en una fila.
-  filaSubtitulo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  subtitulo: {
     marginTop: 8,
     paddingHorizontal: MARGEN,
-  },
-  subtitulo: { flexShrink: 1, fontFamily: FUENTES.negrita, fontSize: 22, color: COLORES.cafe },
-  decoracion: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  puntito: {
-    width: PUNTITOS.decoracion,
-    height: PUNTITOS.decoracion,
-    borderRadius: RADIOS.pildora,
-    backgroundColor: COLORES.azulMarino,
+    fontFamily: FUENTES.negrita,
+    fontSize: 22,
+    color: COLORES.cafe,
   },
   aviso: {
     marginHorizontal: MARGEN,
@@ -96,27 +86,7 @@ export default function Descubrir() {
           />
         }
       />
-      <View style={estilos.filaSubtitulo}>
-        <Text style={estilos.subtitulo}>{TEXTO_SUBTITULO_DESCUBRIR}</Text>
-        {/* F-13 AF-5: decoración, sin animaciones; el lector de pantalla no la lee. */}
-        <View
-          style={estilos.decoracion}
-          accessibilityElementsHidden
-          importantForAccessibility="no-hide-descendants"
-        >
-          <MaterialCommunityIcons
-            name={ICONOS_DESCUBRIR.estrellitaContorno}
-            size={ESTRELLITAS.grande}
-            color={COLORES.azulMarino}
-          />
-          <View style={estilos.puntito} />
-          <MaterialCommunityIcons
-            name={ICONOS_DESCUBRIR.estrellitaContorno}
-            size={ESTRELLITAS.chica}
-            color={COLORES.azulMarino}
-          />
-        </View>
-      </View>
+      <Text style={estilos.subtitulo}>{TEXTO_SUBTITULO_DESCUBRIR}</Text>
       {avisoNoDisponible ? (
         <View style={estilos.aviso}>
           <Text accessibilityRole="alert" style={estilos.textoAviso}>
