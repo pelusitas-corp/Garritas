@@ -10,6 +10,8 @@
  * decide `pantallaDescubrir` y los dibuja `EstadoPantalla`.
  *
  * F-11 AD-5: el encabezado es `EncabezadoMarca` (se ve igual que antes).
+ * F-11 AD-7: subtítulo de 22 más pegado al encabezado; la tarjeta empieza 12
+ * debajo y `TarjetaAnimal` reparte el resto en espacios iguales.
  */
 import { router } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
@@ -38,10 +40,10 @@ const MARGEN = 24;
 const estilos = StyleSheet.create({
   pantalla: { flex: 1, backgroundColor: COLORES.crema },
   subtitulo: {
-    marginTop: 16,
+    marginTop: 8,
     paddingHorizontal: MARGEN,
     fontFamily: FUENTES.negrita,
-    fontSize: 18,
+    fontSize: 22,
     color: COLORES.cafe,
   },
   aviso: {
@@ -52,8 +54,8 @@ const estilos = StyleSheet.create({
     backgroundColor: COLORES.menta,
   },
   textoAviso: { fontFamily: FUENTES.negrita, fontSize: 16, color: COLORES.cafe },
-  // Centra la tarjeta y los botones entre el subtítulo y la barra de pestañas.
-  cuerpo: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingVertical: 12 },
+  // F-11 AD-7: la tarjeta empieza 12 debajo del subtítulo (sin hueco grande).
+  cuerpo: { flex: 1, alignItems: 'center', paddingTop: 12 },
 });
 
 export default function Descubrir() {

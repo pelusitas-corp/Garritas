@@ -17,7 +17,7 @@
 | T-4 | Casilla al final del aviso y desplazamiento con el error | Hecha |
 | T-5 | `EncabezadoMarca` y su uso en Descubrir | Hecha |
 | T-6 | Decoraciones del perfil y encabezado de marca | Hecha |
-| T-7 | Subtítulo de Descubrir y espacios parejos | Pendiente |
+| T-7 | Subtítulo de Descubrir y espacios parejos | Hecha |
 | T-8 | Deslizar la tarjeta para "Pasar" o "Me encanta" | Pendiente |
 | T-9 | Foto completa del Detalle con alto flexible | Pendiente |
 | T-10 | Pestaña activa en píldora | Pendiente |
@@ -25,7 +25,7 @@
 | T-12 | Nueva mascota en 4 contenedores | Pendiente |
 | T-13 | Cierre de la nota con la guía de prueba en el celular | Pendiente |
 
-**Último commit:** T-6 (ver `git log`).
+**Último commit:** T-7 (ver `git log`).
 
 ## Decisiones del plan (confirmadas por Jennifer el 25/11/2026)
 
@@ -49,7 +49,7 @@
 
 ## Qué falta
 
-T-7 a T-13, las verificaciones finales, el push y el PR (sin fusionar).
+T-8 a T-13, las verificaciones finales, el push y el PR (sin fusionar).
 
 ## Pendientes
 
@@ -95,3 +95,8 @@ T-7 a T-13, las verificaciones finales, el push y el PR (sin fusionar).
   negrita 32. Perfil Garritas y Mi perfil muestran `EncabezadoMarca` con
   `TEXTO_GARRITAS` y `TEXTO_MI_PERFIL`; en Mi perfil el nombre y la tarjeta
   quedan centrados (`flex 1`) entre el encabezado y "Cerrar sesión".
+- **T-7:** subtítulo de Descubrir en negrita 22 con `marginTop 8`. El
+  `cuerpo` ya no centra: deja 12 arriba (`paddingTop`). `TarjetaAnimal` ocupa
+  todo el cuerpo (`flex 1`) y su orden es tarjeta, espacio, botones, espacio;
+  los dos espacios llevan `flex 1` y `minHeight 12`, así miden lo mismo. Si la
+  pantalla es baja, los espacios quedan en 12 y la foto se encoge como antes.

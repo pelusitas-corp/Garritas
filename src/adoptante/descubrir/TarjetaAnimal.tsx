@@ -11,6 +11,10 @@
  * - debajo, "Pasar" y "Me encanta" en círculos de 88, con su texto.
  * No muestra "No Apto" (DE-3).
  *
+ * F-11 AD-7: debajo de la tarjeta y debajo de los botones hay dos espacios
+ * flexibles iguales (mínimo 12): así el hueco tarjeta ↔ botones mide lo mismo
+ * que el de botones ↔ pestañas.
+ *
  * Recibe la `tarjeta` y qué hacer al pasar o al abrir el Detalle.
  * No devuelve datos: solo dibuja.
  */
@@ -43,10 +47,13 @@ const ALTO_FOTO_MINIMO = 120;
 const DIAMETRO_ACCION = 88;
 /** Margen lateral del prototipo: la tarjeta mide el ancho de la pantalla menos 2 × 24. */
 const MARGEN = 24;
+/** Lo menos que mide cada espacio flexible (F-11 AD-7). */
+const ESPACIO_MINIMO = 12;
 
 const estilos = StyleSheet.create({
-  // Sin flex: 1 para poder centrarse; flexShrink deja que la foto se encoja si no cabe.
-  contenedor: { flexShrink: 1, gap: 16 },
+  // Ocupa todo el cuerpo; si no cabe, la tarjeta (y su foto) se encoge, nunca los botones.
+  contenedor: { flex: 1 },
+  espacio: { flex: 1, minHeight: ESPACIO_MINIMO },
   tarjeta: {
     flexShrink: 1,
     borderRadius: RADIOS.tarjetaGrande,
@@ -103,6 +110,7 @@ export default function TarjetaAnimal({ tarjeta, alPasar, alAbrir }: Props) {
           </View>
         </View>
       </Pressable>
+      <View style={estilos.espacio} />
       <View style={estilos.acciones}>
         <View style={estilos.accion}>
           <BotonCircular
@@ -127,6 +135,7 @@ export default function TarjetaAnimal({ tarjeta, alPasar, alAbrir }: Props) {
           <Text style={estilos.textoAccion}>{TEXTO_ME_ENCANTA}</Text>
         </View>
       </View>
+      <View style={estilos.espacio} />
     </View>
   );
 }
