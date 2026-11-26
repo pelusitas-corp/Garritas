@@ -1,4 +1,4 @@
-Hecha |Hecha |# Avance F-12 · Ajustes de diseño, ronda 2 · Parte A
+Hecha |Hecha |Hecha |# Avance F-12 · Ajustes de diseño, ronda 2 · Parte A
 
 - **Spec:** `specs/features/F-12-ajustes-diseno-2.md` (v1.0 Aprobada), solo la
   Parte A (§4.1 a §4.11, T-1 a T-11). La corrección a 9 animales va aparte en
@@ -25,7 +25,7 @@ Hecha |Hecha |# Avance F-12 · Ajustes de diseño, ronda 2 · Parte A
 | T-10 | `enlaceTelefono` y Detalle de solicitud unificado | Pendiente |
 | T-11 | Relleno de los contenedores de Nueva mascota | Pendiente |
 
-**Último commit:** T-4 (ver `git log`).
+**Último commit:** T-5 (ver `git log`).
 
 **Pushes acordados:** después de T-4, T-8 y T-11, con typecheck, lint y test
 en verde. Entre T-1 y T-2 la prueba de accesibilidad queda en rojo a
@@ -88,3 +88,10 @@ propósito (marca los textos que T-2 corrige), así que no hay push hasta T-2.
   "Ver mis matches" pegado abajo. Ahora el contenido es un solo grupo con
   `justifyContent: 'center'` y `gap: 32`: el perfil y el botón quedan juntos a
   media pantalla. El botón sigue a lo ancho, con el margen de 24.
+- **T-5:** en `TarjetaAnimal` se quitaron los dos espacios flexibles de F-11
+  AD-7 y el alto escalado de la foto (270 en 390 de ancho). Ahora el arrastre
+  y la tarjeta tienen `flex: 1` y la foto también (mínimo 120): la tarjeta
+  crece con el espacio libre. Entre la tarjeta y los botones y entre los
+  botones y la barra de pestañas hay 16 fijos (`gap` y `paddingBottom`), y
+  Descubrir deja 16 entre el subtítulo y la tarjeta. El ancho sigue siendo
+  el de la pantalla menos 2 × 24, y el gesto y los botones no cambian.
