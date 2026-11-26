@@ -1,6 +1,13 @@
 // Prueba mínima del setup: comprueba que Jest funciona y que el tema
 // Soft UI respeta la arquitectura §8.
-import { COLORES, FUENTES, RADIOS, RADIO_MINIMO } from '../src/compartido/tema';
+import {
+  BORDE,
+  COLORES,
+  FUENTES,
+  OPACIDAD_DESVANECIDO,
+  RADIOS,
+  RADIO_MINIMO,
+} from '../src/compartido/tema';
 
 describe('Tema Soft UI (arquitectura §8)', () => {
   test('usa exactamente los 5 colores de la arquitectura', () => {
@@ -20,5 +27,16 @@ describe('Tema Soft UI (arquitectura §8)', () => {
     Object.values(FUENTES).forEach((fuente) => {
       expect(fuente.startsWith('Nunito_')).toBe(true);
     });
+  });
+});
+
+describe('F-11 · T-1 · Opacidad de desvanecido y borde (AD-4, AD-12, RN-02)', () => {
+  test('F-11 válido: la opacidad de desvanecido está entre 0 y 1', () => {
+    expect(OPACIDAD_DESVANECIDO).toBeGreaterThan(0);
+    expect(OPACIDAD_DESVANECIDO).toBeLessThan(1);
+  });
+
+  test('F-11 válido: el borde de los contenedores es positivo', () => {
+    expect(BORDE).toBeGreaterThan(0);
   });
 });
