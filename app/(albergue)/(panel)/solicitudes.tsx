@@ -43,8 +43,9 @@ const estilos = StyleSheet.create({
   marca: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   textoEncabezado: { fontFamily: FUENTES.negrita, fontSize: 24, color: COLORES.cafe },
   titulos: { gap: 2, marginTop: 16, marginBottom: 16, paddingHorizontal: MARGEN },
-  subtitulo: { fontFamily: FUENTES.negrita, fontSize: 13, color: COLORES.cafe },
-  titulo: { fontFamily: FUENTES.negrita, fontSize: 26, color: COLORES.cafe },
+  // F-11 AD-11: el nombre del albergue (28) va más grande que "Tus animales" (20).
+  subtitulo: { fontFamily: FUENTES.negrita, fontSize: 28, color: COLORES.cafe },
+  titulo: { fontFamily: FUENTES.negrita, fontSize: 20, color: COLORES.cafe },
   lista: { gap: 12, paddingHorizontal: MARGEN, paddingBottom: MARGEN },
 });
 

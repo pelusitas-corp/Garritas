@@ -21,11 +21,11 @@
 | T-8 | Deslizar la tarjeta para "Pasar" o "Me encanta" | Hecha |
 | T-9 | Foto completa del Detalle con alto flexible | Hecha |
 | T-10 | Pestaña activa en píldora | Hecha |
-| T-11 | Nombre del albergue más grande que "Tus animales" | Pendiente |
+| T-11 | Nombre del albergue más grande que "Tus animales" | Hecha |
 | T-12 | Nueva mascota en 4 contenedores | Pendiente |
 | T-13 | Cierre de la nota con la guía de prueba en el celular | Pendiente |
 
-**Último commit:** T-10 (ver `git log`).
+**Último commit:** T-11 (ver `git log`).
 
 ## Decisiones del plan (confirmadas por Jennifer el 25/11/2026)
 
@@ -49,7 +49,7 @@
 
 ## Qué falta
 
-T-11 a T-13, las verificaciones finales, el push y el PR (sin fusionar).
+T-12 y T-13, las verificaciones finales, el push y el PR (sin fusionar).
 
 ## Pendientes
 
@@ -141,3 +141,6 @@ T-11 a T-13, las verificaciones finales, el push y el PR (sin fusionar).
   `PS-13: sin borde, fondo crema, activa en azul grisáceo y texto café`; el
   radio pasó a `CA-13 F-11 válido: la pestaña activa usa el radio de
   píldora`, junto con la prueba de los márgenes y la de la altura.
+- **T-11:** en Solicitudes del albergue, el nombre del refugio pasa de 13 a
+  negrita 28 y "Tus animales" de 26 a negrita 20, los dos en café. Los textos
+  no cambian.
