@@ -8,6 +8,11 @@
  *
  * Las respuestas de los Adoptantes A y B son las mismas de las pruebas del
  * motor (`tests/matchmaking/datos.ts`, ESTADO §6.6).
+ *
+ * 03 v1.8 M-7 (F-12 AE-13, AE-14; decisión del equipo, no está en el SRS):
+ * son 9 animales, los 5 originales y Tiara, Tostado, Nova y Naranga, que no
+ * tienen solicitudes. Sus fotos reales están en esta carpeta como
+ * `{id}-1.jpg` (y `tiara-2.jpg`) con su `{id}-miniatura.jpg`.
  */
 import type { Animal, EstadoSolicitud, ResumenHogar } from '../../src/compartido/modelo';
 import type { Cuestionario, PerfilGarritas } from '../../src/matchmaking';
@@ -67,6 +72,7 @@ export type AnimalPrueba = Omit<
 };
 
 // Edad y tamaño: opciones de F-02 (AL-1, AL-2) y 03-modelo-datos §8.2.
+// Los 5 primeros son los originales; los 4 últimos, los nuevos de M-7.
 export const ANIMALES: AnimalPrueba[] = [
   {
     id: 'wini',
@@ -152,6 +158,78 @@ export const ANIMALES: AnimalPrueba[] = [
       energia: 'alta',
       espacio: 'patioBardeado',
       tiempo: 'unasHoras',
+      experiencia: 'medio',
+      convivencia: 'conNinosYMascotas',
+      temperamento: 'sociable',
+    },
+    estado: 'Disponible',
+  },
+  {
+    id: 'tiara',
+    nombre: 'Tiara',
+    especie: 'perro',
+    edad: '4 a 7 años',
+    tamano: 'Pequeño',
+    vacunado: true,
+    esterilizado: true,
+    perfilCompatibilidad: {
+      energia: 'baja',
+      espacio: 'poco',
+      tiempo: 'variasHoras',
+      experiencia: 'facil',
+      convivencia: 'conNinosYMascotas',
+      temperamento: 'tranquilo',
+    },
+    estado: 'Disponible',
+  },
+  {
+    id: 'tostado',
+    nombre: 'Tostado',
+    especie: 'gato',
+    edad: '1 a 3 años',
+    tamano: 'Pequeño',
+    vacunado: true,
+    esterilizado: true,
+    perfilCompatibilidad: {
+      energia: 'media',
+      espacio: 'poco',
+      tiempo: 'variasHoras',
+      experiencia: 'facil',
+      convivencia: 'conNinosYMascotas',
+      temperamento: 'sociable',
+    },
+    estado: 'Disponible',
+  },
+  {
+    id: 'nova',
+    nombre: 'Nova',
+    especie: 'gato',
+    edad: '1 a 3 años',
+    tamano: 'Pequeño',
+    vacunado: true,
+    esterilizado: false,
+    perfilCompatibilidad: {
+      energia: 'baja',
+      espacio: 'poco',
+      tiempo: 'unasHoras',
+      experiencia: 'medio',
+      convivencia: 'soloConMascotas',
+      temperamento: 'timido',
+    },
+    estado: 'Disponible',
+  },
+  {
+    id: 'naranga',
+    nombre: 'Naranga',
+    especie: 'gato',
+    edad: 'Menos de 1 año',
+    tamano: 'Pequeño',
+    vacunado: false,
+    esterilizado: false,
+    perfilCompatibilidad: {
+      energia: 'alta',
+      espacio: 'poco',
+      tiempo: 'compania',
       experiencia: 'medio',
       convivencia: 'conNinosYMascotas',
       temperamento: 'sociable',
