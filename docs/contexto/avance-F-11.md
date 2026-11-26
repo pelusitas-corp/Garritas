@@ -12,7 +12,7 @@
 | # | Tarea | Estado |
 |---|---|---|
 | T-1 | `OPACIDAD_DESVANECIDO` y `BORDE` en `tema.ts` con sus pruebas | Hecha |
-| T-2 | `BotonPildora`: tamaño chico y desactivado desvanecido | Pendiente |
+| T-2 | `BotonPildora`: tamaño chico y desactivado desvanecido | Hecha |
 | T-3 | Logo y "Iniciar sesión" chico (Selección de Rol y "Crea tu cuenta") | Pendiente |
 | T-4 | Casilla al final del aviso y desplazamiento con el error | Pendiente |
 | T-5 | `EncabezadoMarca` y su uso en Descubrir | Pendiente |
@@ -25,7 +25,7 @@
 | T-12 | Nueva mascota en 4 contenedores | Pendiente |
 | T-13 | Cierre de la nota con la guía de prueba en el celular | Pendiente |
 
-**Último commit:** T-1 (ver `git log`).
+**Último commit:** T-2 (ver `git log`).
 
 ## Decisiones del plan (confirmadas por Jennifer el 25/11/2026)
 
@@ -49,4 +49,13 @@
 
 ## Qué falta
 
-T-2 a T-13, las verificaciones finales, el push y el PR (sin fusionar).
+T-3 a T-13, las verificaciones finales, el push y el PR (sin fusionar).
+
+## Notas por tarea
+
+- **T-2:** `BotonPildora` conserva el `icono` de F-06 y agrega `tamano`
+  (`normal` | `chico`). La función pura `aspectoBoton(variante, { gris,
+  desactivado, cargando })` devuelve `{ fondo, colorTexto, opacidad,
+  responde }` y `MEDIDAS_BOTON` guarda las medidas de cada tamaño; las dos se
+  prueban en `tests/compartido/botonPildora.test.ts`. `cargando` no se
+  desvanece: solo muestra el indicador.
