@@ -12,6 +12,10 @@
  * contenedores (fotos, datos básicos, cuidados y perfil), crema con borde
  * azul grisáceo de `BORDE`, radio 24, relleno 16 y separación de 20. Los
  * textos, validaciones y mensajes no cambian.
+ *
+ * F-12 AE-11 (decisión del equipo; no está en el SRS): los 4 contenedores se
+ * rellenan de azul grisáceo al 25 % (`FONDOS.contenedor`) en lugar de crema,
+ * para distinguir cada bloque. El borde se queda.
  */
 import { router } from 'expo-router';
 import { useCallback } from 'react';
@@ -34,7 +38,7 @@ import CampoTexto from '../../../src/compartido/acceso/CampoTexto';
 import MensajeError from '../../../src/compartido/acceso/MensajeError';
 import BotonPildora from '../../../src/compartido/BotonPildora';
 import { RUTAS } from '../../../src/compartido/navegacion/rutas';
-import { BORDE, COLORES, FUENTES, RADIOS } from '../../../src/compartido/tema';
+import { BORDE, COLORES, FONDOS, FUENTES, RADIOS } from '../../../src/compartido/tema';
 
 const estilos = StyleSheet.create({
   pantalla: { flex: 1, backgroundColor: COLORES.crema },
@@ -48,7 +52,8 @@ const estilos = StyleSheet.create({
     borderWidth: BORDE,
     borderColor: COLORES.azulGrisaceo,
     borderRadius: RADIOS.tarjeta,
-    backgroundColor: COLORES.crema,
+    // F-12 AE-11: relleno azul grisáceo suave; campos y opciones siguen en crema.
+    backgroundColor: FONDOS.contenedor,
   },
   // F-11 AD-12: un poco más de espacio entre las dimensiones del perfil (12 → 16).
   contenedorPerfil: { gap: 16 },

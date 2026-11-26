@@ -1,4 +1,4 @@
-Hecha |Hecha |Hecha |Hecha |Hecha |Hecha |Hecha |Hecha |# Avance F-12 · Ajustes de diseño, ronda 2 · Parte A
+Hecha |Hecha |Hecha |Hecha |Hecha |Hecha |Hecha |Hecha |Hecha |# Avance F-12 · Ajustes de diseño, ronda 2 · Parte A
 
 - **Spec:** `specs/features/F-12-ajustes-diseno-2.md` (v1.0 Aprobada), solo la
   Parte A (§4.1 a §4.11, T-1 a T-11). La corrección a 9 animales va aparte en
@@ -25,7 +25,7 @@ Hecha |Hecha |Hecha |Hecha |Hecha |Hecha |Hecha |Hecha |# Avance F-12 · Ajustes
 | T-10 | `enlaceTelefono` y Detalle de solicitud unificado | Pendiente |
 | T-11 | Relleno de los contenedores de Nueva mascota | Pendiente |
 
-**Último commit:** T-10 (ver `git log`).
+**Último commit:** T-11 (ver `git log`). Las 11 tareas de la Parte A están hechas; falta la prueba en el celular (T-13, Jennifer).
 
 **Pushes acordados:** después de T-4, T-8 y T-11, con typecheck, lint y test
 en verde. Entre T-1 y T-2 la prueba de accesibilidad queda en rojo a
@@ -144,3 +144,8 @@ propósito (marca los textos que T-2 corrige), así que no hay push hasta T-2.
     teléfono es un `Text` normal.
   - `decision.ts` no cambió: la pantalla usa el teléfono ya con formato, y
     `enlaceTelefono` le quita los espacios.
+- **T-11:** en Nueva mascota, el estilo `contenedor` de los 4 bloques cambia
+  su fondo de crema a `FONDOS.contenedor` (azul grisáceo al 25 %). El borde
+  `BORDE` azul grisáceo, el radio 24 y el relleno 16 se quedan. Los campos
+  (`CampoTexto`) y las opciones (`SelectorOpciones`) siguen en crema, así que
+  se distinguen sobre el relleno. `SeccionFotos.tsx` no se tocó.
