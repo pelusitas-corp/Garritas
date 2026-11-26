@@ -1,4 +1,4 @@
-Hecha |Hecha |Hecha |Hecha |# Avance F-12 · Ajustes de diseño, ronda 2 · Parte A
+Hecha |Hecha |Hecha |Hecha |Hecha |# Avance F-12 · Ajustes de diseño, ronda 2 · Parte A
 
 - **Spec:** `specs/features/F-12-ajustes-diseno-2.md` (v1.0 Aprobada), solo la
   Parte A (§4.1 a §4.11, T-1 a T-11). La corrección a 9 animales va aparte en
@@ -25,7 +25,7 @@ Hecha |Hecha |Hecha |Hecha |# Avance F-12 · Ajustes de diseño, ronda 2 · Part
 | T-10 | `enlaceTelefono` y Detalle de solicitud unificado | Pendiente |
 | T-11 | Relleno de los contenedores de Nueva mascota | Pendiente |
 
-**Último commit:** T-6 (ver `git log`).
+**Último commit:** T-7 (ver `git log`).
 
 **Pushes acordados:** después de T-4, T-8 y T-11, con typecheck, lint y test
 en verde. Entre T-1 y T-2 la prueba de accesibilidad queda en rojo a
@@ -105,3 +105,10 @@ propósito (marca los textos que T-2 corrige), así que no hay push hasta T-2.
   sombra; respuesta 4) y dentro va `BotonTexto` con `ICONOS_PANEL.salir`. La
   "Cerrar sesión" de las guardas (`GuardaDeGrupo`) no cambia: AE-6 solo
   menciona Mi perfil y el menú del albergue.
+- **T-7:** en Mi perfil, debajo del encabezado va la tarjeta del nombre
+  (azul grisáceo, `RADIOS.tarjeta` = 24, relleno 20, ícono `account-outline` de
+  28 y el nombre en negrita 24, centrados). 32 debajo, la tarjeta del perfil
+  Garritas queda centrada con `flex: 1`, y abajo "Cerrar sesión" (T-6). El
+  `ScrollView` lleva `alwaysBounceVertical={false}` (iOS) y
+  `overScrollMode="never"` (Android): si todo cabe no se mueve, y en un
+  celular chico se puede desplazar.
