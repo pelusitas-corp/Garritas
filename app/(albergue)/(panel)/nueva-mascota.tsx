@@ -13,9 +13,11 @@
  * azul grisáceo de `BORDE`, radio 24, relleno 16 y separación de 20. Los
  * textos, validaciones y mensajes no cambian.
  *
- * F-12 AE-11 (decisión del equipo; no está en el SRS): los 4 contenedores se
- * rellenan de azul grisáceo al 25 % (`FONDOS.contenedor`) en lugar de crema,
- * para distinguir cada bloque. El borde se queda.
+ * F-13 AF-15 (decisión del equipo; no está en el SRS; reemplaza F-12 AE-11):
+ * los 4 contenedores vuelven a crema con el borde azul grisáceo de F-11
+ * (AD-12), sin relleno transparente. Las opciones sin elegir son azul
+ * grisáceo sólido (`SelectorOpciones`, `CasillaCuidado`) y "Añadir una foto"
+ * lleva borde punteado y cámara con "+" (`SeccionFotos`).
  */
 import { router } from 'expo-router';
 import { useCallback } from 'react';
@@ -38,7 +40,7 @@ import CampoTexto from '../../../src/compartido/acceso/CampoTexto';
 import MensajeError from '../../../src/compartido/acceso/MensajeError';
 import BotonPildora from '../../../src/compartido/BotonPildora';
 import { RUTAS } from '../../../src/compartido/navegacion/rutas';
-import { BORDE, COLORES, FONDOS, FUENTES, RADIOS } from '../../../src/compartido/tema';
+import { BORDE, COLORES, FUENTES, RADIOS } from '../../../src/compartido/tema';
 
 const estilos = StyleSheet.create({
   pantalla: { flex: 1, backgroundColor: COLORES.crema },
@@ -52,8 +54,8 @@ const estilos = StyleSheet.create({
     borderWidth: BORDE,
     borderColor: COLORES.azulGrisaceo,
     borderRadius: RADIOS.tarjeta,
-    // F-12 AE-11: relleno azul grisáceo suave; campos y opciones siguen en crema.
-    backgroundColor: FONDOS.contenedor,
+    // F-13 AF-15: crema con borde, sin el relleno transparente de F-12 AE-11.
+    backgroundColor: COLORES.crema,
   },
   // F-11 AD-12: un poco más de espacio entre las dimensiones del perfil (12 → 16).
   contenedorPerfil: { gap: 16 },

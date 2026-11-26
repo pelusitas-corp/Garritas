@@ -79,13 +79,12 @@ export const TAMANOS_TEXTO = {
 } as const;
 
 /**
- * Fondos con transparencia (F-12 AE-11, decisión del equipo; no está en el
- * SRS). Van aparte de `COLORES` porque no son colores nuevos: son colores de
- * la paleta con opacidad.
+ * Fondos con transparencia (decisión del equipo; no está en el SRS). Van
+ * aparte de `COLORES` porque no son colores nuevos: son colores de la paleta
+ * con opacidad. F-13 AF-15 quitó `contenedor` (F-12 AE-11): los contenedores
+ * de Nueva mascota vuelven a crema con borde.
  */
 export const FONDOS = {
-  /** Relleno de los contenedores de Nueva mascota: azul grisáceo (#A1B2D0) al 25 %. */
-  contenedor: 'rgba(161, 178, 208, 0.25)',
   /** Píldora "N solicitudes nuevas": azul marino (#25314C) al 15 % (F-13 AF-10). */
   nuevas: 'rgba(37, 49, 76, 0.15)',
   /** Círculo del % cuando es "No Apto": azul grisáceo (#A1B2D0) al 50 % (F-13 AF-11). */

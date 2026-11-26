@@ -9,10 +9,15 @@
  * - `alElegir`: qué hacer al tocar una opción;
  * - `bloqueado`: `true` mientras se publica.
  * No devuelve datos: solo dibuja el selector.
+ *
+ * F-13 AF-15 (decisión del equipo; no está en el SRS): las opciones sin
+ * elegir son azul grisáceo sólido con texto café (Figma "Alta de Mascota");
+ * la elegida sigue en azul marino con texto crema.
  */
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { COLORES, FUENTES, RADIOS } from '../../compartido/tema';
+import { aspectoOpcion } from './aspectoOpcion';
 import type { Opcion } from './textos';
 
 interface Props<V extends string> {
@@ -30,14 +35,11 @@ const estilos = StyleSheet.create({
   pildora: {
     borderRadius: RADIOS.pildora,
     borderWidth: 2,
-    borderColor: COLORES.azulGrisaceo,
-    backgroundColor: COLORES.crema,
     paddingHorizontal: 16,
     paddingVertical: 10,
   },
-  elegida: { backgroundColor: COLORES.azulMarino, borderColor: COLORES.azulMarino },
-  texto: { fontFamily: FUENTES.regular, fontSize: 15, color: COLORES.cafe },
-  textoElegida: { fontFamily: FUENTES.negrita, color: COLORES.crema },
+  texto: { fontFamily: FUENTES.regular, fontSize: 15 },
+  textoElegida: { fontFamily: FUENTES.negrita },
 });
 
 export default function SelectorOpciones<V extends string>({
@@ -53,6 +55,7 @@ export default function SelectorOpciones<V extends string>({
       <View style={estilos.opciones}>
         {opciones.map((opcion) => {
           const elegida = opcion.valor === valor;
+          const aspecto = aspectoOpcion(elegida);
           return (
             <Pressable
               key={opcion.valor}
@@ -60,9 +63,23 @@ export default function SelectorOpciones<V extends string>({
               accessibilityState={{ checked: elegida, disabled: bloqueado }}
               disabled={bloqueado}
               onPress={() => alElegir(opcion.valor)}
-              style={[estilos.pildora, elegida && estilos.elegida]}
+              style={[
+                estilos.pildora,
+                {
+                  backgroundColor: COLORES[aspecto.fondo],
+                  borderColor: COLORES[aspecto.borde],
+                },
+              ]}
             >
-              <Text style={[estilos.texto, elegida && estilos.textoElegida]}>{opcion.texto}</Text>
+              <Text
+                style={[
+                  estilos.texto,
+                  elegida && estilos.textoElegida,
+                  { color: COLORES[aspecto.texto] },
+                ]}
+              >
+                {opcion.texto}
+              </Text>
             </Pressable>
           );
         })}

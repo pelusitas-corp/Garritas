@@ -4,19 +4,32 @@
  *
  * - Vistas previas con ✕ para quitarlas antes de publicar (CA-03, CA-09).
  * - Indicador en lugar de la vista previa mientras se procesa una foto (§6).
- * - "Añadir una foto": gris y sin responder con 3 fotos (A5).
+ * - "Añadir una foto": gris y sin responder con 3 fotos (A5). F-13 AF-15
+ *   (decisión del equipo; no está en el SRS): es un recuadro con borde
+ *   punteado azul marino, un círculo menta de 72 con el ícono `camera-plus`
+ *   (36, azul marino) y el texto debajo.
  * - Debajo, "Tomar foto" y "Elegir de la galería" (AL-4). Con la cámara
  *   negada, "Tomar foto" queda gris y se muestra el mensaje (CA-08).
  *
  * Recibe el estado de las fotos y qué hacer en cada botón. No devuelve
  * datos: solo dibuja la sección.
  */
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { ActivityIndicator, Image, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import MensajeError from '../../compartido/acceso/MensajeError';
 import BotonPildora from '../../compartido/BotonPildora';
 import MENSAJES from '../../compartido/mensajes';
-import { COLORES, FUENTES, RADIOS } from '../../compartido/tema';
+import {
+  BORDE,
+  CIRCULOS,
+  COLORES,
+  FUENTES,
+  ICONOS,
+  OPACIDAD_DESVANECIDO,
+  RADIOS,
+  TAMANOS_TEXTO,
+} from '../../compartido/tema';
 import { TEXTOS_ALTA } from './textos';
 
 /** Una foto en pantalla: una clave fija para React y su miniatura para la vista previa. */
@@ -39,6 +52,9 @@ interface Props {
 }
 
 const LADO_VISTA_PREVIA = 96;
+
+/** Ícono de "Añadir una foto" (F-13 AF-15). */
+const ICONO_ANADIR = 'camera-plus';
 
 const estilos = StyleSheet.create({
   contenedor: { gap: 12 },
@@ -66,6 +82,27 @@ const estilos = StyleSheet.create({
   },
   textoQuitar: { fontFamily: FUENTES.negrita, fontSize: 14, color: COLORES.crema },
   opciones: { gap: 8 },
+  // F-13 AF-15: recuadro con borde punteado y cámara con "+".
+  anadir: {
+    alignItems: 'center',
+    gap: 8,
+    padding: 16,
+    borderRadius: RADIOS.tarjeta,
+    borderWidth: BORDE,
+    borderStyle: 'dashed',
+    borderColor: COLORES.azulMarino,
+  },
+  anadirPresionado: { opacity: 0.8 },
+  anadirDesactivado: { opacity: OPACIDAD_DESVANECIDO },
+  circuloCamara: {
+    width: CIRCULOS.camara,
+    height: CIRCULOS.camara,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: RADIOS.pildora,
+    backgroundColor: COLORES.menta,
+  },
+  textoAnadir: { fontFamily: FUENTES.negrita, fontSize: TAMANOS_TEXTO.dato, color: COLORES.cafe },
 });
 
 export default function SeccionFotos({
@@ -80,6 +117,8 @@ export default function SeccionFotos({
   alElegir,
   alQuitar,
 }: Props) {
+  /** A5: con 3 fotos, mientras se procesa una o mientras se publica, no responde. */
+  const sinAnadir = !puedeAgregar || procesando || bloqueada;
   return (
     <View style={estilos.contenedor}>
       {fotos.length > 0 || procesando ? (
@@ -106,12 +145,26 @@ export default function SeccionFotos({
         </View>
       ) : null}
 
-      <BotonPildora
-        texto={TEXTOS_ALTA.anadirFoto}
-        alPresionar={alAnadir}
-        variante="secundario"
-        desactivado={!puedeAgregar || procesando || bloqueada}
-      />
+      <Pressable
+        accessibilityRole="button"
+        accessibilityState={{ disabled: sinAnadir }}
+        disabled={sinAnadir}
+        onPress={alAnadir}
+        style={({ pressed }) => [
+          estilos.anadir,
+          pressed && estilos.anadirPresionado,
+          sinAnadir && estilos.anadirDesactivado,
+        ]}
+      >
+        <View style={estilos.circuloCamara}>
+          <MaterialCommunityIcons
+            name={ICONO_ANADIR}
+            size={ICONOS.camara}
+            color={COLORES.azulMarino}
+          />
+        </View>
+        <Text style={estilos.textoAnadir}>{TEXTOS_ALTA.anadirFoto}</Text>
+      </Pressable>
 
       {mostrarOpciones ? (
         <View style={estilos.opciones}>

@@ -50,15 +50,10 @@ function hexARgb(hex: string): number[] {
   return [1, 3, 5].map((inicio) => parseInt(hex.slice(inicio, inicio + 2), 16));
 }
 
-describe('F-12 · T-1 · Tamaños de texto y fondo de contenedor (AE-1, AE-11, RN-02)', () => {
+describe('F-12 · T-1 · Tamaños de texto (AE-1, RN-02)', () => {
   test('F-12 válido: el texto mínimo es 14 y el de los datos 16', () => {
     expect(TAMANOS_TEXTO.minimo).toBe(14);
     expect(TAMANOS_TEXTO.dato).toBe(16);
-  });
-
-  test('F-12 válido: el relleno de los contenedores es el azul grisáceo de la paleta al 25 %', () => {
-    const [rojo, verde, azul] = hexARgb(COLORES.azulGrisaceo);
-    expect(FONDOS.contenedor).toBe(`rgba(${rojo}, ${verde}, ${azul}, 0.25)`);
   });
 });
 
@@ -85,6 +80,10 @@ describe('F-13 · T-1 · Fondos, opacidad y medidas nuevas (AF-10, AF-11, AF-14,
       hogar: 72,
       camara: 72,
     });
+  });
+
+  test('F-13 válido: ya no hay relleno transparente de contenedores (AF-15 reemplaza AE-11)', () => {
+    expect(Object.keys(FONDOS).sort()).toEqual(['noApto', 'nuevas']);
   });
 
   test('F-13 no válido: ningún tamaño de texto nuevo baja de 14', () => {
