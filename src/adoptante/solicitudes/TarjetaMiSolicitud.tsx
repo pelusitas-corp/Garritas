@@ -1,11 +1,14 @@
 /**
  * Tarjeta de una solicitud en Mis solicitudes (Figma, F-06 flujo D, RF-27):
- * azul grisáceo de radio 32 con la miniatura cuadrada (76, radio 16), el
+ * azul grisáceo de radio 32 con la miniatura cuadrada (112, radio 16), el
  * nombre del animal en negrita 28, el albergue en negrita 16 (dato, F-12
- * AE-1) y, debajo, la
- * píldora del estado a lo ancho. Con "Pre-aprobada" lleva debajo "El
+ * AE-1) y, debajo, la píldora del estado a lo ancho. Con "Pre-aprobada" lleva debajo "El
  * albergue te contactará para conocerse." (regular 14, centrado; F-12 AE-1).
  * No lleva a ninguna parte (N-4): no es un botón.
+ *
+ * F-12 AE-12 (decisión del equipo, no está en el SRS): la miniatura pasa de
+ * 76 a 112 (mismo radio 16) y el nombre ya no se corta: si no cabe en una
+ * línea, sigue en la siguiente. Tocar la tarjeta sigue sin abrir nada (F-06 §10).
  *
  * Recibe la solicitud. No devuelve datos: solo dibuja.
  */
@@ -16,7 +19,8 @@ import { apoyoDelEstado } from './misSolicitudes';
 import type { MiSolicitud } from './misSolicitudes';
 import PildoraEstado from './PildoraEstado';
 
-const MINIATURA = 76;
+/** Lado de la miniatura cuadrada (F-12 AE-12; antes 76). */
+const MINIATURA = 112;
 /** Radio de la miniatura en Figma. Es una imagen, no una tarjeta (el mínimo de 24 es para tarjetas). */
 const RADIO_MINIATURA = 16;
 
@@ -47,9 +51,7 @@ export default function TarjetaMiSolicitud({ solicitud }: { solicitud: MiSolicit
       <View style={estilos.fila}>
         <Image source={{ uri: solicitud.miniaturaAnimal }} style={estilos.miniatura} />
         <View style={estilos.datos}>
-          <Text style={estilos.nombre} numberOfLines={1}>
-            {solicitud.nombreAnimal}
-          </Text>
+          <Text style={estilos.nombre}>{solicitud.nombreAnimal}</Text>
           <Text style={estilos.albergue}>{solicitud.nombreAlbergue}</Text>
         </View>
       </View>
