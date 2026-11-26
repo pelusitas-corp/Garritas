@@ -13,8 +13,9 @@
  * - `mensajeSiTarda`: solo en 'cargando'; se muestra si pasan más de 3 s
  *   (RNF-01: "Calculando compatibilidad, verifica tu conexión a internet");
  * - `boton`: botón píldora opcional debajo del mensaje;
- * - `botonTexto`: botón de texto con ícono opcional debajo del mensaje (F-12
- *   AE-6: "Cerrar sesión" de Mi perfil en sus estados vacía y sin permiso);
+ * - `botonChico`: píldora chica azul grisáceo con ícono, opcional, debajo del
+ *   mensaje (F-13 AF-2: "Cerrar sesión" de Mi perfil en sus estados vacía y
+ *   sin permiso; antes era un botón de texto, F-12 AE-6);
  * - `conLogo`: dibuja el logo del perrito y el gatito (200 de ancho) arriba
  *   del mensaje (F-12 AE-8: "Solicitudes de un animal" sin solicitudes).
  */
@@ -25,7 +26,6 @@ import { ActivityIndicator, Image, StyleSheet, Text, View } from 'react-native';
 import LOGO from '../../assets/images/logo-garritas.png';
 
 import BotonPildora from './BotonPildora';
-import BotonTexto from './BotonTexto';
 import type { IconoBotonTexto } from './BotonTexto';
 import MENSAJES from './mensajes';
 import { COLORES, FUENTES } from './tema';
@@ -44,7 +44,7 @@ interface Props {
   mensaje?: string;
   mensajeSiTarda?: string;
   boton?: { texto: string; alPresionar: () => void } | null;
-  botonTexto?: { texto: string; icono: IconoBotonTexto; alPresionar: () => void } | null;
+  botonChico?: { texto: string; icono: IconoBotonTexto; alPresionar: () => void } | null;
   conLogo?: boolean;
 }
 
@@ -83,7 +83,7 @@ export default function EstadoPantalla({
   mensaje = '',
   mensajeSiTarda = '',
   boton = null,
-  botonTexto = null,
+  botonChico = null,
   conLogo = false,
 }: Props) {
   const [tarda, setTarda] = useState(false);
@@ -124,11 +124,13 @@ export default function EstadoPantalla({
           <BotonPildora texto={boton.texto} alPresionar={boton.alPresionar} />
         </View>
       ) : null}
-      {botonTexto ? (
-        <BotonTexto
-          texto={botonTexto.texto}
-          icono={botonTexto.icono}
-          alPresionar={botonTexto.alPresionar}
+      {botonChico ? (
+        <BotonPildora
+          texto={botonChico.texto}
+          icono={botonChico.icono}
+          alPresionar={botonChico.alPresionar}
+          tamano="chico"
+          gris
         />
       ) : null}
     </View>

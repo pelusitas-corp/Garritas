@@ -1,36 +1,39 @@
 /**
  * Mi perfil (spec F-04: RF-19; ruta /mi-perfil; pestaña del adoptante).
  *
- * Con el cuestionario completo: nombre del adoptante, su perfil Garritas
- * (ilustración, nombre y frase) y "Cerrar sesión" al final (N-3).
+ * Con el cuestionario completo: saludo del adoptante y su perfil Garritas
+ * (ilustración, nombre y frase).
  * Sin terminar (G-6, RF-19 no válido): NO redirige; muestra el mensaje
  * "Termina tu cuestionario para descubrir tu perfil Garritas" y "Cerrar sesión".
  * Otros estados (§8): cargando, error de conexión y sin permiso.
  *
  * F-11 AD-5 y AD-6: arriba a la izquierda va `EncabezadoMarca` con "Mi perfil";
- * el nombre y la tarjeta quedan centrados entre el encabezado y "Cerrar sesión".
+ * la tarjeta del perfil queda centrada en el espacio que sobra.
  *
- * F-12 AE-5 (decisión del equipo, no está en el SRS): debajo del encabezado,
- * el nombre va en su propia tarjeta (azul grisáceo, radio 24, relleno 20,
- * ícono de usuario de 28 y nombre en negrita 24). 32 debajo, la tarjeta del
- * perfil Garritas queda centrada en el espacio que sobra. Si todo cabe, la
- * pantalla no rebota ni se mueve al deslizar.
+ * F-13 (decisión del equipo, no está en el SRS):
+ * - AF-1: la tarjeta del nombre (F-12 AE-5) ya no lleva ícono y dice
+ *   "¡Hola, {nombre}!" en negrita 26. Debajo, fuera de la tarjeta,
+ *   "Tu perfil Garritas es:" (16) y luego la tarjeta del perfil.
+ * - AF-2: "Cerrar sesión" es una píldora chica azul grisáceo con el ícono
+ *   `logout`, en la esquina superior derecha del encabezado (ya no va abajo).
+ *   Los estados vacía y sin permiso usan la misma píldora chica.
+ * Si todo cabe, la pantalla no rebota ni se mueve al deslizar (F-12 AE-5).
  */
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { TEXTO_MI_PERFIL } from '../../../src/adoptante/descubrir/textos';
 import TarjetaPerfilGarritas from '../../../src/adoptante/perfil/TarjetaPerfilGarritas';
+import { TEXTO_TU_PERFIL, textoSaludo } from '../../../src/adoptante/perfil/textos';
 import { useNombreAdoptante } from '../../../src/adoptante/perfil/useNombreAdoptante';
 import { usePerfilGarritas } from '../../../src/adoptante/perfil/usePerfilGarritas';
-import BotonTexto from '../../../src/compartido/BotonTexto';
+import BotonPildora from '../../../src/compartido/BotonPildora';
 import type { IconoBotonTexto } from '../../../src/compartido/BotonTexto';
 import EncabezadoMarca from '../../../src/compartido/EncabezadoMarca';
 import EstadoPantalla from '../../../src/compartido/EstadoPantalla';
 import MENSAJES from '../../../src/compartido/mensajes';
 import { useSesion } from '../../../src/compartido/navegacion/useSesion';
-import { COLORES, FUENTES, RADIOS } from '../../../src/compartido/tema';
+import { COLORES, FUENTES, RADIOS, TAMANOS_TEXTO } from '../../../src/compartido/tema';
 
 /** Texto del botón de N-3 (02-navegacion), igual que en la pantalla provisional. */
 const TEXTO_CERRAR_SESION = 'Cerrar sesión';
@@ -38,31 +41,31 @@ const TEXTO_CERRAR_SESION = 'Cerrar sesión';
 /** Ícono de salida de "Cerrar sesión" (F-12 AE-6, igual que en el menú del albergue). */
 const ICONO_CERRAR_SESION: IconoBotonTexto = 'logout';
 
-/** Ícono de usuario de la tarjeta del nombre (F-12 AE-5). */
-const ICONO_USUARIO: IconoBotonTexto = 'account-outline';
-
 const estilos = StyleSheet.create({
   pantalla: { flex: 1, backgroundColor: COLORES.crema },
   contenido: { flexGrow: 1, gap: 32, padding: 24 },
-  // F-12 AE-5: el nombre en su propia tarjeta, arriba.
+  // F-12 AE-5 y F-13 AF-1: el saludo en su propia tarjeta, arriba, sin ícono.
   tarjetaNombre: {
-    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 12,
     padding: 20,
     borderRadius: RADIOS.tarjeta,
     backgroundColor: COLORES.azulGrisaceo,
   },
-  nombre: {
-    flexShrink: 1,
+  saludo: {
     fontFamily: FUENTES.negrita,
-    fontSize: 24,
+    fontSize: TAMANOS_TEXTO.saludo,
     color: COLORES.cafe,
     textAlign: 'center',
   },
   // F-11 AD-6: el perfil Garritas, centrado en el espacio libre.
-  cuerpo: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  cuerpo: { flex: 1, justifyContent: 'center', alignItems: 'center', gap: 12 },
+  tuPerfil: {
+    fontFamily: FUENTES.regular,
+    fontSize: TAMANOS_TEXTO.dato,
+    color: COLORES.cafe,
+    textAlign: 'center',
+  },
 });
 
 export default function MiPerfil() {
@@ -76,7 +79,7 @@ export default function MiPerfil() {
   };
 
   if (perfil.tipo === 'sin-permiso' || nombre.tipo === 'sin-permiso') {
-    return <EstadoPantalla estado="sin-permiso" botonTexto={botonCerrarSesion} />;
+    return <EstadoPantalla estado="sin-permiso" botonChico={botonCerrarSesion} />;
   }
   if (perfil.tipo === 'cargando') {
     return <EstadoPantalla estado="cargando" />;
@@ -87,7 +90,7 @@ export default function MiPerfil() {
       <EstadoPantalla
         estado="vacia"
         mensaje={MENSAJES.PERFIL_SIN_CUESTIONARIO}
-        botonTexto={botonCerrarSesion}
+        botonChico={botonCerrarSesion}
       />
     );
   }
@@ -100,7 +103,19 @@ export default function MiPerfil() {
 
   return (
     <SafeAreaView style={estilos.pantalla} edges={['top']}>
-      <EncabezadoMarca texto={TEXTO_MI_PERFIL} />
+      {/* N-3 y F-13 AF-2: "Cerrar sesión" como píldora chica arriba a la derecha. */}
+      <EncabezadoMarca
+        texto={TEXTO_MI_PERFIL}
+        derecha={
+          <BotonPildora
+            texto={TEXTO_CERRAR_SESION}
+            icono={ICONO_CERRAR_SESION}
+            alPresionar={cerrarSesion}
+            tamano="chico"
+            gris
+          />
+        }
+      />
       {/* F-12 AE-5: sin rebote si todo cabe (iOS y Android); si no cabe, se desplaza. */}
       <ScrollView
         contentContainerStyle={estilos.contenido}
@@ -109,21 +124,15 @@ export default function MiPerfil() {
       >
         {nombre.nombre ? (
           <View style={estilos.tarjetaNombre}>
-            <MaterialCommunityIcons name={ICONO_USUARIO} size={28} color={COLORES.cafe} />
-            <Text accessibilityRole="header" style={estilos.nombre}>
-              {nombre.nombre}
+            <Text accessibilityRole="header" style={estilos.saludo}>
+              {textoSaludo(nombre.nombre)}
             </Text>
           </View>
         ) : null}
         <View style={estilos.cuerpo}>
+          <Text style={estilos.tuPerfil}>{TEXTO_TU_PERFIL}</Text>
           <TarjetaPerfilGarritas perfil={perfil.perfil} />
         </View>
-        {/* N-3: "Cerrar sesión" al final de Mi perfil (F-12 AE-6: botón de texto, sin píldora). */}
-        <BotonTexto
-          texto={TEXTO_CERRAR_SESION}
-          icono={ICONO_CERRAR_SESION}
-          alPresionar={cerrarSesion}
-        />
       </ScrollView>
     </SafeAreaView>
   );
