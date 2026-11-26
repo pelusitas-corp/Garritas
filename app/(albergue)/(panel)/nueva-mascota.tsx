@@ -7,6 +7,11 @@
  * (ScrollView); el mensaje de error y el botón quedan fijos abajo, para
  * verse sin hacer scroll (plan, ajuste 3). Al publicar, regresa a
  * /solicitudes (02-navegacion §4.3, AL-7).
+ *
+ * F-11 AD-12 (decisión del equipo; no está en el SRS): los datos van en 4
+ * contenedores (fotos, datos básicos, cuidados y perfil), crema con borde
+ * azul grisáceo de `BORDE`, radio 24, relleno 16 y separación de 20. Los
+ * textos, validaciones y mensajes no cambian.
  */
 import { router } from 'expo-router';
 import { useCallback } from 'react';
@@ -29,21 +34,31 @@ import CampoTexto from '../../../src/compartido/acceso/CampoTexto';
 import MensajeError from '../../../src/compartido/acceso/MensajeError';
 import BotonPildora from '../../../src/compartido/BotonPildora';
 import { RUTAS } from '../../../src/compartido/navegacion/rutas';
-import { COLORES, FUENTES } from '../../../src/compartido/tema';
+import { BORDE, COLORES, FUENTES, RADIOS } from '../../../src/compartido/tema';
 
 const estilos = StyleSheet.create({
   pantalla: { flex: 1, backgroundColor: COLORES.crema },
   flex: { flex: 1 },
   contenido: { gap: 20, padding: 24 },
   titulo: { fontFamily: FUENTES.negrita, fontSize: 28, color: COLORES.cafe },
-  seccion: { gap: 12 },
+  // F-11 AD-12: cada bloque del formulario es un contenedor.
+  contenedor: {
+    gap: 12,
+    padding: 16,
+    borderWidth: BORDE,
+    borderColor: COLORES.azulGrisaceo,
+    borderRadius: RADIOS.tarjeta,
+    backgroundColor: COLORES.crema,
+  },
+  // F-11 AD-12: un poco más de espacio entre las dimensiones del perfil (12 → 16).
+  contenedorPerfil: { gap: 16 },
   tituloSeccion: { fontFamily: FUENTES.negrita, fontSize: 20, color: COLORES.cafe },
   abajo: {
     gap: 12,
     paddingHorizontal: 24,
     paddingVertical: 12,
     backgroundColor: COLORES.crema,
-    borderTopWidth: 2,
+    borderTopWidth: BORDE,
     borderTopColor: COLORES.azulGrisaceo,
   },
 });
@@ -136,20 +151,22 @@ export default function NuevaMascota() {
             {TEXTOS_ALTA.titulo}
           </Text>
 
-          <SeccionFotos
-            fotos={alta.fotos}
-            procesando={alta.procesando}
-            puedeAgregar={alta.puedeAgregar}
-            mostrarOpciones={alta.mostrarOpciones}
-            camaraNegada={alta.camaraNegada}
-            bloqueada={bloqueado}
-            alAnadir={alta.anadirFoto}
-            alTomar={alta.tomar}
-            alElegir={alta.elegir}
-            alQuitar={alta.quitar}
-          />
+          <View style={estilos.contenedor}>
+            <SeccionFotos
+              fotos={alta.fotos}
+              procesando={alta.procesando}
+              puedeAgregar={alta.puedeAgregar}
+              mostrarOpciones={alta.mostrarOpciones}
+              camaraNegada={alta.camaraNegada}
+              bloqueada={bloqueado}
+              alAnadir={alta.anadirFoto}
+              alTomar={alta.tomar}
+              alElegir={alta.elegir}
+              alQuitar={alta.quitar}
+            />
+          </View>
 
-          <View style={estilos.seccion}>
+          <View style={estilos.contenedor}>
             <CampoTexto
               valor={alta.nombre}
               alCambiar={alta.setNombre}
@@ -179,7 +196,7 @@ export default function NuevaMascota() {
             />
           </View>
 
-          <View style={estilos.seccion}>
+          <View style={estilos.contenedor}>
             <Text style={estilos.tituloSeccion}>{TEXTOS_ALTA.cuidados}</Text>
             <CasillaCuidado
               texto={TEXTOS_ALTA.vacunado}
@@ -195,7 +212,7 @@ export default function NuevaMascota() {
             />
           </View>
 
-          <View style={estilos.seccion}>
+          <View style={[estilos.contenedor, estilos.contenedorPerfil]}>
             <Text style={estilos.tituloSeccion}>{TEXTOS_ALTA.perfil}</Text>
             {DIMENSIONES_PERFIL.map(selectorDe)}
           </View>

@@ -22,10 +22,10 @@
 | T-9 | Foto completa del Detalle con alto flexible | Hecha |
 | T-10 | Pestaña activa en píldora | Hecha |
 | T-11 | Nombre del albergue más grande que "Tus animales" | Hecha |
-| T-12 | Nueva mascota en 4 contenedores | Pendiente |
+| T-12 | Nueva mascota en 4 contenedores | Hecha |
 | T-13 | Cierre de la nota con la guía de prueba en el celular | Pendiente |
 
-**Último commit:** T-11 (ver `git log`).
+**Último commit:** T-12 (ver `git log`).
 
 ## Decisiones del plan (confirmadas por Jennifer el 25/11/2026)
 
@@ -49,7 +49,7 @@
 
 ## Qué falta
 
-T-12 y T-13, las verificaciones finales, el push y el PR (sin fusionar).
+T-13, las verificaciones finales, el push y el PR (sin fusionar).
 
 ## Pendientes
 
@@ -144,3 +144,9 @@ T-12 y T-13, las verificaciones finales, el push y el PR (sin fusionar).
 - **T-11:** en Solicitudes del albergue, el nombre del refugio pasa de 13 a
   negrita 28 y "Tus animales" de 26 a negrita 20, los dos en café. Los textos
   no cambian.
+- **T-12:** Nueva mascota tiene 4 contenedores (`estilos.contenedor`): Fotos
+  (envuelve a `SeccionFotos`, que no se tocó), Datos básicos, Cuidados de
+  salud y Perfil de compatibilidad. Cada uno es crema, con borde de `BORDE`
+  azul grisáceo, `RADIOS.tarjeta`, relleno 16 y `gap` 12. Entre contenedores
+  quedan 20 (el `gap` que ya tenía el formulario) y dentro del perfil, 16. El
+  borde superior del pie usa `BORDE` en lugar del 2 escrito a mano.
