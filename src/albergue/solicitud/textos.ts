@@ -29,6 +29,8 @@ export const TEXTOS_DECISION = {
   coordinaLaVisita: 'Coordina la visita para conocerse.',
   /** "←" del encabezado del Detalle; es su nombre accesible (Figma). */
   atras: '←',
+  /** `accessibilityHint` del teléfono, que se toca para llamar (F-12 AE-10). */
+  llamar: 'Llamar',
 } as const;
 
 /** Etiquetas de "Su hogar y sus cuidados" (Figma, PA-7). */

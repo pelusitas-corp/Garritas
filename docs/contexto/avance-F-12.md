@@ -1,4 +1,4 @@
-Hecha |Hecha |Hecha |Hecha |Hecha |Hecha |Hecha |# Avance F-12 · Ajustes de diseño, ronda 2 · Parte A
+Hecha |Hecha |Hecha |Hecha |Hecha |Hecha |Hecha |Hecha |# Avance F-12 · Ajustes de diseño, ronda 2 · Parte A
 
 - **Spec:** `specs/features/F-12-ajustes-diseno-2.md` (v1.0 Aprobada), solo la
   Parte A (§4.1 a §4.11, T-1 a T-11). La corrección a 9 animales va aparte en
@@ -25,7 +25,7 @@ Hecha |Hecha |Hecha |Hecha |Hecha |Hecha |Hecha |# Avance F-12 · Ajustes de dis
 | T-10 | `enlaceTelefono` y Detalle de solicitud unificado | Pendiente |
 | T-11 | Relleno de los contenedores de Nueva mascota | Pendiente |
 
-**Último commit:** T-9 (ver `git log`).
+**Último commit:** T-10 (ver `git log`).
 
 **Pushes acordados:** después de T-4, T-8 y T-11, con typecheck, lint y test
 en verde. Entre T-1 y T-2 la prueba de accesibilidad queda en rojo a
@@ -126,3 +126,21 @@ propósito (marca los textos que T-2 corrige), así que no hay push hasta T-2.
   iban a 12 y las iniciales, el bloque nombre + hogar y el % ya estaban
   centrados en la fila (`alignItems: 'center'`). Los textos de la tarjeta se
   subieron en T-2 (hogar 16, "compatible" 14, estado 16).
+- **T-10:** nueva función pura `enlaceTelefono(telefono)` en
+  `src/albergue/solicitud/telefono.ts`: recibe el teléfono y devuelve `tel:`
+  con solo sus dígitos, o `null` si no tiene dígitos. En el Detalle de
+  solicitud:
+  - **Sin datos repetidos:** se quitó de la tarjeta la línea "Vive en" con el
+    ícono de casa; "Vive en" queda solo en "Su hogar y sus cuidados". El
+    nombre se queda en el encabezado y en la tarjeta (respuesta 1).
+  - **Mismo acomodo en los 3 estados:** el contacto va siempre en el mismo
+    lugar de la tarjeta. Tamaños: nombre 24, teléfono y correo 18, mensaje de
+    RF-12 16, datos del hogar 16 y textos de apoyo 14.
+  - **Llamar:** el teléfono es un `Pressable` con `accessibilityRole="link"`,
+    `accessibilityHint="Llamar"` (`TEXTOS_DECISION.llamar`), `minHeight: 44`,
+    el ícono `phone-outline` (`ICONOS_DECISION.llamar`) y el texto subrayado.
+    Al tocarlo llama a `Linking.openURL(enlace)`; si falla, el `catch` lo
+    ignora (no hay mensaje nuevo). Si `enlaceTelefono` devuelve `null`, el
+    teléfono es un `Text` normal.
+  - `decision.ts` no cambió: la pantalla usa el teléfono ya con formato, y
+    `enlaceTelefono` le quita los espacios.
