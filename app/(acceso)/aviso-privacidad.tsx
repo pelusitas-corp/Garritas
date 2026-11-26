@@ -6,11 +6,17 @@
  * - "1b error": se presionó "Continuar" sin la casilla → mensaje de CA-02;
  * - "2 aceptado": casilla marcada → "Continuar" guarda la aceptación con su
  *   fecha EN MEMORIA y abre el registro (CA-01).
+ *
+ * F-11 AD-3 (decisión del equipo; no está en el SRS): el enlace, la casilla y
+ * el mensaje de CA-02 van DENTRO del recuadro que se desplaza, al final del
+ * aviso, y "Continuar" queda fijo debajo. Cada vez que se toca "Continuar"
+ * sin la casilla, el recuadro baja solo hasta el final (`scrollToEnd`).
  */
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { router } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import type { ScrollViewInstance } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { avisoSimplificadoParaApp } from '../../src/compartido/acceso/avisos';
@@ -29,7 +35,7 @@ const AVISO = avisoSimplificadoParaApp();
 const estilos = StyleSheet.create({
   contenido: { flex: 1, gap: 12, paddingHorizontal: 24, paddingBottom: 24 },
   recuadro: { flex: 1, backgroundColor: COLORES.menta, borderRadius: RADIOS.tarjeta },
-  textoRecuadro: { padding: 20 },
+  textoRecuadro: { gap: 16, padding: 20 },
   enlace: {
     fontFamily: FUENTES.negrita,
     fontSize: 16,
@@ -43,6 +49,16 @@ const estilos = StyleSheet.create({
 export default function AvisoPrivacidad() {
   const [aceptado, setAceptado] = useState(false);
   const [mostrarError, setMostrarError] = useState(false);
+  /** Veces que se tocó "Continuar" sin la casilla: cada una baja el recuadro. */
+  const [intentosSinCasilla, setIntentosSinCasilla] = useState(0);
+  const recuadro = useRef<ScrollViewInstance>(null);
+
+  useEffect(() => {
+    if (intentosSinCasilla > 0) {
+      // AD-3: ya con el mensaje dibujado, baja para que se vean la casilla y el mensaje.
+      recuadro.current?.scrollToEnd({ animated: true });
+    }
+  }, [intentosSinCasilla]);
 
   const alternarCasilla = () => {
     setAceptado((anterior) => !anterior);
@@ -52,6 +68,7 @@ export default function AvisoPrivacidad() {
   const continuar = () => {
     if (!aceptado) {
       setMostrarError(true); // CA-02: no avanza
+      setIntentosSinCasilla((anteriores) => anteriores + 1);
       return;
     }
     guardarAceptacion(new Date()); // CA-01: aceptación con su fecha
@@ -68,28 +85,32 @@ export default function AvisoPrivacidad() {
         <Text style={estilosAcceso.subtitulo}>
           Antes de crear tu cuenta, revisa cómo cuidamos tus datos.
         </Text>
-        <ScrollView style={estilos.recuadro} contentContainerStyle={estilos.textoRecuadro}>
-          <TextoAviso markdown={AVISO} />
-        </ScrollView>
-        <Pressable accessibilityRole="link" onPress={() => router.push(RUTAS.avisoIntegral)}>
-          <Text style={estilos.enlace}>Ver aviso completo</Text>
-        </Pressable>
-        <Pressable
-          accessibilityRole="checkbox"
-          accessibilityState={{ checked: aceptado }}
-          onPress={alternarCasilla}
-          style={estilos.casilla}
+        <ScrollView
+          ref={recuadro}
+          style={estilos.recuadro}
+          contentContainerStyle={estilos.textoRecuadro}
         >
-          <Ionicons
-            name={aceptado ? 'checkbox' : 'square-outline'}
-            size={28}
-            color={COLORES.azulMarino}
-          />
-          <Text style={estilos.textoCasilla}>
-            Acepto el aviso de privacidad y confirmo que soy mayor de 18 años
-          </Text>
-        </Pressable>
-        {mostrarError ? <MensajeError texto={MENSAJES.AVISO_SIN_ACEPTAR} /> : null}
+          <TextoAviso markdown={AVISO} />
+          <Pressable accessibilityRole="link" onPress={() => router.push(RUTAS.avisoIntegral)}>
+            <Text style={estilos.enlace}>Ver aviso completo</Text>
+          </Pressable>
+          <Pressable
+            accessibilityRole="checkbox"
+            accessibilityState={{ checked: aceptado }}
+            onPress={alternarCasilla}
+            style={estilos.casilla}
+          >
+            <Ionicons
+              name={aceptado ? 'checkbox' : 'square-outline'}
+              size={28}
+              color={COLORES.azulMarino}
+            />
+            <Text style={estilos.textoCasilla}>
+              Acepto el aviso de privacidad y confirmo que soy mayor de 18 años
+            </Text>
+          </Pressable>
+          {mostrarError ? <MensajeError texto={MENSAJES.AVISO_SIN_ACEPTAR} /> : null}
+        </ScrollView>
         <BotonPildora texto="Continuar" alPresionar={continuar} gris={!aceptado} />
       </View>
     </SafeAreaView>
