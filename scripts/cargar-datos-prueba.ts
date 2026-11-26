@@ -12,6 +12,11 @@
  *   guarda en ningún archivo.
  * - Se puede correr varias veces: deja los datos igual que en la spec
  *   (útil antes de una demo).
+ * - Fotos (03 v1.8 M-7, F-12 AE-14): de cada animal escribe todas las que
+ *   encuentre, hasta 3 (`{id}-1.jpg` a `{id}-3.jpg` → `foto-0` a `foto-2`), y
+ *   borra los `foto-N` que ya no tienen archivo. Con los datos de la spec
+ *   quedan 36 documentos: 3 usuarios, 2 cuestionarios, 9 animales, 10 fotos,
+ *   6 solicitudes y 6 contactos.
  */
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -23,7 +28,7 @@ import { getAuth } from 'firebase-admin/auth';
 import { FieldValue, getFirestore, Timestamp } from 'firebase-admin/firestore';
 import type { WriteBatch } from 'firebase-admin/firestore';
 
-import { COLECCIONES, ID_CONTACTO } from '../src/compartido/modelo';
+import { COLECCIONES, ID_CONTACTO, MAX_FOTOS_ANIMAL } from '../src/compartido/modelo';
 import type {
   Animal,
   Contacto,
@@ -35,6 +40,7 @@ import type {
 import { esNoApto } from '../src/matchmaking';
 import { ADOPTANTES, ALBERGUE, ANIMALES, SOLICITUDES } from './datos-prueba/datos';
 import type { AdoptantePrueba } from './datos-prueba/datos';
+import { archivosDeFotos } from './datos-prueba/fotos';
 
 const CARPETA_IMAGENES = join(__dirname, 'datos-prueba');
 const RUTA_LLAVE = join(__dirname, 'llave-servicio.json');
@@ -114,8 +120,19 @@ function agregarAdoptante(lote: WriteBatch, adoptante: AdoptantePrueba): void {
   lote.set(db.collection(COLECCIONES.cuestionarios).doc(adoptante.uid), cuestionario);
 }
 
-function agregarAnimales(lote: WriteBatch): void {
+/** Dice si un archivo está en la carpeta de datos de prueba. */
+function existeImagen(nombreArchivo: string): boolean {
+  return existsSync(join(CARPETA_IMAGENES, nombreArchivo));
+}
+
+/**
+ * Agrega al lote cada animal con sus fotos (M-7): `foto-{orden}` para cada
+ * foto que encuentra `archivosDeFotos`, y borra los `foto-N` que sobran (si no
+ * existen, borrar no hace nada). Devuelve cuántas fotos escribió.
+ */
+function agregarAnimales(lote: WriteBatch): number {
   const db = getFirestore();
+  let totalFotos = 0;
   ANIMALES.forEach(({ id, ...datos }) => {
     const animal: ConFechas<Animal, 'creadoEn'> = {
       ...datos,
@@ -124,11 +141,22 @@ function agregarAnimales(lote: WriteBatch): void {
       miniatura: leerImagen(`${id}-miniatura.jpg`),
       creadoEn: FieldValue.serverTimestamp(),
     };
-    const foto: Foto = { datos: leerImagen(`${id}.jpg`), orden: 0 };
     const referencia = db.collection(COLECCIONES.animales).doc(id);
     lote.set(referencia, animal);
-    lote.set(referencia.collection(COLECCIONES.fotos).doc('foto-0'), foto);
+    const fotos = archivosDeFotos(id, existeImagen);
+    Array.from({ length: MAX_FOTOS_ANIMAL }, (_, orden) => orden).forEach((orden) => {
+      const documento = referencia.collection(COLECCIONES.fotos).doc(`foto-${orden}`);
+      const archivo = fotos.find((candidata) => candidata.orden === orden);
+      if (archivo) {
+        const foto: Foto = { datos: leerImagen(archivo.archivo), orden };
+        lote.set(documento, foto);
+      } else {
+        lote.delete(documento);
+      }
+    });
+    totalFotos += fotos.length;
   });
+  return totalFotos;
 }
 
 function agregarSolicitudes(lote: WriteBatch): void {
@@ -188,12 +216,19 @@ async function principal(): Promise<void> {
   agregarAlbergue(lote);
   agregarAdoptante(lote, ADOPTANTES.a);
   agregarAdoptante(lote, ADOPTANTES.b);
-  agregarAnimales(lote);
+  const fotos = agregarAnimales(lote);
   agregarSolicitudes(lote);
   await lote.commit();
 
-  escribir('Listo: 3 cuentas y 27 documentos (3 usuarios, 2 cuestionarios, 5 animales,');
-  escribir('5 fotos, 6 solicitudes y 6 contactos). Revísalos en la consola de Firebase.');
+  const animales = ANIMALES.length;
+  const solicitudes = SOLICITUDES.length;
+  // 3 usuarios + 2 cuestionarios + animales + fotos + solicitudes + sus contactos.
+  const documentos = 3 + 2 + animales + fotos + solicitudes * 2;
+  escribir(`Listo: 3 cuentas y ${documentos} documentos (3 usuarios, 2 cuestionarios,`);
+  escribir(
+    `${animales} animales, ${fotos} fotos, ${solicitudes} solicitudes y ${solicitudes} contactos).`,
+  );
+  escribir('Revísalos en la consola de Firebase.');
 }
 
 principal().catch((error: unknown) => {
