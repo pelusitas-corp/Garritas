@@ -17,7 +17,8 @@ import { TEXTO_MI_PERFIL } from '../../../src/adoptante/descubrir/textos';
 import TarjetaPerfilGarritas from '../../../src/adoptante/perfil/TarjetaPerfilGarritas';
 import { useNombreAdoptante } from '../../../src/adoptante/perfil/useNombreAdoptante';
 import { usePerfilGarritas } from '../../../src/adoptante/perfil/usePerfilGarritas';
-import BotonPildora from '../../../src/compartido/BotonPildora';
+import BotonTexto from '../../../src/compartido/BotonTexto';
+import type { IconoBotonTexto } from '../../../src/compartido/BotonTexto';
 import EncabezadoMarca from '../../../src/compartido/EncabezadoMarca';
 import EstadoPantalla from '../../../src/compartido/EstadoPantalla';
 import MENSAJES from '../../../src/compartido/mensajes';
@@ -26,6 +27,9 @@ import { COLORES, FUENTES } from '../../../src/compartido/tema';
 
 /** Texto del botón de N-3 (02-navegacion), igual que en la pantalla provisional. */
 const TEXTO_CERRAR_SESION = 'Cerrar sesión';
+
+/** Ícono de salida de "Cerrar sesión" (F-12 AE-6, igual que en el menú del albergue). */
+const ICONO_CERRAR_SESION: IconoBotonTexto = 'logout';
 
 const estilos = StyleSheet.create({
   pantalla: { flex: 1, backgroundColor: COLORES.crema },
@@ -39,10 +43,14 @@ export default function MiPerfil() {
   const { cerrarSesion } = useSesion();
   const perfil = usePerfilGarritas();
   const nombre = useNombreAdoptante();
-  const botonCerrarSesion = { texto: TEXTO_CERRAR_SESION, alPresionar: cerrarSesion };
+  const botonCerrarSesion = {
+    texto: TEXTO_CERRAR_SESION,
+    icono: ICONO_CERRAR_SESION,
+    alPresionar: cerrarSesion,
+  };
 
   if (perfil.tipo === 'sin-permiso' || nombre.tipo === 'sin-permiso') {
-    return <EstadoPantalla estado="sin-permiso" boton={botonCerrarSesion} />;
+    return <EstadoPantalla estado="sin-permiso" botonTexto={botonCerrarSesion} />;
   }
   if (perfil.tipo === 'cargando') {
     return <EstadoPantalla estado="cargando" />;
@@ -53,7 +61,7 @@ export default function MiPerfil() {
       <EstadoPantalla
         estado="vacia"
         mensaje={MENSAJES.PERFIL_SIN_CUESTIONARIO}
-        boton={botonCerrarSesion}
+        botonTexto={botonCerrarSesion}
       />
     );
   }
@@ -76,11 +84,11 @@ export default function MiPerfil() {
           ) : null}
           <TarjetaPerfilGarritas perfil={perfil.perfil} />
         </View>
-        {/* N-3: "Cerrar sesión" al final de Mi perfil. Las guardas llevan a Selección de Rol. */}
-        <BotonPildora
+        {/* N-3: "Cerrar sesión" al final de Mi perfil (F-12 AE-6: botón de texto, sin píldora). */}
+        <BotonTexto
           texto={TEXTO_CERRAR_SESION}
+          icono={ICONO_CERRAR_SESION}
           alPresionar={cerrarSesion}
-          variante="secundario"
         />
       </ScrollView>
     </SafeAreaView>

@@ -1,4 +1,4 @@
-Hecha |Hecha |Hecha |# Avance F-12 · Ajustes de diseño, ronda 2 · Parte A
+Hecha |Hecha |Hecha |Hecha |# Avance F-12 · Ajustes de diseño, ronda 2 · Parte A
 
 - **Spec:** `specs/features/F-12-ajustes-diseno-2.md` (v1.0 Aprobada), solo la
   Parte A (§4.1 a §4.11, T-1 a T-11). La corrección a 9 animales va aparte en
@@ -25,7 +25,7 @@ Hecha |Hecha |Hecha |# Avance F-12 · Ajustes de diseño, ronda 2 · Parte A
 | T-10 | `enlaceTelefono` y Detalle de solicitud unificado | Pendiente |
 | T-11 | Relleno de los contenedores de Nueva mascota | Pendiente |
 
-**Último commit:** T-5 (ver `git log`).
+**Último commit:** T-6 (ver `git log`).
 
 **Pushes acordados:** después de T-4, T-8 y T-11, con typecheck, lint y test
 en verde. Entre T-1 y T-2 la prueba de accesibilidad queda en rojo a
@@ -95,3 +95,13 @@ propósito (marca los textos que T-2 corrige), así que no hay push hasta T-2.
   botones y la barra de pestañas hay 16 fijos (`gap` y `paddingBottom`), y
   Descubrir deja 16 entre el subtítulo y la tarjeta. El ancho sigue siendo
   el de la pantalla menos 2 × 24, y el gesto y los botones no cambian.
+- **T-6:** nuevo `src/compartido/BotonTexto.tsx`, que recibe
+  `{ texto, icono, alPresionar }` y dibuja un ícono de 20 y el texto en negrita
+  16 café, sin fondo ni borde, con `minHeight: 44`. `EstadoPantalla` tiene la
+  prop opcional `botonTexto` (además de `boton`, que sigue siendo píldora) para
+  los estados vacía y sin permiso de Mi perfil. En Mi perfil, "Cerrar sesión"
+  usa `BotonTexto` con el ícono `logout`. En `MenuUsuario` el menú conserva su
+  contenedor como tarjeta (crema, radio 24, borde azul grisáceo de `BORDE`, sin
+  sombra; respuesta 4) y dentro va `BotonTexto` con `ICONOS_PANEL.salir`. La
+  "Cerrar sesión" de las guardas (`GuardaDeGrupo`) no cambia: AE-6 solo
+  menciona Mi perfil y el menú del albergue.

@@ -12,12 +12,16 @@
  *   por defecto);
  * - `mensajeSiTarda`: solo en 'cargando'; se muestra si pasan más de 3 s
  *   (RNF-01: "Calculando compatibilidad, verifica tu conexión a internet");
- * - `boton`: botón opcional debajo del mensaje.
+ * - `boton`: botón píldora opcional debajo del mensaje;
+ * - `botonTexto`: botón de texto con ícono opcional debajo del mensaje (F-12
+ *   AE-6: "Cerrar sesión" de Mi perfil en sus estados vacía y sin permiso).
  */
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 
 import BotonPildora from './BotonPildora';
+import BotonTexto from './BotonTexto';
+import type { IconoBotonTexto } from './BotonTexto';
 import MENSAJES from './mensajes';
 import { COLORES, FUENTES } from './tema';
 
@@ -31,6 +35,7 @@ interface Props {
   mensaje?: string;
   mensajeSiTarda?: string;
   boton?: { texto: string; alPresionar: () => void } | null;
+  botonTexto?: { texto: string; icono: IconoBotonTexto; alPresionar: () => void } | null;
 }
 
 const estilos = StyleSheet.create({
@@ -67,6 +72,7 @@ export default function EstadoPantalla({
   mensaje = '',
   mensajeSiTarda = '',
   boton = null,
+  botonTexto = null,
 }: Props) {
   const [tarda, setTarda] = useState(false);
 
@@ -96,6 +102,13 @@ export default function EstadoPantalla({
         <View style={estilos.boton}>
           <BotonPildora texto={boton.texto} alPresionar={boton.alPresionar} />
         </View>
+      ) : null}
+      {botonTexto ? (
+        <BotonTexto
+          texto={botonTexto.texto}
+          icono={botonTexto.icono}
+          alPresionar={botonTexto.alPresionar}
+        />
       ) : null}
     </View>
   );

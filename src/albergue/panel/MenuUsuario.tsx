@@ -2,8 +2,8 @@
  * Ícono de usuario del encabezado de la lista y su botón "Cerrar sesión"
  * (spec F-07 A6; N-3, D-52 I1, PS-11; F-01 RN-08).
  *
- * - Al tocar el ícono aparece, 8 px debajo y alineado a la derecha, un botón
- *   oscuro "Cerrar sesión" con el ícono de salida.
+ * - Al tocar el ícono aparece, 8 px debajo y alineado a la derecha, el menú:
+ *   una tarjeta con "Cerrar sesión" y el ícono de salida.
  * - Tocar otra vez el ícono, o cualquier punto fuera del botón, lo oculta.
  *   Para eso, el botón se dibuja dentro de un `Modal` transparente que cubre
  *   toda la pantalla: la capa de fondo cierra el menú al tocarla.
@@ -13,15 +13,20 @@
  * Recibe `alCerrarSesion`. No devuelve datos.
  *
  * Medidas de Figma (plan de F-07): círculo azul grisáceo de 48 px con el
- * ícono de contorno de 24 en café; píldora azul marino con texto crema en
- * negrita 15 y sombra suave.
+ * ícono de contorno de 24 en café.
+ *
+ * F-12 AE-6 (decisión del equipo, no está en el SRS): "Cerrar sesión" deja la
+ * píldora azul marino y usa `BotonTexto` (ícono y texto café, sin fondo). El
+ * menú conserva su contenedor como tarjeta: fondo crema, radio 24 y borde
+ * azul grisáceo de `BORDE`, sin sombra (respuesta 4 de Jennifer al plan).
  */
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRef, useState } from 'react';
-import { Modal, Pressable, StyleSheet, Text, useWindowDimensions } from 'react-native';
+import { Modal, Pressable, StyleSheet, View, useWindowDimensions } from 'react-native';
 import type { HostInstance } from 'react-native';
 
-import { COLORES, FUENTES, RADIOS } from '../../compartido/tema';
+import BotonTexto from '../../compartido/BotonTexto';
+import { BORDE, COLORES, RADIOS } from '../../compartido/tema';
 import { ICONOS_PANEL } from './iconosPanel';
 import { TEXTOS_PANEL } from './textos';
 
@@ -31,7 +36,7 @@ const DIAMETRO = 48;
 /** Separación entre el ícono y el botón "Cerrar sesión" (Figma). */
 const SEPARACION = 8;
 
-/** Dónde se dibuja el botón: debajo del ícono y alineado a su borde derecho. */
+/** Dónde se dibuja el menú: debajo del ícono y alineado a su borde derecho. */
 interface Posicion {
   top: number;
   right: number;
@@ -48,23 +53,15 @@ const estilos = StyleSheet.create({
   },
   presionado: { opacity: 0.8 },
   capa: { flex: 1 },
-  boton: {
+  // F-12 AE-6: tarjeta crema con borde, sin sombra; dentro va `BotonTexto`.
+  menu: {
     position: 'absolute',
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    borderRadius: RADIOS.pildora,
-    backgroundColor: COLORES.azulMarino,
-    // Sombra suave (iOS: shadow*; Android: elevation).
-    shadowColor: COLORES.azulMarino,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.25,
-    shadowRadius: 8,
-    elevation: 6,
+    padding: 4,
+    borderRadius: RADIOS.tarjeta,
+    borderWidth: BORDE,
+    borderColor: COLORES.azulGrisaceo,
+    backgroundColor: COLORES.crema,
   },
-  texto: { fontFamily: FUENTES.negrita, fontSize: 15, color: COLORES.crema },
 });
 
 interface Props {
@@ -117,14 +114,13 @@ export default function MenuUsuario({ alCerrarSesion }: Props) {
           accessibilityLabel={TEXTOS_PANEL.cerrarSesion}
         >
           {posicion ? (
-            <Pressable
-              accessibilityRole="button"
-              onPress={cerrarSesion}
-              style={({ pressed }) => [estilos.boton, posicion, pressed && estilos.presionado]}
-            >
-              <MaterialCommunityIcons name={ICONOS_PANEL.salir} size={20} color={COLORES.crema} />
-              <Text style={estilos.texto}>{TEXTOS_PANEL.cerrarSesion}</Text>
-            </Pressable>
+            <View style={[estilos.menu, posicion]}>
+              <BotonTexto
+                texto={TEXTOS_PANEL.cerrarSesion}
+                icono={ICONOS_PANEL.salir}
+                alPresionar={cerrarSesion}
+              />
+            </View>
           ) : null}
         </Pressable>
       </Modal>
