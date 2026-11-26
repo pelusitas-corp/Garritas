@@ -32,6 +32,9 @@
  * del animal en un círculo de 96, "Un hogar para:" (18) y, en la línea
  * siguiente, el nombre del animal en negrita 32. Sin solicitudes, el logo y
  * el mensaje quedan centrados en el espacio libre debajo del encabezado.
+ * AF-9: "Ordenadas de mayor a menor compatibilidad." (14), sin ícono ni
+ * negrita. AF-10: "N solicitudes nuevas" en una píldora azul marino al 15 %
+ * con un puntito. AF-12: las tarjetas con margen lateral de 16.
  */
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -45,7 +48,16 @@ import { TEXTOS_PANEL } from '../../../src/albergue/panel/textos';
 import useSolicitudesDeAnimal from '../../../src/albergue/panel/useSolicitudesDeAnimal';
 import EstadoPantalla from '../../../src/compartido/EstadoPantalla';
 import { RUTAS, rutaSolicitud } from '../../../src/compartido/navegacion/rutas';
-import { CIRCULOS, COLORES, FUENTES, RADIOS, TAMANOS_TEXTO } from '../../../src/compartido/tema';
+import {
+  CIRCULOS,
+  COLORES,
+  FONDOS,
+  FUENTES,
+  MARGEN_TARJETA_SOLICITUD,
+  PUNTITOS,
+  RADIOS,
+  TAMANOS_TEXTO,
+} from '../../../src/compartido/tema';
 
 /** Margen lateral (Figma). */
 const MARGEN = 24;
@@ -90,12 +102,32 @@ const estilos = StyleSheet.create({
     textAlign: 'center',
   },
   resumen: { gap: 8, marginTop: 12, marginBottom: 16, paddingHorizontal: MARGEN },
-  // PS-15 (spec v1.1): el conteo de nuevas se destaca en su propia línea.
-  nuevas: { fontFamily: FUENTES.negrita, fontSize: 16, color: COLORES.cafe },
-  orden: { flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-end', gap: 4 },
-  // F-12 AE-7: el texto de orden en 16, con su ícono de ordenar al lado.
-  textoOrden: { fontFamily: FUENTES.negrita, fontSize: 16, color: COLORES.cafe },
-  lista: { gap: 12, paddingHorizontal: MARGEN, paddingBottom: MARGEN },
+  // PS-15 y F-13 AF-10: el conteo de nuevas en píldora azul marino al 15 %.
+  nuevas: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    gap: 8,
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    borderRadius: RADIOS.pildora,
+    backgroundColor: FONDOS.nuevas,
+  },
+  puntitoNuevas: {
+    width: PUNTITOS.estado,
+    height: PUNTITOS.estado,
+    borderRadius: RADIOS.pildora,
+    backgroundColor: COLORES.azulMarino,
+  },
+  textoNuevas: {
+    fontFamily: FUENTES.negrita,
+    fontSize: TAMANOS_TEXTO.dato,
+    color: COLORES.azulMarino,
+  },
+  // F-13 AF-9: el texto de orden en regular 14, sin ícono.
+  textoOrden: { fontFamily: FUENTES.regular, fontSize: TAMANOS_TEXTO.minimo, color: COLORES.cafe },
+  // F-13 AF-12: tarjetas más anchas, margen lateral 16 (antes 24).
+  lista: { gap: 12, paddingHorizontal: MARGEN_TARJETA_SOLICITUD, paddingBottom: MARGEN },
   alPreAprobar: {
     marginTop: 4,
     fontFamily: FUENTES.regular,
@@ -200,11 +232,13 @@ export default function SolicitudesDeUnAnimal() {
 
       {estado.tipo === 'con-datos' ? (
         <View style={estilos.resumen}>
-          <Text style={estilos.nuevas}>{textoConteo(estado.nuevas, 'nuevas')}</Text>
-          <View style={estilos.orden}>
-            <MaterialCommunityIcons name={ICONOS_PANEL.orden} size={18} color={COLORES.cafe} />
-            <Text style={estilos.textoOrden}>{TEXTOS_PANEL.mayorCompatibilidad}</Text>
+          {/* F-13 AF-10: "N solicitudes nuevas" en píldora con puntito. */}
+          <View style={estilos.nuevas}>
+            <View style={estilos.puntitoNuevas} />
+            <Text style={estilos.textoNuevas}>{textoConteo(estado.nuevas, 'nuevas')}</Text>
           </View>
+          {/* F-13 AF-9: texto de orden sin ícono ni negrita; no es tocable (PS-8). */}
+          <Text style={estilos.textoOrden}>{TEXTOS_PANEL.ordenadas}</Text>
         </View>
       ) : (
         <View style={estilos.separacion} />

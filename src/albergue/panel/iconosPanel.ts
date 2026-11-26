@@ -19,6 +19,4 @@ export const ICONOS_PANEL = {
   salir: 'logout',
   /** "›" de cada fila de "Tus animales". */
   abrir: 'chevron-right',
-  /** Ícono de orden junto a "Mayor compatibilidad" (PS-8). */
-  orden: 'sort-descending',
 } as const satisfies Record<string, NombreIcono>;

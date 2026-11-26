@@ -12,6 +12,7 @@
 import MENSAJES from '../../compartido/mensajes';
 import { ESTADO_SOLICITUD } from '../../compartido/modelo';
 import type { ResumenHogar, Solicitud } from '../../compartido/modelo';
+import { COLORES, FONDOS } from '../../compartido/tema';
 import type {
   AnimalConId,
   LecturaAnimal,
@@ -19,7 +20,13 @@ import type {
   LecturaFallida,
 } from '../../firebase/animales';
 import type { LecturaNombre } from '../../firebase/usuarios';
-import { PALABRAS_CONTEO, TEXTO_EXPERIENCIA, TEXTO_VIVIENDA, TEXTOS_PANEL } from './textos';
+import {
+  PALABRAS_CONTEO,
+  TEXTO_EXPERIENCIA,
+  TEXTO_VIVIENDA,
+  TEXTOS_PANEL,
+  etiquetaNoApto,
+} from './textos';
 
 // ----- Tipos -----
 
@@ -149,9 +156,38 @@ export function iniciales(nombre: string): string {
     .join('');
 }
 
-/** PS-9: recibe `resumenHogar`. Devuelve "Casa"/"Departamento" · "tiene experiencia"/"primera vez". */
+/**
+ * PS-9 y F-13 AF-12: recibe `resumenHogar`. Devuelve los datos del hogar en
+ * una línea separada por comas, con los mismos textos de antes:
+ * "Casa"/"Departamento", "tiene experiencia"/"primera vez".
+ */
 export function resumenDelHogar(resumen: Pick<ResumenHogar, 'p2' | 'p19'>): string {
-  return `${TEXTO_VIVIENDA[resumen.p2]}${TEXTOS_PANEL.separador}${TEXTO_EXPERIENCIA[resumen.p19]}`;
+  return [TEXTO_VIVIENDA[resumen.p2], TEXTO_EXPERIENCIA[resumen.p19]].join(
+    TEXTOS_PANEL.separadorHogar,
+  );
+}
+
+/** Cómo se ve una tarjeta de solicitud del albergue (F-13 AF-11, AF-14). */
+export interface VistaTarjeta {
+  /** Fondo del círculo del %: menta, o azul grisáceo al 50 % si es "No Apto". */
+  fondoCirculo: string;
+  /** "No Apto" en su propia píldora, o `null`. */
+  etiqueta: string | null;
+  /** Se ve con opacidad 0.6 si es "No Apto" (RF-18, F-07) o "Rechazada" (AF-14). */
+  atenuada: boolean;
+}
+
+/**
+ * F-13 AF-11 y AF-14 (decisión del equipo, no está en el SRS). Recibe el
+ * campo guardado `noApto` (RN-02) y el estado de la solicitud. Devuelve el
+ * fondo del círculo del %, la etiqueta "No Apto" y si la tarjeta se atenúa.
+ */
+export function vistaTarjeta(solicitud: Pick<Solicitud, 'noApto' | 'estado'>): VistaTarjeta {
+  return {
+    fondoCirculo: solicitud.noApto ? FONDOS.noApto : COLORES.menta,
+    etiqueta: etiquetaNoApto(solicitud.noApto),
+    atenuada: solicitud.noApto || solicitud.estado === ESTADO_SOLICITUD.rechazada,
+  };
 }
 
 // ----- Estado de las pantallas -----
