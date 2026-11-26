@@ -95,7 +95,13 @@ export default function Descubrir() {
         />
       ) : (
         <View style={estilos.cuerpo}>
-          <TarjetaAnimal tarjeta={tarjeta} alPasar={pasar} alAbrir={abrirDetalle} />
+          {/* F-11 AD-8: key = animalId, así cada tarjeta nueva empieza centrada. */}
+          <TarjetaAnimal
+            key={tarjeta.animalId}
+            tarjeta={tarjeta}
+            alPasar={pasar}
+            alAbrir={abrirDetalle}
+          />
         </View>
       )}
     </SafeAreaView>

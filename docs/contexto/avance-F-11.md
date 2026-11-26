@@ -18,14 +18,14 @@
 | T-5 | `EncabezadoMarca` y su uso en Descubrir | Hecha |
 | T-6 | Decoraciones del perfil y encabezado de marca | Hecha |
 | T-7 | Subtítulo de Descubrir y espacios parejos | Hecha |
-| T-8 | Deslizar la tarjeta para "Pasar" o "Me encanta" | Pendiente |
+| T-8 | Deslizar la tarjeta para "Pasar" o "Me encanta" | Hecha |
 | T-9 | Foto completa del Detalle con alto flexible | Pendiente |
 | T-10 | Pestaña activa en píldora | Pendiente |
 | T-11 | Nombre del albergue más grande que "Tus animales" | Pendiente |
 | T-12 | Nueva mascota en 4 contenedores | Pendiente |
 | T-13 | Cierre de la nota con la guía de prueba en el celular | Pendiente |
 
-**Último commit:** T-7 (ver `git log`).
+**Último commit:** T-8 (ver `git log`).
 
 ## Decisiones del plan (confirmadas por Jennifer el 25/11/2026)
 
@@ -49,7 +49,7 @@
 
 ## Qué falta
 
-T-8 a T-13, las verificaciones finales, el push y el PR (sin fusionar).
+T-9 a T-13, las verificaciones finales, el push y el PR (sin fusionar).
 
 ## Pendientes
 
@@ -100,3 +100,30 @@ T-8 a T-13, las verificaciones finales, el push y el PR (sin fusionar).
   todo el cuerpo (`flex 1`) y su orden es tarjeta, espacio, botones, espacio;
   los dos espacios llevan `flex 1` y `minHeight 12`, así miden lo mismo. Si la
   pantalla es baja, los espacios quedan en 12 y la foto se encoge como antes.
+- **T-8:** funciones puras en `src/adoptante/descubrir/deslizar.ts`:
+  - `decidirDeslizamiento(desplazamientoX, anchoPantalla)` devuelve
+    `'me-encanta'` (más del 25 % a la derecha), `'pasar'` (más del 25 % a la
+    izquierda) o `'regresar'` (si no; justo en el 25 % regresa).
+  - `debeEmpezarDeslizamiento(dx, dy)` devuelve `true` solo con más de 10 px
+    en horizontal y más horizontal que vertical.
+  - Constantes `UMBRAL_DESLIZAR = 0.25`, `MINIMO_PARA_EMPEZAR = 10` y
+    `GIRO_MAXIMO = 10`.
+
+  `useDeslizarTarjeta({ alPasar, alMeEncanta })` devuelve
+  `{ manejadores, estiloArrastre }`. Los manejadores van en un `Animated.View`
+  que envuelve solo la tarjeta, no los botones. El gesto se pide con
+  `onMoveShouldSetPanResponderCapture` y nunca al empezar: un toque corto
+  sigue llegando a la tarjeta y al "ⓘ". Al soltar más allá del umbral, la
+  tarjeta sale en 200 ms y llama a la misma función que el botón (`alPasar` o
+  `alAbrir(animalId)`).
+
+  **Cambios respecto al plan, por las reglas del React Compiler**
+  (`react-hooks/refs` e `immutability`), que no dejan usar refs ni cambiar
+  variables dentro del hook:
+  - el `PanResponder` se arma en la función normal `crearGestoDeslizar`;
+  - Descubrir dibuja `TarjetaAnimal` con `key={tarjeta.animalId}`, así cada
+    tarjeta nueva empieza centrada, sin `useLayoutEffect`;
+  - se usa la variante `Capture` del gesto para que también funcione si el
+    dedo empieza sobre el "ⓘ".
+
+  Pruebas en `tests/adoptante/deslizar.test.ts` (CA-08, CA-09 y CA-10).
