@@ -2,9 +2,11 @@
 // Soft UI respeta la arquitectura §8.
 import {
   BORDE,
+  CIRCULOS,
   COLORES,
   FONDOS,
   FUENTES,
+  OPACIDAD_ATENUADA,
   OPACIDAD_DESVANECIDO,
   RADIOS,
   RADIO_MINIMO,
@@ -50,11 +52,44 @@ function hexARgb(hex: string): number[] {
 
 describe('F-12 · T-1 · Tamaños de texto y fondo de contenedor (AE-1, AE-11, RN-02)', () => {
   test('F-12 válido: el texto mínimo es 14 y el de los datos 16', () => {
-    expect(TAMANOS_TEXTO).toEqual({ minimo: 14, dato: 16 });
+    expect(TAMANOS_TEXTO.minimo).toBe(14);
+    expect(TAMANOS_TEXTO.dato).toBe(16);
   });
 
   test('F-12 válido: el relleno de los contenedores es el azul grisáceo de la paleta al 25 %', () => {
     const [rojo, verde, azul] = hexARgb(COLORES.azulGrisaceo);
     expect(FONDOS.contenedor).toBe(`rgba(${rojo}, ${verde}, ${azul}, 0.25)`);
+  });
+});
+
+describe('F-13 · T-1 · Fondos, opacidad y medidas nuevas (AF-10, AF-11, AF-14, RN-02)', () => {
+  test('F-13 válido: el fondo de "N solicitudes nuevas" es el azul marino de la paleta al 15 %', () => {
+    const [rojo, verde, azul] = hexARgb(COLORES.azulMarino);
+    expect(FONDOS.nuevas).toBe(`rgba(${rojo}, ${verde}, ${azul}, 0.15)`);
+  });
+
+  test('F-13 válido: el círculo de "No Apto" es el azul grisáceo de la paleta al 50 %', () => {
+    const [rojo, verde, azul] = hexARgb(COLORES.azulGrisaceo);
+    expect(FONDOS.noApto).toBe(`rgba(${rojo}, ${verde}, ${azul}, 0.5)`);
+  });
+
+  test('F-13 válido: la tarjeta "Rechazada" se atenúa con opacidad 0.6', () => {
+    expect(OPACIDAD_ATENUADA).toBe(0.6);
+  });
+
+  test('F-13 válido: los círculos miden 64 y 96 (%), 96 (foto) y 72 (hogar y cámara)', () => {
+    expect(CIRCULOS).toEqual({
+      porcentaje: 64,
+      porcentajeDetalle: 96,
+      fotoAnimal: 96,
+      hogar: 72,
+      camara: 72,
+    });
+  });
+
+  test('F-13 no válido: ningún tamaño de texto nuevo baja de 14', () => {
+    Object.values(TAMANOS_TEXTO).forEach((tamano) => {
+      expect(tamano).toBeGreaterThanOrEqual(TAMANOS_TEXTO.minimo);
+    });
   });
 });

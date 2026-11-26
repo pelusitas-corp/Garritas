@@ -63,6 +63,19 @@ export const BORDE = 2;
 export const TAMANOS_TEXTO = {
   minimo: 14,
   dato: 16,
+  /**
+   * Los siguientes son de F-13 (decisión del equipo; no está en el SRS).
+   * "Un hogar para:" y "✕ Rechazada" del Detalle de solicitud (AF-7, AF-14).
+   */
+  subtitulo: 18,
+  /** Nombre del refugio arriba y % dentro del círculo de la tarjeta (AF-7, AF-11). */
+  destacado: 20,
+  /** "¡Hola, {nombre}!" de Mi perfil (AF-1). */
+  saludo: 26,
+  /** % dentro del círculo del Detalle de solicitud (AF-11). */
+  porcentajeDetalle: 28,
+  /** Nombre del animal en el encabezado de sus solicitudes (AF-7). */
+  nombreGrande: 32,
 } as const;
 
 /**
@@ -73,6 +86,64 @@ export const TAMANOS_TEXTO = {
 export const FONDOS = {
   /** Relleno de los contenedores de Nueva mascota: azul grisáceo (#A1B2D0) al 25 %. */
   contenedor: 'rgba(161, 178, 208, 0.25)',
+  /** Píldora "N solicitudes nuevas": azul marino (#25314C) al 15 % (F-13 AF-10). */
+  nuevas: 'rgba(37, 49, 76, 0.15)',
+  /** Círculo del % cuando es "No Apto": azul grisáceo (#A1B2D0) al 50 % (F-13 AF-11). */
+  noApto: 'rgba(161, 178, 208, 0.5)',
 } as const;
+
+/**
+ * Opacidad de una tarjeta de solicitud "Rechazada" (F-13 AF-14, decisión del
+ * equipo; no está en el SRS): se ve atenuada, pero se sigue leyendo.
+ */
+export const OPACIDAD_ATENUADA = 0.6;
+
+/**
+ * Diámetros de los círculos de F-13, en px (decisión del equipo; no está en
+ * el SRS). Se dibujan con `RADIOS.pildora` para que queden redondos.
+ */
+export const CIRCULOS = {
+  /** % de la tarjeta de solicitud (AF-11). */
+  porcentaje: 64,
+  /** % del Detalle de solicitud (AF-11). */
+  porcentajeDetalle: 96,
+  /** Miniatura del animal en el encabezado de sus solicitudes (AF-7). */
+  fotoAnimal: 96,
+  /** Cada dato de "Su hogar y sus cuidados" (AF-13). */
+  hogar: 72,
+  /** Ícono de cámara de "Añadir una foto" (AF-15). */
+  camara: 72,
+} as const;
+
+/** Puntitos de color de F-13, en px (decisión del equipo; no está en el SRS). */
+export const PUNTITOS = {
+  /** Estado de Mis solicitudes (AF-3) y píldora de solicitudes nuevas (AF-10). */
+  estado: 12,
+  /** Decoración junto al subtítulo de Descubrir (AF-5). */
+  decoracion: 8,
+} as const;
+
+/** Estrellitas de contorno de Descubrir, en px (F-13 AF-5). */
+export const ESTRELLITAS = {
+  grande: 16,
+  chica: 12,
+} as const;
+
+/** Tamaños de íconos de F-13, en px (decisión del equipo; no está en el SRS). */
+export const ICONOS = {
+  /** Íconos crema de "Su hogar y sus cuidados" (AF-13). */
+  hogar: 32,
+  /** `camera-plus` de "Añadir una foto" (AF-15). */
+  camara: 36,
+} as const;
+
+/** Alto mínimo de un enlace tocable, como "Ver solicitud ›" (F-13 AF-8). */
+export const AREA_TOQUE = 44;
+
+/** Alto de la píldora "✕ Rechazada" del Detalle de solicitud (F-13 AF-14). */
+export const ALTO_PILDORA_GRANDE = 40;
+
+/** Margen lateral de las tarjetas de solicitud del albergue (F-13 AF-12; antes 24). */
+export const MARGEN_TARJETA_SOLICITUD = 16;
 
 export type NombreColor = keyof typeof COLORES;
