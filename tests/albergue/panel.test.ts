@@ -223,7 +223,7 @@ describe('F-07 · Lista de mis animales (N-5, PS-2, PS-3)', () => {
     solicitudes: SOLICITUDES_PANEL,
   };
 
-  test('CA-05: Refugio Patitas ve sus 9 animales: Wini 2 solicitudes, Luna 1 solicitud, Rocky 2 solicitudes, Toby 1 solicitud, y Canela, Tiara, Tostado, Nova y Naranga 0 solicitudes', () => {
+  test('CA-05: Refugio Patitas ve sus 12 animales: Wini 2 solicitudes, Luna 1 solicitud, Rocky 2 solicitudes, Toby 1 solicitud, y Canela, Tiara, Tostado, Nova, Naranga, Virginia, Lebron y Sombra 0 solicitudes', () => {
     const pantalla = decidirPantallaLista(NOMBRE_OK, LECTURA_ANIMALES, LECTURA_SOLICITUDES);
 
     expect(pantalla.tipo).toBe('con-datos');
@@ -242,6 +242,9 @@ describe('F-07 · Lista de mis animales (N-5, PS-2, PS-3)', () => {
         Tostado: '0 solicitudes',
         Nova: '0 solicitudes',
         Naranga: '0 solicitudes',
+        Virginia: '0 solicitudes',
+        Lebron: '0 solicitudes',
+        Sombra: '0 solicitudes',
       });
     }
   });
@@ -265,8 +268,11 @@ describe('F-07 · Lista de mis animales (N-5, PS-2, PS-3)', () => {
 
     expect(pantalla.tipo).toBe('con-datos');
     if (pantalla.tipo === 'con-datos') {
-      // creadoEn = posición en ANIMALES: Naranga (8) es el más reciente y Wini (0) el más antiguo.
+      // creadoEn = posición en ANIMALES: Sombra (11) es el más reciente y Wini (0) el más antiguo.
       expect(pantalla.filas.map((fila) => fila.animal.nombre)).toEqual([
+        'Sombra',
+        'Lebron',
+        'Virginia',
         'Naranga',
         'Nova',
         'Tostado',
