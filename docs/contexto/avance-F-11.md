@@ -16,7 +16,7 @@
 | T-3 | Logo y "Iniciar sesión" chico (Selección de Rol y "Crea tu cuenta") | Hecha |
 | T-4 | Casilla al final del aviso y desplazamiento con el error | Hecha |
 | T-5 | `EncabezadoMarca` y su uso en Descubrir | Hecha |
-| T-6 | Decoraciones del perfil y encabezado de marca | Pendiente |
+| T-6 | Decoraciones del perfil y encabezado de marca | Hecha |
 | T-7 | Subtítulo de Descubrir y espacios parejos | Pendiente |
 | T-8 | Deslizar la tarjeta para "Pasar" o "Me encanta" | Pendiente |
 | T-9 | Foto completa del Detalle con alto flexible | Pendiente |
@@ -25,7 +25,7 @@
 | T-12 | Nueva mascota en 4 contenedores | Pendiente |
 | T-13 | Cierre de la nota con la guía de prueba en el celular | Pendiente |
 
-**Último commit:** T-5 (ver `git log`).
+**Último commit:** T-6 (ver `git log`).
 
 ## Decisiones del plan (confirmadas por Jennifer el 25/11/2026)
 
@@ -49,7 +49,7 @@
 
 ## Qué falta
 
-T-6 a T-13, las verificaciones finales, el push y el PR (sin fusionar).
+T-7 a T-13, las verificaciones finales, el push y el PR (sin fusionar).
 
 ## Pendientes
 
@@ -85,3 +85,13 @@ T-6 a T-13, las verificaciones finales, el push y el PR (sin fusionar).
   lateral 24; `derecha` es opcional. El nombre del ícono vive en el mismo
   archivo porque `src/compartido` no importa `ICONOS_DESCUBRIR`. Descubrir
   le pasa `TEXTO_GARRITAS` y su botón de usuario: se ve igual que antes.
+- **T-6:** `TarjetaPerfilGarritas` dibuja una zona de 240 × 220 con el
+  círculo menta de 180 al centro (el ícono sigue de 88) y, con posición
+  absoluta, las 4 decoraciones confirmadas: estrellitas
+  `star-four-points-outline` café de 20 en (4, 24) y de 18 en (218, 168), y
+  puntitos de 10 azul marino en (214, 10) y de 8 azul grisáceo en (14, 184).
+  Van en una capa con `pointerEvents="none"`, `accessibilityElementsHidden`
+  e `importantForAccessibility="no-hide-descendants"`. El nombre pasa a
+  negrita 32. Perfil Garritas y Mi perfil muestran `EncabezadoMarca` con
+  `TEXTO_GARRITAS` y `TEXTO_MI_PERFIL`; en Mi perfil el nombre y la tarjeta
+  quedan centrados (`flex 1`) entre el encabezado y "Cerrar sesión".
