@@ -17,7 +17,9 @@
  *   mensaje (F-13 AF-2: "Cerrar sesión" de Mi perfil en sus estados vacía y
  *   sin permiso; antes era un botón de texto, F-12 AE-6);
  * - `conLogo`: dibuja el logo del perrito y el gatito (200 de ancho) arriba
- *   del mensaje (F-12 AE-8: "Solicitudes de un animal" sin solicitudes).
+ *   del mensaje (F-12 AE-8: "Solicitudes de un animal" sin solicitudes);
+ * - `ajustado`: no ocupa todo el espacio libre ni lleva relleno, para que la
+ *   pantalla lo centre junto con otro bloque (F-13 AF-22).
  */
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, Image, StyleSheet, Text, View } from 'react-native';
@@ -46,6 +48,7 @@ interface Props {
   boton?: { texto: string; alPresionar: () => void } | null;
   botonChico?: { texto: string; icono: IconoBotonTexto; alPresionar: () => void } | null;
   conLogo?: boolean;
+  ajustado?: boolean;
 }
 
 const estilos = StyleSheet.create({
@@ -63,6 +66,8 @@ const estilos = StyleSheet.create({
     color: COLORES.cafe,
     textAlign: 'center',
   },
+  // F-13 AF-22: sin `flex: 1` ni relleno; quien lo usa decide dónde va.
+  ajustado: { flex: 0, padding: 0 },
   boton: { alignSelf: 'stretch' },
   logo: { width: ANCHO_LOGO, height: ALTO_LOGO },
 });
@@ -85,6 +90,7 @@ export default function EstadoPantalla({
   boton = null,
   botonChico = null,
   conLogo = false,
+  ajustado = false,
 }: Props) {
   const [tarda, setTarda] = useState(false);
 
@@ -103,7 +109,7 @@ export default function EstadoPantalla({
     estado === 'cargando' ? tarda && mensajeSiTarda : mensaje || mensajePorDefecto(estado);
 
   return (
-    <View style={estilos.contenedor}>
+    <View style={[estilos.contenedor, ajustado && estilos.ajustado]}>
       {estado === 'cargando' && <ActivityIndicator size="large" color={COLORES.azulMarino} />}
       {conLogo ? (
         <Image

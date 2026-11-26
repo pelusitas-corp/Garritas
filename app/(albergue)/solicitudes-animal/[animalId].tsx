@@ -35,6 +35,10 @@
  * AF-9: "Ordenadas de mayor a menor compatibilidad." (14), sin ícono ni
  * negrita. AF-10: "N solicitudes nuevas" en una píldora azul marino al 15 %
  * con un puntito. AF-12: las tarjetas con margen lateral de 16.
+ * AF-22 (reemplaza el punto 3 de AF-7): sin solicitudes, el bloque del animal
+ * (foto, "Un hogar para:" y nombre) y el bloque vacío (logo y mensaje de
+ * RF-04) forman un solo grupo centrado debajo del refugio, con 40 entre los
+ * dos. Con solicitudes no cambia nada.
  */
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -56,6 +60,7 @@ import {
   MARGEN_TARJETA_SOLICITUD,
   PUNTITOS,
   RADIOS,
+  SEPARACION_VACIA,
   TAMANOS_TEXTO,
 } from '../../../src/compartido/tema';
 
@@ -136,6 +141,13 @@ const estilos = StyleSheet.create({
     textAlign: 'center',
   },
   separacion: { height: 16 },
+  // F-13 AF-22: el animal y el bloque vacío, juntos y centrados.
+  grupoVacio: {
+    flex: 1,
+    justifyContent: 'center',
+    gap: SEPARACION_VACIA,
+    paddingHorizontal: MARGEN,
+  },
 });
 
 /** "←": regresa a la lista. Si se abrió sin una pantalla anterior, va a `/solicitudes`. */
@@ -152,6 +164,24 @@ export default function SolicitudesDeUnAnimal() {
   const { estado, decisiones, decidir } = useSolicitudesDeAnimal(animalId);
   const conTitulo =
     estado.tipo === 'leer-solicitudes' || estado.tipo === 'vacia' || estado.tipo === 'con-datos';
+
+  /** Foto en círculo, "Un hogar para:" y el nombre del animal (AF-7). */
+  const bloqueAnimal = conTitulo ? (
+    <View style={estilos.animal}>
+      <Image
+        source={{ uri: estado.miniaturaAnimal }}
+        style={estilos.foto}
+        accessibilityIgnoresInvertColors
+      />
+      {/* "Un hogar para:" y, en la línea siguiente, el nombre (AF-7). */}
+      <View>
+        <Text style={estilos.unHogarPara}>{TEXTOS_PANEL.unHogarPara}</Text>
+        <Text accessibilityRole="header" style={estilos.nombreAnimal}>
+          {estado.nombreAnimal}
+        </Text>
+      </View>
+    </View>
+  ) : null;
 
   /** Lo que va debajo de los títulos: las tarjetas o el estado de la pantalla. */
   const cuerpo = () => {
@@ -181,15 +211,16 @@ export default function SolicitudesDeUnAnimal() {
       case 'cargando':
       case 'leer-solicitudes':
         return <EstadoPantalla estado="cargando" />;
-      default:
-        // F-12 AE-8: sin solicitudes, el logo al centro con el mensaje de RF-04.
+      case 'vacia':
+        // F-13 AF-22: el animal y el bloque vacío (logo y mensaje de RF-04) centrados juntos.
         return (
-          <EstadoPantalla
-            estado={estado.tipo}
-            mensaje={estado.mensaje}
-            conLogo={estado.tipo === 'vacia'}
-          />
+          <View style={estilos.grupoVacio}>
+            {bloqueAnimal}
+            <EstadoPantalla estado="vacia" mensaje={estado.mensaje} conLogo ajustado />
+          </View>
         );
+      default:
+        return <EstadoPantalla estado={estado.tipo} mensaje={estado.mensaje} />;
     }
   };
 
@@ -213,20 +244,8 @@ export default function SolicitudesDeUnAnimal() {
       {conTitulo ? (
         <View style={estilos.titulos}>
           <Text style={estilos.subtitulo}>{estado.nombreAlbergue}</Text>
-          <View style={estilos.animal}>
-            <Image
-              source={{ uri: estado.miniaturaAnimal }}
-              style={estilos.foto}
-              accessibilityIgnoresInvertColors
-            />
-            {/* "Un hogar para:" y, en la línea siguiente, el nombre (AF-7). */}
-            <View>
-              <Text style={estilos.unHogarPara}>{TEXTOS_PANEL.unHogarPara}</Text>
-              <Text accessibilityRole="header" style={estilos.nombreAnimal}>
-                {estado.nombreAnimal}
-              </Text>
-            </View>
-          </View>
+          {/* Sin solicitudes, el bloque del animal va en el grupo centrado (AF-22). */}
+          {estado.tipo === 'vacia' ? null : bloqueAnimal}
         </View>
       ) : null}
 
@@ -240,7 +259,8 @@ export default function SolicitudesDeUnAnimal() {
           {/* F-13 AF-9: texto de orden sin ícono ni negrita; no es tocable (PS-8). */}
           <Text style={estilos.textoOrden}>{TEXTOS_PANEL.ordenadas}</Text>
         </View>
-      ) : (
+      ) : null}
+      {estado.tipo === 'con-datos' || estado.tipo === 'vacia' ? null : (
         <View style={estilos.separacion} />
       )}
 
