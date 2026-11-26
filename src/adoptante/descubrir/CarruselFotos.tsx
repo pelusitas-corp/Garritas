@@ -5,17 +5,22 @@
  * Recibe las imágenes en base64 (con el prefijo `data:image/jpeg;base64,`,
  * M-2) ya ordenadas, y el ancho de cada página. Mientras llegan las fotos,
  * el Detalle le pasa solo la miniatura. No devuelve datos: solo dibuja.
+ *
+ * F-11 AD-9 (decisión del equipo; no está en el SRS): también recibe el
+ * `alto` (el Detalle mide el espacio libre). La foto se ve completa
+ * (`contain`) y el sobrante es azul grisáceo, el color de la tarjeta.
  */
 import { FlatList, Image, StyleSheet, View } from 'react-native';
 
 import { COLORES, RADIOS } from '../../compartido/tema';
 
-/** Alto de las fotos del Detalle (prototipo, DE-10). */
-const ALTO_FOTO = 180;
+/** Alto mínimo de las fotos del Detalle (prototipo, DE-10; F-11 AD-9). */
+export const ALTO_FOTO_MINIMO = 180;
 
 interface Props {
   imagenes: readonly string[];
   ancho: number;
+  alto: number;
 }
 
 const estilos = StyleSheet.create({
@@ -23,10 +28,10 @@ const estilos = StyleSheet.create({
   // prototipo usa 20; el mínimo de Soft UI es 24 (arquitectura §8).
   marco: { borderRadius: RADIOS.tarjeta, overflow: 'hidden' },
   lista: { flexGrow: 0 },
-  foto: { height: ALTO_FOTO, backgroundColor: COLORES.menta },
+  foto: { backgroundColor: COLORES.azulGrisaceo },
 });
 
-export default function CarruselFotos({ imagenes, ancho }: Props) {
+export default function CarruselFotos({ imagenes, ancho, alto }: Props) {
   return (
     <View style={[estilos.marco, { width: ancho }]}>
       <FlatList
@@ -39,8 +44,8 @@ export default function CarruselFotos({ imagenes, ancho }: Props) {
         renderItem={({ item }) => (
           <Image
             source={{ uri: item }}
-            style={[estilos.foto, { width: ancho }]}
-            resizeMode="cover"
+            style={[estilos.foto, { width: ancho, height: alto }]}
+            resizeMode="contain"
           />
         )}
       />

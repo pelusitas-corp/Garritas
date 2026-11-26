@@ -19,13 +19,13 @@
 | T-6 | Decoraciones del perfil y encabezado de marca | Hecha |
 | T-7 | Subtítulo de Descubrir y espacios parejos | Hecha |
 | T-8 | Deslizar la tarjeta para "Pasar" o "Me encanta" | Hecha |
-| T-9 | Foto completa del Detalle con alto flexible | Pendiente |
+| T-9 | Foto completa del Detalle con alto flexible | Hecha |
 | T-10 | Pestaña activa en píldora | Pendiente |
 | T-11 | Nombre del albergue más grande que "Tus animales" | Pendiente |
 | T-12 | Nueva mascota en 4 contenedores | Pendiente |
 | T-13 | Cierre de la nota con la guía de prueba en el celular | Pendiente |
 
-**Último commit:** T-8 (ver `git log`).
+**Último commit:** T-9 (ver `git log`).
 
 ## Decisiones del plan (confirmadas por Jennifer el 25/11/2026)
 
@@ -49,7 +49,7 @@
 
 ## Qué falta
 
-T-9 a T-13, las verificaciones finales, el push y el PR (sin fusionar).
+T-10 a T-13, las verificaciones finales, el push y el PR (sin fusionar).
 
 ## Pendientes
 
@@ -127,3 +127,10 @@ T-9 a T-13, las verificaciones finales, el push y el PR (sin fusionar).
     dedo empieza sobre el "ⓘ".
 
   Pruebas en `tests/adoptante/deslizar.test.ts` (CA-08, CA-09 y CA-10).
+- **T-9:** en el Detalle, el `ScrollView` ya no centra (`flexGrow 1`) y la
+  tarjeta lleva `flex 1`. El carrusel va en un `View` con `flex 1` y
+  `minHeight 180`; su `onLayout` mide el alto libre y lo guarda en
+  `altoFoto` (empieza en 180). `CarruselFotos({ imagenes, ancho, alto })`
+  recibe el alto, usa `resizeMode="contain"` y fondo azul grisáceo, y exporta
+  `ALTO_FOTO_MINIMO = 180`. En un teléfono bajo, la foto queda en 180 y la
+  pantalla se desplaza como antes.
