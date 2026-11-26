@@ -22,6 +22,8 @@ export const TEXTOS_MATCH = {
   enviarSolicitud: 'Enviar solicitud',
   /** Botón de Match con un animal excluido por un filtro (G-9, MS-2). */
   irADescubrir: 'Ir a Descubrir',
+  /** Etiqueta de accesibilidad del "←" de Match (F-13 AF-20). */
+  regresar: 'Regresar',
 } as const;
 
 export const TEXTOS_SOLICITUD_ENVIADA = {
