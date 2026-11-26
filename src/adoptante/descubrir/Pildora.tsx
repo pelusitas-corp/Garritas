@@ -4,7 +4,12 @@
  * La usan la tarjeta de Descubrir (especie y %) y los cuidados de salud del
  * Detalle (con su ícono de sí o no).
  *
- * Recibe el texto, el color de fondo (crema o menta) y un ícono opcional.
+ * F-13 AF-5: la píldora del % de Descubrir va en menta con texto azul marino
+ * y una estrellita decorativa a la izquierda (`colorTexto` e `iconoDecorativo`).
+ *
+ * Recibe el texto, el color de fondo (crema o menta), un ícono opcional, el
+ * color del texto y del ícono (café si no se dice) y si el ícono es solo
+ * decoración (entonces el lector de pantalla no lo lee).
  * No devuelve datos: solo dibuja.
  */
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -18,6 +23,8 @@ interface Props {
   texto: string;
   fondo?: NombreColor;
   icono?: NombreIcono | null;
+  colorTexto?: NombreColor;
+  iconoDecorativo?: boolean;
 }
 
 const estilos = StyleSheet.create({
@@ -29,14 +36,29 @@ const estilos = StyleSheet.create({
     paddingHorizontal: 12,
     borderRadius: RADIOS.pildora,
   },
-  texto: { fontFamily: FUENTES.negrita, fontSize: TAMANOS_TEXTO.minimo, color: COLORES.cafe },
+  texto: { fontFamily: FUENTES.negrita, fontSize: TAMANOS_TEXTO.minimo },
 });
 
-export default function Pildora({ texto, fondo = 'crema', icono = null }: Props) {
+export default function Pildora({
+  texto,
+  fondo = 'crema',
+  icono = null,
+  colorTexto = 'cafe',
+  iconoDecorativo = false,
+}: Props) {
+  const color = COLORES[colorTexto];
   return (
     <View style={[estilos.pildora, { backgroundColor: COLORES[fondo] }]}>
-      {icono ? <MaterialCommunityIcons name={icono} size={16} color={COLORES.cafe} /> : null}
-      <Text style={estilos.texto}>{texto}</Text>
+      {icono ? (
+        <MaterialCommunityIcons
+          name={icono}
+          size={16}
+          color={color}
+          accessibilityElementsHidden={iconoDecorativo}
+          importantForAccessibility={iconoDecorativo ? 'no-hide-descendants' : 'auto'}
+        />
+      ) : null}
+      <Text style={[estilos.texto, { color }]}>{texto}</Text>
     </View>
   );
 }

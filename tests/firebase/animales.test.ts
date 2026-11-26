@@ -7,6 +7,7 @@ import { ESPERA_GUARDAR_MS } from '../../src/firebase/cuestionario';
 import {
   leerAnimal,
   leerAnimalesDisponibles,
+  leerFotoPrincipal,
   leerFotos,
   ordenarFotos,
 } from '../../src/firebase/animales';
@@ -160,5 +161,30 @@ describe('F-03 · T-2 · Lecturas del Detalle (RF-28)', () => {
     ];
     expect(ordenarFotos(fotos).map((foto) => foto.orden)).toEqual([0, 1]);
     expect(fotos[0].orden).toBe(1);
+  });
+});
+
+describe('F-13 · T-4 · Foto completa de la tarjeta de Descubrir (AF-4)', () => {
+  test('F-13 válido: lee solo el documento animales/{animalId}/fotos/foto-0', async () => {
+    leerDocumento.mockResolvedValue(documento('foto-0', { datos: 'a', orden: 0 }) as never);
+
+    const lectura = await leerFotoPrincipal('sombra');
+
+    expect(leerDocumento).toHaveBeenCalledTimes(1);
+    expect(leerDocumento).toHaveBeenCalledWith('animales/sombra/fotos/foto-0');
+    expect(leerFotosDelServidor).not.toHaveBeenCalled();
+    expect(lectura).toEqual({ estado: 'ok', datos: 'a' });
+  });
+
+  test('F-13 no válido: si foto-0 falla por la red, el resultado es sin-conexion', async () => {
+    leerDocumento.mockRejectedValue(new Error('offline'));
+
+    await expect(leerFotoPrincipal('sombra')).resolves.toEqual({ estado: 'sin-conexion' });
+  });
+
+  test('F-13 no válido: si foto-0 no existe, el resultado es no-existe', async () => {
+    leerDocumento.mockResolvedValue(documento('foto-0', undefined as never) as never);
+
+    await expect(leerFotoPrincipal('sombra')).resolves.toEqual({ estado: 'no-existe' });
   });
 });

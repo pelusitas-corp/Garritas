@@ -35,6 +35,10 @@ export const ICONOS_DESCUBRIR = {
   tamano: 'ruler',
   /** Línea del albergue en el Detalle. */
   albergue: 'home-outline',
+  /** Estrellita "✦" de la píldora del % en Descubrir (F-13 AF-5). */
+  estrellita: 'star-four-points',
+  /** Estrellitas de contorno junto al subtítulo de Descubrir (F-13 AF-5). */
+  estrellitaContorno: 'star-four-points-outline',
 } as const satisfies Record<string, NombreIcono>;
 
 /** Recibe si tiene el cuidado de salud. Devuelve el ícono de sí o de no (DE-7). */

@@ -13,13 +13,19 @@
  * F-11 AD-7: subtítulo de 22 más pegado al encabezado.
  * F-12 AE-4: la tarjeta empieza 16 debajo del subtítulo; `TarjetaAnimal`
  * deja otros 16 hasta los botones y 16 hasta la barra de pestañas.
+ * F-13 AF-4: la tarjeta recibe la foto completa en cuanto llega
+ * (`useFotosCompletas` y `fotoDeTarjeta`); mientras, la miniatura.
+ * F-13 AF-5: junto al subtítulo, 2 estrellitas de contorno (16 y 12) y un
+ * puntito azul marino de 8. Sin animaciones y ocultas para accesibilidad.
  */
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import BotonCircular from '../../../src/adoptante/descubrir/BotonCircular';
 import { pantallaDescubrir } from '../../../src/adoptante/descubrir/estados';
+import { fotoDeTarjeta } from '../../../src/adoptante/descubrir/fotoTarjeta';
 import { ICONOS_DESCUBRIR } from '../../../src/adoptante/descubrir/iconosDescubrir';
 import { tarjetaActual } from '../../../src/adoptante/descubrir/mazo';
 import TarjetaAnimal from '../../../src/adoptante/descubrir/TarjetaAnimal';
@@ -29,23 +35,33 @@ import {
   TEXTO_SUBTITULO_DESCUBRIR,
 } from '../../../src/adoptante/descubrir/textos';
 import useDescubrir from '../../../src/adoptante/descubrir/useDescubrir';
+import useFotosCompletas from '../../../src/adoptante/descubrir/useFotosCompletas';
 import EncabezadoMarca from '../../../src/compartido/EncabezadoMarca';
 import EstadoPantalla from '../../../src/compartido/EstadoPantalla';
 import MENSAJES from '../../../src/compartido/mensajes';
 import { RUTAS } from '../../../src/compartido/navegacion/rutas';
-import { COLORES, FUENTES, RADIOS } from '../../../src/compartido/tema';
+import { COLORES, ESTRELLITAS, FUENTES, PUNTITOS, RADIOS } from '../../../src/compartido/tema';
 
 /** Margen lateral del prototipo. */
 const MARGEN = 24;
 
 const estilos = StyleSheet.create({
   pantalla: { flex: 1, backgroundColor: COLORES.crema },
-  subtitulo: {
+  // F-13 AF-5: el subtítulo y su decoración en una fila.
+  filaSubtitulo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
     marginTop: 8,
     paddingHorizontal: MARGEN,
-    fontFamily: FUENTES.negrita,
-    fontSize: 22,
-    color: COLORES.cafe,
+  },
+  subtitulo: { flexShrink: 1, fontFamily: FUENTES.negrita, fontSize: 22, color: COLORES.cafe },
+  decoracion: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+  puntito: {
+    width: PUNTITOS.decoracion,
+    height: PUNTITOS.decoracion,
+    borderRadius: RADIOS.pildora,
+    backgroundColor: COLORES.azulMarino,
   },
   aviso: {
     marginHorizontal: MARGEN,
@@ -63,6 +79,7 @@ export default function Descubrir() {
   const { estado, avisoNoDisponible, pasar, verDeNuevo, abrirDetalle, reintentar } = useDescubrir();
   const propsEstado = pantallaDescubrir(estado, { reintentar, verDeNuevo });
   const tarjeta = estado.tipo === 'con-datos' ? tarjetaActual(estado.mazo) : null;
+  const fotos = useFotosCompletas(estado.tipo === 'con-datos' ? estado.mazo : null);
 
   return (
     <SafeAreaView style={estilos.pantalla} edges={['top']}>
@@ -79,7 +96,27 @@ export default function Descubrir() {
           />
         }
       />
-      <Text style={estilos.subtitulo}>{TEXTO_SUBTITULO_DESCUBRIR}</Text>
+      <View style={estilos.filaSubtitulo}>
+        <Text style={estilos.subtitulo}>{TEXTO_SUBTITULO_DESCUBRIR}</Text>
+        {/* F-13 AF-5: decoración, sin animaciones; el lector de pantalla no la lee. */}
+        <View
+          style={estilos.decoracion}
+          accessibilityElementsHidden
+          importantForAccessibility="no-hide-descendants"
+        >
+          <MaterialCommunityIcons
+            name={ICONOS_DESCUBRIR.estrellitaContorno}
+            size={ESTRELLITAS.grande}
+            color={COLORES.azulMarino}
+          />
+          <View style={estilos.puntito} />
+          <MaterialCommunityIcons
+            name={ICONOS_DESCUBRIR.estrellitaContorno}
+            size={ESTRELLITAS.chica}
+            color={COLORES.azulMarino}
+          />
+        </View>
+      </View>
       {avisoNoDisponible ? (
         <View style={estilos.aviso}>
           <Text accessibilityRole="alert" style={estilos.textoAviso}>
@@ -100,6 +137,7 @@ export default function Descubrir() {
           <TarjetaAnimal
             key={tarjeta.animalId}
             tarjeta={tarjeta}
+            foto={fotoDeTarjeta(tarjeta, fotos)}
             alPasar={pasar}
             alAbrir={abrirDetalle}
           />
