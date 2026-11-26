@@ -13,6 +13,11 @@ export const TEXTOS_PANEL = {
   encabezado: 'Solicitudes',
   /** Título de la lista (Figma, D-52, PO-21). */
   tusAnimales: 'Tus animales',
+  /**
+   * Encima del nombre del animal en "Solicitudes de un animal" (F-13 AF-7;
+   * reemplaza el título "Un hogar para {nombre}").
+   */
+  unHogarPara: 'Un hogar para:',
   /** Indicador del orden; no es un botón (PS-8). */
   mayorCompatibilidad: 'Mayor compatibilidad',
   /** Debajo del porcentaje de cada tarjeta (Figma). */
@@ -50,11 +55,6 @@ export const TEXTO_EXPERIENCIA: Readonly<Record<ResumenHogar['p19'], string>> = 
   yaHeTenido: 'tiene experiencia',
   primeraVez: 'primera vez',
 };
-
-/** Recibe el nombre del animal. Devuelve el título "Un hogar para {nombre}" (Figma). */
-export function textoUnHogarPara(nombre: string): string {
-  return `Un hogar para ${nombre}`;
-}
 
 /** Recibe el porcentaje guardado. Devuelve "{porcentaje}%", sin espacio (Figma). */
 export function textoPorcentaje(porcentaje: number): string {

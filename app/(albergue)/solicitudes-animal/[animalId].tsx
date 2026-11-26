@@ -26,20 +26,26 @@
  * AD-11); "Mayor compatibilidad" pasa a negrita 16 con su ícono de ordenar.
  * Sin solicitudes, el logo del perrito y el gatito queda al centro con el
  * mensaje de RF-04 debajo (18, de mensajes.ts).
+ *
+ * F-13 AF-7 (decisión del equipo, no está en el SRS; reemplaza AE-7 en esta
+ * pantalla): el refugio pasa a negrita 20. Debajo, centrados, la miniatura
+ * del animal en un círculo de 96, "Un hogar para:" (18) y, en la línea
+ * siguiente, el nombre del animal en negrita 32. Sin solicitudes, el logo y
+ * el mensaje quedan centrados en el espacio libre debajo del encabezado.
  */
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
-import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+import { FlatList, Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ICONOS_PANEL } from '../../../src/albergue/panel/iconosPanel';
 import { textoConteo } from '../../../src/albergue/panel/panel';
 import TarjetaSolicitud from '../../../src/albergue/panel/TarjetaSolicitud';
-import { TEXTOS_PANEL, textoUnHogarPara } from '../../../src/albergue/panel/textos';
+import { TEXTOS_PANEL } from '../../../src/albergue/panel/textos';
 import useSolicitudesDeAnimal from '../../../src/albergue/panel/useSolicitudesDeAnimal';
 import EstadoPantalla from '../../../src/compartido/EstadoPantalla';
 import { RUTAS, rutaSolicitud } from '../../../src/compartido/navegacion/rutas';
-import { COLORES, FUENTES, TAMANOS_TEXTO } from '../../../src/compartido/tema';
+import { CIRCULOS, COLORES, FUENTES, RADIOS, TAMANOS_TEXTO } from '../../../src/compartido/tema';
 
 /** Margen lateral (Figma). */
 const MARGEN = 24;
@@ -57,10 +63,32 @@ const estilos = StyleSheet.create({
   atras: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   presionado: { opacity: 0.6 },
   textoEncabezado: { fontFamily: FUENTES.negrita, fontSize: 24, color: COLORES.cafe },
-  titulos: { gap: 2, marginTop: 16, paddingHorizontal: MARGEN },
-  // F-12 AE-7: el nombre del refugio más grande que el título, como en la lista.
-  subtitulo: { fontFamily: FUENTES.negrita, fontSize: 28, color: COLORES.cafe },
-  titulo: { fontFamily: FUENTES.negrita, fontSize: 20, color: COLORES.cafe },
+  titulos: { gap: 12, marginTop: 16, paddingHorizontal: MARGEN },
+  // F-13 AF-7: el refugio en negrita 20 (antes 28, F-12 AE-7).
+  subtitulo: {
+    fontFamily: FUENTES.negrita,
+    fontSize: TAMANOS_TEXTO.destacado,
+    color: COLORES.cafe,
+  },
+  // F-13 AF-7: foto en círculo, "Un hogar para:" y el nombre grande, centrados.
+  animal: { alignItems: 'center', gap: 8 },
+  foto: {
+    width: CIRCULOS.fotoAnimal,
+    height: CIRCULOS.fotoAnimal,
+    borderRadius: RADIOS.pildora,
+  },
+  unHogarPara: {
+    fontFamily: FUENTES.regular,
+    fontSize: TAMANOS_TEXTO.subtitulo,
+    color: COLORES.cafe,
+    textAlign: 'center',
+  },
+  nombreAnimal: {
+    fontFamily: FUENTES.negrita,
+    fontSize: TAMANOS_TEXTO.nombreGrande,
+    color: COLORES.cafe,
+    textAlign: 'center',
+  },
   resumen: { gap: 8, marginTop: 12, marginBottom: 16, paddingHorizontal: MARGEN },
   // PS-15 (spec v1.1): el conteo de nuevas se destaca en su propia línea.
   nuevas: { fontFamily: FUENTES.negrita, fontSize: 16, color: COLORES.cafe },
@@ -153,7 +181,20 @@ export default function SolicitudesDeUnAnimal() {
       {conTitulo ? (
         <View style={estilos.titulos}>
           <Text style={estilos.subtitulo}>{estado.nombreAlbergue}</Text>
-          <Text style={estilos.titulo}>{textoUnHogarPara(estado.nombreAnimal)}</Text>
+          <View style={estilos.animal}>
+            <Image
+              source={{ uri: estado.miniaturaAnimal }}
+              style={estilos.foto}
+              accessibilityIgnoresInvertColors
+            />
+            {/* "Un hogar para:" y, en la línea siguiente, el nombre (AF-7). */}
+            <View>
+              <Text style={estilos.unHogarPara}>{TEXTOS_PANEL.unHogarPara}</Text>
+              <Text accessibilityRole="header" style={estilos.nombreAnimal}>
+                {estado.nombreAnimal}
+              </Text>
+            </View>
+          </View>
         </View>
       ) : null}
 

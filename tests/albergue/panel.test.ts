@@ -16,7 +16,7 @@ import {
   textoConteo,
 } from '../../src/albergue/panel/panel';
 import type { LecturaSolicitudes, SolicitudConId } from '../../src/albergue/panel/panel';
-import { textoCompatible, textoPorcentaje } from '../../src/albergue/panel/textos';
+import { TEXTOS_PANEL, textoCompatible, textoPorcentaje } from '../../src/albergue/panel/textos';
 import MENSAJES from '../../src/compartido/mensajes';
 import type { AnimalConId, LecturaAnimal, LecturaAnimales } from '../../src/firebase/animales';
 import type { LecturaNombre } from '../../src/firebase/usuarios';
@@ -148,6 +148,7 @@ describe('F-07 · RF-04 no válido · Animal sin solicitudes', () => {
       tipo: 'vacia',
       nombreAlbergue: 'Refugio Patitas',
       nombreAnimal: 'Canela',
+      miniaturaAnimal: 'data:image/jpeg;base64,',
       mensaje: 'Aún no hay solicitudes de adopción para este perfil',
     });
   });
@@ -357,6 +358,7 @@ describe('F-07 · RNF-02, G-11 y errores (PS-5, A3 a A5)', () => {
       tipo: 'leer-solicitudes',
       nombreAlbergue: 'Refugio Patitas',
       nombreAnimal: 'Wini',
+      miniaturaAnimal: 'data:image/jpeg;base64,',
     });
   });
 
@@ -385,5 +387,24 @@ describe('F-07 · RNF-02, G-11 y errores (PS-5, A3 a A5)', () => {
         estado: 'sin-permiso',
       }),
     ).toEqual(sinPermiso);
+  });
+});
+
+describe('F-13 · CA-07 · Encabezado de las solicitudes de un animal (AF-7)', () => {
+  test('CA-07 · AF-7: en Wini se ve su foto en círculo, "Un hogar para:" y "Wini" grande; en Canela, el logo y el mensaje centrados', () => {
+    const wini = decidirPantallaAnimal(ALBERGUE.uid, NOMBRE_OK, lecturaDe('wini'));
+    expect(wini).toMatchObject({ nombreAnimal: 'Wini', miniaturaAnimal: expect.any(String) });
+    expect(TEXTOS_PANEL.unHogarPara).toBe('Un hogar para:');
+
+    const canela = decidirPantallaAnimal(
+      ALBERGUE.uid,
+      NOMBRE_OK,
+      lecturaDe('canela'),
+      solicitudesDe('canela'),
+    );
+    expect(canela).toMatchObject({
+      tipo: 'vacia',
+      mensaje: 'Aún no hay solicitudes de adopción para este perfil',
+    });
   });
 });

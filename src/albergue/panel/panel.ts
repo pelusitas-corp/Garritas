@@ -51,21 +51,29 @@ export type PantallaLista =
   | { tipo: 'vacia'; nombreAlbergue: string; mensaje: string }
   | PantallaFallida;
 
+/**
+ * Lo que va en el encabezado de "Solicitudes de un animal": el refugio, el
+ * nombre del animal y su miniatura (F-13 AF-7: foto en círculo de 96).
+ */
+export interface EncabezadoAnimal {
+  nombreAlbergue: string;
+  nombreAnimal: string;
+  miniaturaAnimal: string;
+}
+
 /** Lo que dibuja "Solicitudes de un animal" (F-07 §6). */
 export type PantallaAnimal =
   | { tipo: 'cargando' }
   /** El animal ya se confirmó (PS-5): se ve el título mientras se leen sus solicitudes. */
-  | { tipo: 'leer-solicitudes'; nombreAlbergue: string; nombreAnimal: string }
-  | { tipo: 'vacia'; nombreAlbergue: string; nombreAnimal: string; mensaje: string }
-  | {
+  | ({ tipo: 'leer-solicitudes' } & EncabezadoAnimal)
+  | ({ tipo: 'vacia'; mensaje: string } & EncabezadoAnimal)
+  | ({
       tipo: 'con-datos';
-      nombreAlbergue: string;
-      nombreAnimal: string;
       /** Ya ordenadas de mayor a menor % (RF-04, PS-1). */
       solicitudes: SolicitudConId[];
       /** Cuántas siguen "Pendiente" (PS-7). */
       nuevas: number;
-    }
+    } & EncabezadoAnimal)
   | PantallaFallida;
 
 // ----- Orden y conteos -----
@@ -220,7 +228,11 @@ export function decidirPantallaAnimal(
   if (animal.animal.albergueId !== uid) {
     return { tipo: 'sin-permiso', mensaje: MENSAJES.SIN_PERMISO };
   }
-  const nombres = { nombreAlbergue: nombre.nombre, nombreAnimal: animal.animal.nombre };
+  const nombres: EncabezadoAnimal = {
+    nombreAlbergue: nombre.nombre,
+    nombreAnimal: animal.animal.nombre,
+    miniaturaAnimal: animal.animal.miniatura,
+  };
   if (!solicitudes) {
     return { tipo: 'leer-solicitudes', ...nombres };
   }
