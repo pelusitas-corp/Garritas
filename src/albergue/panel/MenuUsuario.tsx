@@ -19,6 +19,11 @@
  * píldora azul marino y usa `BotonTexto` (ícono y texto café, sin fondo). El
  * menú conserva su contenedor como tarjeta: fondo crema, radio 24 y borde
  * azul grisáceo de `BORDE`, sin sombra (respuesta 4 de Jennifer al plan).
+ *
+ * F-13 AF-17 (decisión del equipo, no está en el SRS; 02 v1.4 N-3): al tocar
+ * "Cerrar sesión" el menú se cambia por "¿Quieres cerrar sesión?"
+ * (`TarjetaCerrarSesion`), dentro del mismo `Modal`, para no abrir dos
+ * modales a la vez. "Cancelar", "atrás" o tocar fuera lo cierran sin salir.
  */
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRef, useState } from 'react';
@@ -26,6 +31,7 @@ import { Modal, Pressable, StyleSheet, View, useWindowDimensions } from 'react-n
 import type { HostInstance } from 'react-native';
 
 import BotonTexto from '../../compartido/BotonTexto';
+import { TarjetaCerrarSesion } from '../../compartido/ConfirmarCerrarSesion';
 import { BORDE, COLORES, RADIOS } from '../../compartido/tema';
 import { ICONOS_PANEL } from './iconosPanel';
 import { TEXTOS_PANEL } from './textos';
@@ -72,6 +78,8 @@ export default function MenuUsuario({ alCerrarSesion }: Props) {
   const icono = useRef<HostInstance>(null);
   const { width: anchoVentana } = useWindowDimensions();
   const [posicion, setPosicion] = useState<Posicion | null>(null);
+  /** F-13 AF-17: `true` mientras se muestra "¿Quieres cerrar sesión?". */
+  const [confirmando, setConfirmando] = useState(false);
 
   /** Abre el menú justo debajo del ícono (mide dónde quedó el ícono en la pantalla). */
   const abrir = () => {
@@ -82,10 +90,13 @@ export default function MenuUsuario({ alCerrarSesion }: Props) {
 
   const cerrar = () => setPosicion(null);
 
-  const cerrarSesion = () => {
+  /** "Cerrar sesión" del menú: en lugar de salir, pide confirmación (AF-17). */
+  const pedirConfirmacion = () => {
     cerrar();
-    alCerrarSesion();
+    setConfirmando(true);
   };
+
+  const ocultarConfirmacion = () => setConfirmando(false);
 
   return (
     <>
@@ -104,25 +115,29 @@ export default function MenuUsuario({ alCerrarSesion }: Props) {
         transparent
         statusBarTranslucent
         animationType="fade"
-        visible={posicion !== null}
-        onRequestClose={cerrar}
+        visible={posicion !== null || confirmando}
+        onRequestClose={confirmando ? ocultarConfirmacion : cerrar}
       >
-        {/* Tocar fuera del botón (también sobre el ícono) cierra el menú (PS-11). */}
-        <Pressable
-          style={estilos.capa}
-          onPress={cerrar}
-          accessibilityLabel={TEXTOS_PANEL.cerrarSesion}
-        >
-          {posicion ? (
-            <View style={[estilos.menu, posicion]}>
-              <BotonTexto
-                texto={TEXTOS_PANEL.cerrarSesion}
-                icono={ICONOS_PANEL.salir}
-                alPresionar={cerrarSesion}
-              />
-            </View>
-          ) : null}
-        </Pressable>
+        {confirmando ? (
+          <TarjetaCerrarSesion alOcultar={ocultarConfirmacion} alCerrarSesion={alCerrarSesion} />
+        ) : (
+          // Tocar fuera del botón (también sobre el ícono) cierra el menú (PS-11).
+          <Pressable
+            style={estilos.capa}
+            onPress={cerrar}
+            accessibilityLabel={TEXTOS_PANEL.cerrarSesion}
+          >
+            {posicion ? (
+              <View style={[estilos.menu, posicion]}>
+                <BotonTexto
+                  texto={TEXTOS_PANEL.cerrarSesion}
+                  icono={ICONOS_PANEL.salir}
+                  alPresionar={pedirConfirmacion}
+                />
+              </View>
+            ) : null}
+          </Pressable>
+        )}
       </Modal>
     </>
   );
