@@ -8,6 +8,10 @@
  *
  * F-11 (AD-1, AD-2; decisión del equipo, no está en el SRS): el logo va entre
  * el encabezado y el título, e "Iniciar sesión" usa el tamaño chico.
+ *
+ * F-12 (AE-2; decisión del equipo, no está en el SRS): el logo y el título
+ * quedan centrados verticalmente en el espacio libre entre el encabezado y
+ * los botones de rol, que se quedan abajo.
  */
 import { router } from 'expo-router';
 import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
@@ -26,9 +30,11 @@ const ANCHO_LOGO = 240;
 const ALTO_LOGO = Math.round((ANCHO_LOGO * 456) / 580);
 
 const estilos = StyleSheet.create({
-  logo: { width: ANCHO_LOGO, height: ALTO_LOGO, alignSelf: 'center', marginTop: 8 },
+  // F-12 AE-2: ocupa el espacio libre y centra el logo y el título en él.
+  centro: { flex: 1, justifyContent: 'center' },
+  logo: { width: ANCHO_LOGO, height: ALTO_LOGO, alignSelf: 'center' },
   titulo: { textAlign: 'center', marginTop: 16 },
-  botones: { gap: 12, marginTop: 'auto' },
+  botones: { gap: 12 },
   pie: {
     fontFamily: FUENTES.regular,
     fontSize: 14,
@@ -43,16 +49,18 @@ export default function SeleccionDeRol() {
     <SafeAreaView style={estilosAcceso.pantalla}>
       <EncabezadoAcceso />
       <ScrollView contentContainerStyle={estilosAcceso.contenido}>
-        <Image
-          source={LOGO}
-          style={estilos.logo}
-          resizeMode="contain"
-          accessibilityRole="image"
-          accessibilityLabel="Logo de Garritas"
-        />
-        <Text accessibilityRole="header" style={[estilosAcceso.titulo, estilos.titulo]}>
-          Bienvenido a Garritas
-        </Text>
+        <View style={estilos.centro}>
+          <Image
+            source={LOGO}
+            style={estilos.logo}
+            resizeMode="contain"
+            accessibilityRole="image"
+            accessibilityLabel="Logo de Garritas"
+          />
+          <Text accessibilityRole="header" style={[estilosAcceso.titulo, estilos.titulo]}>
+            Bienvenido a Garritas
+          </Text>
+        </View>
         <View style={estilos.botones}>
           <BotonPildora
             texto="Quiero adoptar"

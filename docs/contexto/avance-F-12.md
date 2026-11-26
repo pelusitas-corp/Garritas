@@ -1,4 +1,4 @@
-# Avance F-12 · Ajustes de diseño, ronda 2 · Parte A
+Hecha |# Avance F-12 · Ajustes de diseño, ronda 2 · Parte A
 
 - **Spec:** `specs/features/F-12-ajustes-diseno-2.md` (v1.0 Aprobada), solo la
   Parte A (§4.1 a §4.11, T-1 a T-11). La corrección a 9 animales va aparte en
@@ -25,7 +25,7 @@
 | T-10 | `enlaceTelefono` y Detalle de solicitud unificado | Pendiente |
 | T-11 | Relleno de los contenedores de Nueva mascota | Pendiente |
 
-**Último commit:** T-2 (ver `git log`).
+**Último commit:** T-3 (ver `git log`).
 
 **Pushes acordados:** después de T-4, T-8 y T-11, con typecheck, lint y test
 en verde. Entre T-1 y T-2 la prueba de accesibilidad queda en rojo a
@@ -78,3 +78,9 @@ propósito (marca los textos que T-2 corrige), así que no hay push hasta T-2.
   y `solicitud-enviada/[solicitudId].tsx` (14 → 16) solo cambió el número del
   `fontSize`, sin tocar los imports (respuesta 3). Las medidas propias de cada
   pantalla (28 del refugio, 18 del contacto…) llegan en T-9 y T-10.
+- **T-3:** en Selección de Rol el logo y "Bienvenido a Garritas" van en un
+  `View` con `flex: 1` y `justifyContent: 'center'`, así quedan a media altura
+  entre el encabezado y los botones de rol, que siguen abajo. El logo perdió
+  su `marginTop: 8` (lo centra el `flex`). En `FormularioAcceso` (lo usan
+  Acceso de Adoptante y Acceso de Albergue) el `ScrollView` centra todo el
+  formulario y los botones quedan a 24 de los campos (8 + el `gap` de 16).
