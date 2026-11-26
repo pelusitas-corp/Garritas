@@ -1,13 +1,16 @@
 // Pruebas del orden y los estados de Mis solicitudes (spec F-06 T-3: RF-27,
 // MS-7; A5 a A7). El nombre de cada prueba es su criterio de aceptación.
 import {
+  actualizarConIndicador,
   apoyoDelEstado,
+  coloresDelPuntito,
   ordenarMisSolicitudes,
   pantallaMisSolicitudes,
 } from '../../src/adoptante/solicitudes/misSolicitudes';
 import type { MiSolicitud } from '../../src/adoptante/solicitudes/misSolicitudes';
 import TEXTOS_MIS_SOLICITUDES from '../../src/adoptante/solicitudes/textos';
 import MENSAJES from '../../src/compartido/mensajes';
+import { RUTAS } from '../../src/compartido/navegacion/rutas';
 
 /** Recibe milisegundos. Devuelve una fecha falsa con `toMillis`, como un `Timestamp`. */
 const fecha = (ms: number) => ({ toMillis: () => ms });
@@ -82,4 +85,37 @@ describe('apoyoDelEstado (Figma, PO-21)', () => {
       expect(apoyoDelEstado(estado)).toBeNull();
     },
   );
+});
+
+describe('F-13 · CA-02 · AF-3 (decisión del equipo, no está en el SRS)', () => {
+  test('CA-02 · AF-3: en Mis solicitudes el estado es texto con puntito', () => {
+    expect(coloresDelPuntito('Pendiente')).toEqual({ relleno: 'crema', borde: 'azulMarino' });
+    expect(coloresDelPuntito('Pre-aprobada')).toEqual({ relleno: 'menta', borde: 'azulMarino' });
+    expect(coloresDelPuntito('Rechazada')).toEqual({ relleno: 'cafe', borde: 'cafe' });
+  });
+
+  test('CA-02 · AF-3: "Descubrir más animales" lleva a Descubrir', () => {
+    expect(TEXTOS_MIS_SOLICITUDES.descubrirMas).toBe('Descubrir más animales');
+    expect(TEXTOS_MIS_SOLICITUDES.subtitulo).toBe('Aquí ves cómo van tus solicitudes.');
+    expect(RUTAS.descubrir).toBe('/descubrir');
+  });
+
+  test('CA-02 · AF-3: al deslizar hacia abajo se ve el indicador y la lista se actualiza', async () => {
+    const marcar = jest.fn();
+    const leer = jest.fn(async () => {
+      expect(marcar).toHaveBeenLastCalledWith(true); // El indicador está prendido mientras lee.
+    });
+    await actualizarConIndicador(marcar, leer);
+    expect(leer).toHaveBeenCalledTimes(1);
+    expect(marcar.mock.calls).toEqual([[true], [false]]);
+  });
+
+  test('CA-02 · AF-3 no válido: si la lectura falla, el indicador se apaga igual', async () => {
+    const marcar = jest.fn();
+    const leer = jest.fn(async () => {
+      throw new Error('sin conexión');
+    });
+    await expect(actualizarConIndicador(marcar, leer)).rejects.toThrow('sin conexión');
+    expect(marcar.mock.calls).toEqual([[true], [false]]);
+  });
 });

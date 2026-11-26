@@ -8,6 +8,7 @@
 import MENSAJES from '../../compartido/mensajes';
 import { ESTADO_SOLICITUD } from '../../compartido/modelo';
 import type { EstadoSolicitud, Solicitud } from '../../compartido/modelo';
+import type { NombreColor } from '../../compartido/tema';
 import type { PropsEstado } from '../descubrir/estados';
 import { TEXTO_REINTENTAR } from '../descubrir/textos';
 import TEXTOS_MIS_SOLICITUDES from './textos';
@@ -75,9 +76,52 @@ export function pantallaMisSolicitudes(
 
 /**
  * Recibe el estado de una solicitud. Devuelve el texto que va debajo de su
- * píldora: "El albergue te contactará para conocerse." solo con
+ * estado: "El albergue te contactará para conocerse." solo con
  * "Pre-aprobada" (Figma, PO-21); con los demás estados, `null`.
  */
 export function apoyoDelEstado(estado: EstadoSolicitud): string | null {
   return estado === ESTADO_SOLICITUD.preAprobada ? TEXTOS_MIS_SOLICITUDES.teContactara : null;
+}
+
+/** Colores del puntito del estado: su relleno y su borde (nombres de `tema.ts`). */
+export interface ColoresPuntito {
+  relleno: NombreColor;
+  borde: NombreColor;
+}
+
+/**
+ * F-13 AF-3 (§4.2, decisión del equipo; no está en el SRS): el estado ya no
+ * es píldora, sino texto café con un puntito de color. Recibe el estado y
+ * devuelve los colores del puntito:
+ * - "Pendiente": crema con borde azul marino;
+ * - "Pre-aprobada": menta con borde azul marino;
+ * - "Rechazada": café.
+ */
+export function coloresDelPuntito(estado: EstadoSolicitud): ColoresPuntito {
+  switch (estado) {
+    case ESTADO_SOLICITUD.pendiente:
+      return { relleno: 'crema', borde: 'azulMarino' };
+    case ESTADO_SOLICITUD.preAprobada:
+      return { relleno: 'menta', borde: 'azulMarino' };
+    default:
+      return { relleno: 'cafe', borde: 'cafe' };
+  }
+}
+
+/**
+ * F-13 AF-3: "deslizar hacia abajo para actualizar". Recibe con qué prender
+ * o apagar el indicador de arriba y la lectura que hay que hacer. Prende el
+ * indicador, espera la lectura y lo apaga, aunque la lectura falle (el error
+ * de conexión lo muestra la propia lectura). No devuelve nada.
+ */
+export async function actualizarConIndicador(
+  marcarActualizando: (actualizando: boolean) => void,
+  leer: () => Promise<void>,
+): Promise<void> {
+  marcarActualizando(true);
+  try {
+    await leer();
+  } finally {
+    marcarActualizando(false);
+  }
 }
