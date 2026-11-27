@@ -27,6 +27,16 @@
  * `Linking.openURL('tel:…')` (`enlaceTelefono`). Si el celular no puede
  * abrirlo, no pasa nada. Si el teléfono no tiene dígitos, no se puede tocar.
  *
+ * F-13 (decisión del equipo, no está en el SRS):
+ * - AF-11: mientras está "Pendiente", junto a "Para adoptar a {animal}" va el
+ *   % en un círculo menta de 96 (negrita 28) con "compatible" debajo; con
+ *   "No Apto", el círculo gris y "No Apto" en su propia píldora;
+ * - AF-13: "Su hogar y sus cuidados" centrado y, debajo, 3 círculos azul
+ *   grisáceo de 72 en una fila centrada, cada uno con su ícono (crema, 32) y
+ *   el dato debajo (16, centrado, hasta 2 líneas);
+ * - AF-14: "✕ Rechazada" café con texto crema (alto 40, texto 18) y la
+ *   tarjeta del adoptante con opacidad 0.6. El mensaje de RF-12 se queda.
+ *
  * `useDetalleSolicitud` lee los datos cada vez que la pantalla se enfoca.
  * Solicitud ajena o inexistente: "No tienes permiso para ver esta sección"
  * (A6, G-11). La "←" se ve en todos los estados para poder regresar.
@@ -44,8 +54,9 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { iniciales } from '../../../src/albergue/panel/panel';
+import { iniciales, vistaTarjeta } from '../../../src/albergue/panel/panel';
 import type { SolicitudConId } from '../../../src/albergue/panel/panel';
+import { TEXTOS_PANEL, textoPorcentaje } from '../../../src/albergue/panel/textos';
 import BotonesDecision from '../../../src/albergue/solicitud/BotonesDecision';
 import { lineasDelHogar, vistaDelEstado } from '../../../src/albergue/solicitud/decision';
 import type { VistaContacto } from '../../../src/albergue/solicitud/decision';
@@ -54,14 +65,22 @@ import { enlaceTelefono } from '../../../src/albergue/solicitud/telefono';
 import {
   TEXTOS_DECISION,
   textoParaAdoptarA,
-  textoPorcentajeCompatible,
   textoSolicitudDe,
   textoTelefono,
 } from '../../../src/albergue/solicitud/textos';
 import useDetalleSolicitud from '../../../src/albergue/solicitud/useDetalleSolicitud';
 import EstadoPantalla from '../../../src/compartido/EstadoPantalla';
 import { RUTAS, rutaSolicitudesAnimal } from '../../../src/compartido/navegacion/rutas';
-import { COLORES, FUENTES, RADIOS, TAMANOS_TEXTO } from '../../../src/compartido/tema';
+import {
+  ALTO_PILDORA_GRANDE,
+  CIRCULOS,
+  COLORES,
+  FUENTES,
+  ICONOS,
+  OPACIDAD_ATENUADA,
+  RADIOS,
+  TAMANOS_TEXTO,
+} from '../../../src/compartido/tema';
 
 /** Margen lateral (Figma). */
 const MARGEN = 24;
@@ -104,8 +123,49 @@ const estilos = StyleSheet.create({
     borderRadius: RADIOS.pildora,
   },
   menta: { backgroundColor: COLORES.menta },
-  crema: { backgroundColor: COLORES.crema },
   textoPildora: { fontFamily: FUENTES.negrita, fontSize: 16, color: COLORES.cafe },
+  // F-13 AF-14: "✕ Rechazada" café con texto crema, más grande.
+  pildoraRechazada: {
+    height: ALTO_PILDORA_GRANDE,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 16,
+    borderRadius: RADIOS.pildora,
+    backgroundColor: COLORES.cafe,
+  },
+  textoRechazada: {
+    fontFamily: FUENTES.negrita,
+    fontSize: TAMANOS_TEXTO.subtitulo,
+    color: COLORES.crema,
+  },
+  // F-13 AF-11: el % en un círculo de 96 con "compatible" debajo.
+  porcentaje: { alignItems: 'center', gap: 4 },
+  circuloPorcentaje: {
+    width: CIRCULOS.porcentajeDetalle,
+    height: CIRCULOS.porcentajeDetalle,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: RADIOS.pildora,
+  },
+  textoPorcentaje: {
+    fontFamily: FUENTES.negrita,
+    fontSize: TAMANOS_TEXTO.porcentajeDetalle,
+    color: COLORES.cafe,
+  },
+  compatible: { fontFamily: FUENTES.negrita, fontSize: TAMANOS_TEXTO.minimo, color: COLORES.cafe },
+  noApto: {
+    paddingHorizontal: 10,
+    paddingVertical: 2,
+    borderRadius: RADIOS.pildora,
+    backgroundColor: COLORES.cafe,
+  },
+  textoNoApto: {
+    fontFamily: FUENTES.negrita,
+    fontSize: TAMANOS_TEXTO.minimo,
+    color: COLORES.crema,
+  },
+  atenuada: { opacity: OPACIDAD_ATENUADA },
   tarjeta: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -140,14 +200,29 @@ const estilos = StyleSheet.create({
     fontSize: TAMANOS_TEXTO.minimo,
     color: COLORES.cafe,
   },
-  lineaConIcono: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   seccion: { gap: 12 },
-  tituloSeccion: { fontFamily: FUENTES.negrita, fontSize: 20, color: COLORES.cafe },
+  tituloSeccion: {
+    fontFamily: FUENTES.negrita,
+    fontSize: 20,
+    color: COLORES.cafe,
+    textAlign: 'center',
+  },
+  // F-13 AF-13: 3 círculos en una fila centrada, cada uno con su dato debajo.
+  filaHogar: { flexDirection: 'row', justifyContent: 'center', gap: 12 },
+  datoHogar: { flex: 1, alignItems: 'center', gap: 8 },
+  circuloHogar: {
+    width: CIRCULOS.hogar,
+    height: CIRCULOS.hogar,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: RADIOS.pildora,
+    backgroundColor: COLORES.azulGrisaceo,
+  },
   textoHogar: {
-    flexShrink: 1,
     fontFamily: FUENTES.negrita,
     fontSize: TAMANOS_TEXTO.dato,
     color: COLORES.cafe,
+    textAlign: 'center',
   },
   abajo: { gap: 12, paddingHorizontal: MARGEN, paddingTop: 12, paddingBottom: MARGEN },
   textoAbajo: {
@@ -175,16 +250,45 @@ function regresar(animalId: string | null) {
   }
 }
 
-/** Píldora de la derecha: el % mientras está "Pendiente"; si no, el estado final (PA-5). */
+/**
+ * Lo de la derecha de "Para adoptar a…" (PA-5): mientras está "Pendiente",
+ * el % en un círculo con "compatible" y, si es el caso, "No Apto" (F-13
+ * AF-11); con "Pre-aprobada", su píldora menta; con "Rechazada", la píldora
+ * café "✕ Rechazada" (F-13 AF-14).
+ */
 function PildoraDetalle({ solicitud }: { solicitud: SolicitudConId }) {
   const vista = vistaDelEstado(solicitud.estado);
-  const texto =
-    vista === 'botones'
-      ? textoPorcentajeCompatible(solicitud.porcentaje, solicitud.noApto)
-      : solicitud.estado;
+  if (vista === 'rechazada') {
+    return (
+      <View style={estilos.pildoraRechazada}>
+        <MaterialCommunityIcons
+          name={ICONOS_DECISION.rechazar}
+          size={TAMANOS_TEXTO.subtitulo}
+          color={COLORES.crema}
+        />
+        <Text style={estilos.textoRechazada}>{solicitud.estado}</Text>
+      </View>
+    );
+  }
+  if (vista === 'pre-aprobada') {
+    return (
+      <View style={[estilos.pildora, estilos.menta]}>
+        <Text style={estilos.textoPildora}>{solicitud.estado}</Text>
+      </View>
+    );
+  }
+  const { fondoCirculo, etiqueta } = vistaTarjeta(solicitud);
   return (
-    <View style={[estilos.pildora, vista === 'rechazada' ? estilos.crema : estilos.menta]}>
-      <Text style={estilos.textoPildora}>{texto}</Text>
+    <View style={estilos.porcentaje}>
+      <View style={[estilos.circuloPorcentaje, { backgroundColor: fondoCirculo }]}>
+        <Text style={estilos.textoPorcentaje}>{textoPorcentaje(solicitud.porcentaje)}</Text>
+      </View>
+      <Text style={estilos.compatible}>{TEXTOS_PANEL.compatible}</Text>
+      {etiqueta ? (
+        <View style={estilos.noApto}>
+          <Text style={estilos.textoNoApto}>{etiqueta}</Text>
+        </View>
+      ) : null}
     </View>
   );
 }
@@ -279,7 +383,7 @@ export default function DetalleDeSolicitud() {
               <PildoraDetalle solicitud={solicitud} />
             </View>
 
-            <View style={estilos.tarjeta}>
+            <View style={[estilos.tarjeta, vista === 'rechazada' && estilos.atenuada]}>
               <View style={estilos.circulo}>
                 <Text style={estilos.iniciales}>{iniciales(solicitud.nombreAdoptante)}</Text>
               </View>
@@ -292,16 +396,22 @@ export default function DetalleDeSolicitud() {
 
             <View style={estilos.seccion}>
               <Text style={estilos.tituloSeccion}>{TEXTOS_DECISION.suHogar}</Text>
-              {hogar.map((linea) => (
-                <View key={linea.clave} style={estilos.lineaConIcono}>
-                  <MaterialCommunityIcons
-                    name={ICONOS_HOGAR[linea.clave]}
-                    size={22}
-                    color={COLORES.cafe}
-                  />
-                  <Text style={estilos.textoHogar}>{linea.texto}</Text>
-                </View>
-              ))}
+              <View style={estilos.filaHogar}>
+                {hogar.map((linea) => (
+                  <View key={linea.clave} style={estilos.datoHogar}>
+                    <View style={estilos.circuloHogar}>
+                      <MaterialCommunityIcons
+                        name={ICONOS_HOGAR[linea.clave]}
+                        size={ICONOS.hogar}
+                        color={COLORES.crema}
+                      />
+                    </View>
+                    <Text style={estilos.textoHogar} numberOfLines={2}>
+                      {linea.texto}
+                    </Text>
+                  </View>
+                ))}
+              </View>
             </View>
           </ScrollView>
 

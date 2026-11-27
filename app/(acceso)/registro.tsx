@@ -12,7 +12,7 @@
  */
 import { Redirect, router } from 'expo-router';
 import { useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import CampoTexto from '../../src/compartido/acceso/CampoTexto';
@@ -66,62 +66,68 @@ export default function Registro() {
   return (
     <SafeAreaView style={estilosAcceso.pantalla}>
       <EncabezadoAcceso conFlechaAtras />
-      <ScrollView
-        contentContainerStyle={estilosAcceso.contenido}
-        keyboardShouldPersistTaps="handled"
+      {/* F-13 AF-21: igual que "Ingresa a tu cuenta", el teclado no tapa los campos. */}
+      <KeyboardAvoidingView
+        style={estilosAcceso.teclado}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
-        <Text accessibilityRole="header" style={estilosAcceso.titulo}>
-          Crea tu cuenta
-        </Text>
-        <Text style={estilosAcceso.subtitulo}>
-          Después te haremos unas preguntas rápidas para encontrar tu match.
-        </Text>
-        <View style={estilos.campos}>
-          <CampoTexto
-            valor={nombre}
-            alCambiar={setNombre}
-            marcador="Nombre completo"
-            editable={!enviando}
-          />
-          <CampoTexto
-            valor={correo}
-            alCambiar={setCorreo}
-            marcador="Correo electrónico"
-            tipo="correo"
-            editable={!enviando}
-          />
-          <CampoTexto
-            valor={telefono}
-            alCambiar={setTelefono}
-            marcador="Teléfono"
-            tipo="telefono"
-            editable={!enviando}
-          />
-          <CampoTexto
-            valor={contrasena}
-            alCambiar={setContrasena}
-            marcador="Contraseña"
-            tipo="contrasena"
-            editable={!enviando}
-          />
-        </View>
-        {error ? <MensajeError texto={error} /> : null}
-        <View style={estilos.abajo}>
-          <BotonPildora
-            texto="Crear cuenta"
-            alPresionar={crear}
-            desactivado={!camposLlenos([nombre, correo, telefono, contrasena])}
-            cargando={enviando}
-          />
-          <Text style={estilosAcceso.pregunta}>¿Ya tienes cuenta?</Text>
-          <BotonPildora
-            texto="Iniciar sesión"
-            alPresionar={() => router.push(RUTAS.accesoAdoptante)}
-            variante="secundario"
-            tamano="chico"
-          />
-        </View>
-      </ScrollView>
+        <ScrollView
+          contentContainerStyle={estilosAcceso.contenido}
+          keyboardShouldPersistTaps="handled"
+        >
+          <Text accessibilityRole="header" style={estilosAcceso.titulo}>
+            Crea tu cuenta
+          </Text>
+          <Text style={estilosAcceso.subtitulo}>
+            Después te haremos unas preguntas rápidas para encontrar tu match.
+          </Text>
+          <View style={estilos.campos}>
+            <CampoTexto
+              valor={nombre}
+              alCambiar={setNombre}
+              marcador="Nombre completo"
+              editable={!enviando}
+            />
+            <CampoTexto
+              valor={correo}
+              alCambiar={setCorreo}
+              marcador="Correo electrónico"
+              tipo="correo"
+              editable={!enviando}
+            />
+            <CampoTexto
+              valor={telefono}
+              alCambiar={setTelefono}
+              marcador="Teléfono"
+              tipo="telefono"
+              editable={!enviando}
+            />
+            <CampoTexto
+              valor={contrasena}
+              alCambiar={setContrasena}
+              marcador="Contraseña"
+              tipo="contrasena"
+              editable={!enviando}
+            />
+          </View>
+          {error ? <MensajeError texto={error} /> : null}
+          <View style={estilos.abajo}>
+            <BotonPildora
+              texto="Crear cuenta"
+              alPresionar={crear}
+              desactivado={!camposLlenos([nombre, correo, telefono, contrasena])}
+              cargando={enviando}
+            />
+            <Text style={estilosAcceso.pregunta}>¿Ya tienes cuenta?</Text>
+            <BotonPildora
+              texto="Iniciar sesión"
+              alPresionar={() => router.push(RUTAS.accesoAdoptante)}
+              variante="secundario"
+              tamano="chico"
+            />
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }

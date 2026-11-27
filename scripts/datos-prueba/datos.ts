@@ -9,10 +9,11 @@
  * Las respuestas de los Adoptantes A y B son las mismas de las pruebas del
  * motor (`tests/matchmaking/datos.ts`, ESTADO §6.6).
  *
- * 03 v1.8 M-7 (F-12 AE-13, AE-14; decisión del equipo, no está en el SRS):
- * son 9 animales, los 5 originales y Tiara, Tostado, Nova y Naranga, que no
- * tienen solicitudes. Sus fotos reales están en esta carpeta como
- * `{id}-1.jpg` (y `tiara-2.jpg`) con su `{id}-miniatura.jpg`.
+ * 03 v1.9 M-7 (F-12 AE-13, AE-14 y F-13 AF-6; decisión del equipo, no está
+ * en el SRS): son 12 animales, los 5 originales y Tiara, Tostado, Nova,
+ * Naranga, Virginia, Lebron y Sombra, que no tienen solicitudes. Sus fotos
+ * reales están en esta carpeta como `{id}-1.jpg` (y `tiara-2.jpg`) con su
+ * `{id}-miniatura.jpg` (300 px de ancho, sin recortar).
  */
 import type { Animal, EstadoSolicitud, ResumenHogar } from '../../src/compartido/modelo';
 import type { Cuestionario, PerfilGarritas } from '../../src/matchmaking';
@@ -233,6 +234,61 @@ export const ANIMALES: AnimalPrueba[] = [
       experiencia: 'medio',
       convivencia: 'conNinosYMascotas',
       temperamento: 'sociable',
+    },
+    estado: 'Disponible',
+  },
+  // F-13 AF-6 (03 v1.9 §8.2): Virginia, Lebron y Sombra, sin solicitudes.
+  {
+    id: 'virginia',
+    nombre: 'Virginia',
+    especie: 'perro',
+    edad: 'Menos de 1 año',
+    tamano: 'Mediano',
+    vacunado: true,
+    esterilizado: false,
+    perfilCompatibilidad: {
+      energia: 'alta',
+      espacio: 'casa',
+      tiempo: 'unasHoras',
+      experiencia: 'medio',
+      convivencia: 'conNinosYMascotas',
+      temperamento: 'sociable',
+    },
+    estado: 'Disponible',
+  },
+  {
+    id: 'lebron',
+    nombre: 'Lebron',
+    especie: 'gato',
+    edad: '1 a 3 años',
+    tamano: 'Mediano',
+    vacunado: true,
+    esterilizado: true,
+    perfilCompatibilidad: {
+      energia: 'baja',
+      espacio: 'poco',
+      tiempo: 'unasHoras',
+      experiencia: 'facil',
+      convivencia: 'soloConNinos',
+      temperamento: 'tranquilo',
+    },
+    estado: 'Disponible',
+  },
+  {
+    id: 'sombra',
+    nombre: 'Sombra',
+    especie: 'perro',
+    edad: '1 a 3 años',
+    tamano: 'Mediano',
+    vacunado: true,
+    esterilizado: true,
+    perfilCompatibilidad: {
+      energia: 'media',
+      espacio: 'casa',
+      tiempo: 'unasHoras',
+      experiencia: 'medio',
+      convivencia: 'conNinosYMascotas',
+      temperamento: 'timido',
     },
     estado: 'Disponible',
   },

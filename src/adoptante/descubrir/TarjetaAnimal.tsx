@@ -11,6 +11,14 @@
  * - debajo, "Pasar" y "Me encanta" en círculos de 88, con su texto.
  * No muestra "No Apto" (DE-3).
  *
+ * F-13 (decisión del equipo, no está en el SRS):
+ * - AF-4: la foto es `foto` (la completa si ya llegó, si no la miniatura; lo
+ *   decide `fotoDeTarjeta`).
+ * - AF-19 (reemplaza el `contain` de AF-4): la foto vuelve a `cover`, con el
+ *   mismo tamaño y posición de antes de F-13 (`main` en 24cbd26): llena la
+ *   tarjeta y puede recortar un poco los bordes.
+ * - AF-5: la píldora del % va en menta con texto azul marino y una estrellita.
+ *
  * F-12 AE-4 (decisión del equipo, no está en el SRS; reemplaza los espacios
  * flexibles de F-11 AD-7): la tarjeta es más grande. Ocupa todo el ancho
  * menos el margen de 24 y crece en alto para usar el espacio libre (la foto
@@ -21,7 +29,8 @@
  * izquierda hace lo mismo que "Pasar" y a la derecha lo mismo que
  * "Me encanta". Los botones no cambian y quedan fuera del gesto.
  *
- * Recibe la `tarjeta` y qué hacer al pasar o al abrir el Detalle.
+ * Recibe la `tarjeta`, la `foto` que se muestra y qué hacer al pasar o al
+ * abrir el Detalle.
  * No devuelve datos: solo dibuja.
  */
 import { useCallback } from 'react';
@@ -51,6 +60,7 @@ import useDeslizarTarjeta from './useDeslizarTarjeta';
 
 interface Props {
   tarjeta: TarjetaMazo;
+  foto: string;
   alPasar: () => void;
   alAbrir: (animalId: string) => void;
 }
@@ -83,7 +93,7 @@ const estilos = StyleSheet.create({
   textoAccion: { fontFamily: FUENTES.negrita, fontSize: 14, color: COLORES.cafe },
 });
 
-export default function TarjetaAnimal({ tarjeta, alPasar, alAbrir }: Props) {
+export default function TarjetaAnimal({ tarjeta, foto, alPasar, alAbrir }: Props) {
   const { width } = useWindowDimensions();
   const abrir = useCallback(() => alAbrir(tarjeta.animalId), [alAbrir, tarjeta.animalId]);
   const { manejadores, estiloArrastre } = useDeslizarTarjeta({ alPasar, alMeEncanta: abrir });
@@ -98,11 +108,7 @@ export default function TarjetaAnimal({ tarjeta, alPasar, alAbrir }: Props) {
           accessibilityLabel={tarjeta.nombre}
         >
           <View style={estilos.foto}>
-            <Image
-              source={{ uri: tarjeta.miniatura }}
-              style={StyleSheet.absoluteFill}
-              resizeMode="cover"
-            />
+            <Image source={{ uri: foto }} style={StyleSheet.absoluteFill} resizeMode="cover" />
             <View style={estilos.info}>
               <BotonCircular
                 icono={ICONOS_DESCUBRIR.info}
@@ -120,7 +126,13 @@ export default function TarjetaAnimal({ tarjeta, alPasar, alAbrir }: Props) {
             </Text>
             <View style={estilos.pildoras}>
               <Pildora texto={NOMBRE_ESPECIE[tarjeta.especie]} />
-              <Pildora texto={textoPorcentaje(tarjeta.porcentaje)} fondo="menta" />
+              <Pildora
+                texto={textoPorcentaje(tarjeta.porcentaje)}
+                fondo="menta"
+                colorTexto="azulMarino"
+                icono={ICONOS_DESCUBRIR.estrellita}
+                iconoDecorativo
+              />
             </View>
           </View>
         </Pressable>

@@ -13,6 +13,10 @@
  * F-11 AD-7: subtítulo de 22 más pegado al encabezado.
  * F-12 AE-4: la tarjeta empieza 16 debajo del subtítulo; `TarjetaAnimal`
  * deja otros 16 hasta los botones y 16 hasta la barra de pestañas.
+ * F-13 AF-4: la tarjeta recibe la foto completa en cuanto llega
+ * (`useFotosCompletas` y `fotoDeTarjeta`); mientras, la miniatura.
+ * F-13 AF-19 (reemplaza la decoración de AF-5): sin estrellitas ni puntito
+ * junto a "Tu próximo mejor amigo."; el subtítulo queda como antes de F-13.
  */
 import { router } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
@@ -20,6 +24,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import BotonCircular from '../../../src/adoptante/descubrir/BotonCircular';
 import { pantallaDescubrir } from '../../../src/adoptante/descubrir/estados';
+import { fotoDeTarjeta } from '../../../src/adoptante/descubrir/fotoTarjeta';
 import { ICONOS_DESCUBRIR } from '../../../src/adoptante/descubrir/iconosDescubrir';
 import { tarjetaActual } from '../../../src/adoptante/descubrir/mazo';
 import TarjetaAnimal from '../../../src/adoptante/descubrir/TarjetaAnimal';
@@ -29,6 +34,7 @@ import {
   TEXTO_SUBTITULO_DESCUBRIR,
 } from '../../../src/adoptante/descubrir/textos';
 import useDescubrir from '../../../src/adoptante/descubrir/useDescubrir';
+import useFotosCompletas from '../../../src/adoptante/descubrir/useFotosCompletas';
 import EncabezadoMarca from '../../../src/compartido/EncabezadoMarca';
 import EstadoPantalla from '../../../src/compartido/EstadoPantalla';
 import MENSAJES from '../../../src/compartido/mensajes';
@@ -63,6 +69,7 @@ export default function Descubrir() {
   const { estado, avisoNoDisponible, pasar, verDeNuevo, abrirDetalle, reintentar } = useDescubrir();
   const propsEstado = pantallaDescubrir(estado, { reintentar, verDeNuevo });
   const tarjeta = estado.tipo === 'con-datos' ? tarjetaActual(estado.mazo) : null;
+  const fotos = useFotosCompletas(estado.tipo === 'con-datos' ? estado.mazo : null);
 
   return (
     <SafeAreaView style={estilos.pantalla} edges={['top']}>
@@ -100,6 +107,7 @@ export default function Descubrir() {
           <TarjetaAnimal
             key={tarjeta.animalId}
             tarjeta={tarjeta}
+            foto={fotoDeTarjeta(tarjeta, fotos)}
             alPasar={pasar}
             alAbrir={abrirDetalle}
           />

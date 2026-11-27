@@ -23,11 +23,13 @@ import EncabezadoAcceso from '../../src/compartido/acceso/EncabezadoAcceso';
 import estilosAcceso from '../../src/compartido/acceso/estilosAcceso';
 import BotonPildora from '../../src/compartido/BotonPildora';
 import { RUTAS } from '../../src/compartido/navegacion/rutas';
-import { COLORES, FUENTES } from '../../src/compartido/tema';
+import { ANCHO_LOGO, COLORES, FUENTES, altoLogo } from '../../src/compartido/tema';
 
-/** Logo de 240 de ancho con su proporción (580 : 456, F-11 §4.1). */
-const ANCHO_LOGO = 240;
-const ALTO_LOGO = Math.round((ANCHO_LOGO * 456) / 580);
+/**
+ * Logo de 240 de ancho con su proporción (580 : 456, F-11 §4.1). El tamaño
+ * vive en tema.ts porque "Ingresa a tu cuenta" usa el mismo (F-13 AF-21).
+ */
+const ALTO_LOGO = altoLogo(ANCHO_LOGO);
 
 const estilos = StyleSheet.create({
   // F-12 AE-2: ocupa el espacio libre y centra el logo y el título en él.

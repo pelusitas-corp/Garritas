@@ -16,6 +16,8 @@ const ICONOS_MATCH = {
   palomita: 'check',
   /** ✕ de las dimensiones con menor coincidencia (< 30 %). */
   tache: 'close',
+  /** "←" de Match, igual al del Detalle (F-13 AF-20). */
+  atras: 'arrow-left',
 } as const satisfies Record<string, NombreIcono>;
 
 export default ICONOS_MATCH;

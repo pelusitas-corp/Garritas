@@ -10,10 +10,14 @@
 const TEXTOS_MIS_SOLICITUDES = {
   /** Encabezado, junto a la huella, y nombre de la pestaña (Figma). */
   encabezado: 'Mis solicitudes',
-  /** Debajo de la píldora, solo con "Pre-aprobada" (Figma, PO-21). */
+  /** Debajo del estado, solo con "Pre-aprobada" (Figma, PO-21). */
   teContactara: 'El albergue te contactará para conocerse.',
   /** Debajo de la lista (Figma, PO-21). */
   cadaPaso: 'Cada paso te acerca a su hogar.',
+  /** Subtítulo debajo del encabezado (F-13 AF-3, decisión del equipo; no está en el SRS). */
+  subtitulo: 'Aquí ves cómo van tus solicitudes.',
+  /** Botón al final de la lista que lleva a Descubrir (F-13 AF-3). */
+  descubrirMas: 'Descubrir más animales',
 } as const;
 
 export default TEXTOS_MIS_SOLICITUDES;

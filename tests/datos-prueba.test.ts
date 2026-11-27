@@ -5,8 +5,9 @@
  * diga lo mismo que la spec. Si alguien cambia un dato de prueba por error,
  * estas pruebas fallan en la revisión automática.
  *
- * 03 v1.8 M-7 (F-12 AE-13, AE-14; decisión del equipo, no está en el SRS):
- * 9 animales con fotos reales, de 1 a 3 por animal (CA-13 de F-12).
+ * 03 v1.9 M-7 (F-12 AE-13, AE-14 y F-13 AF-6; decisión del equipo, no está en
+ * el SRS): 12 animales con fotos reales, de 1 a 3 por animal (CA-13 de F-12,
+ * CA-06 de F-13).
  */
 import { existsSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
@@ -26,7 +27,7 @@ function existeImagen(nombreArchivo: string): boolean {
   return existsSync(join(CARPETA_IMAGENES, nombreArchivo));
 }
 
-/** % de cada animal con A y con B (03 v1.8 §8.2). Los excluidos por filtro no están. */
+/** % de cada animal con A y con B (03 v1.9 §8.2). Los excluidos por filtro no están. */
 const PORCENTAJES_8_2: Record<ClaveAdoptante, Record<string, number>> = {
   a: {
     wini: 90,
@@ -38,8 +39,22 @@ const PORCENTAJES_8_2: Record<ClaveAdoptante, Record<string, number>> = {
     tostado: 90,
     nova: 83,
     naranga: 70,
+    virginia: 77,
+    lebron: 87,
+    sombra: 95,
   },
-  b: { wini: 70, luna: 66, rocky: 31, toby: 24, tiara: 93, tostado: 88, naranga: 55 },
+  b: {
+    wini: 70,
+    luna: 66,
+    rocky: 31,
+    toby: 24,
+    tiara: 93,
+    tostado: 88,
+    naranga: 55,
+    virginia: 53,
+    lebron: 84,
+    sombra: 50,
+  },
 };
 
 /** Los animales de prueba con la forma que recibe el motor. */
@@ -97,26 +112,32 @@ describe('03-modelo-datos §8 · datos de prueba', () => {
     expect(idsB).not.toContain('canela');
   });
 
-  test('§8.3: Ana (A) ve en Descubrir Luna 95 · Tostado 90 · Wini 90 · Tiara 87 · Nova 83 · Canela 76 · Toby 73 · Naranga 70', () => {
+  test('CA-06 · AF-6: después de `npm run datos:prueba`, Ana ve Luna 95 · Sombra 95 · Tostado 90 · Wini 90 · Lebron 87 · Tiara 87 · Nova 83 · Virginia 77 · Canela 76 · Toby 73 · Naranga 70', () => {
     expect(descubrirPara('a')).toEqual([
       'Luna 95',
+      'Sombra 95',
       'Tostado 90',
       'Wini 90',
+      'Lebron 87',
       'Tiara 87',
       'Nova 83',
+      'Virginia 77',
       'Canela 76',
       'Toby 73',
       'Naranga 70',
     ]);
   });
 
-  test('§8.3: Luis (B) ve en Descubrir Tiara 93 · Tostado 88 · Wini 70 · Luna 66 · Naranga 55 · Toby 24', () => {
+  test('§8.3: Luis (B) ve en Descubrir Tiara 93 · Tostado 88 · Lebron 84 · Wini 70 · Luna 66 · Naranga 55 · Virginia 53 · Sombra 50 · Toby 24', () => {
     expect(descubrirPara('b')).toEqual([
       'Tiara 93',
       'Tostado 88',
+      'Lebron 84',
       'Wini 70',
       'Luna 66',
       'Naranga 55',
+      'Virginia 53',
+      'Sombra 50',
       'Toby 24',
     ]);
   });
@@ -162,9 +183,9 @@ describe('03-modelo-datos §8 · datos de prueba', () => {
   });
 });
 
-describe('F-12 · CA-13 · 9 animales con fotos reales (03 v1.8 M-7, AE-13, AE-14)', () => {
-  test('03 M-7 válido: los % de los 9 animales son los de §8.2', () => {
-    expect(ANIMALES).toHaveLength(9);
+describe('F-13 · CA-06 · 12 animales con fotos reales (03 v1.9 M-7, AF-6)', () => {
+  test('03 M-7 válido: los % de los 12 animales son los de §8.2', () => {
+    expect(ANIMALES).toHaveLength(12);
     (['a', 'b'] as const).forEach((clave) => {
       const porcentajes = Object.fromEntries(
         evaluarPara(clave).map((resultado) => [resultado.animalId, resultado.porcentaje]),
@@ -178,9 +199,9 @@ describe('F-12 · CA-13 · 9 animales con fotos reales (03 v1.8 M-7, AE-13, AE-1
     expect(evaluarPara('b').map((r) => r.animalId)).not.toContain('nova');
   });
 
-  test('M-7: los 4 animales nuevos no tienen solicitudes', () => {
+  test('M-7: los 7 animales nuevos no tienen solicitudes', () => {
     const conSolicitud = new Set(SOLICITUDES.map((s) => s.animalId));
-    ['tiara', 'tostado', 'nova', 'naranga'].forEach((id) => {
+    ['tiara', 'tostado', 'nova', 'naranga', 'virginia', 'lebron', 'sombra'].forEach((id) => {
       expect(conSolicitud.has(id)).toBe(false);
     });
   });
@@ -200,7 +221,7 @@ describe('F-12 · CA-13 · 9 animales con fotos reales (03 v1.8 M-7, AE-13, AE-1
     },
   );
 
-  test('M-7: Tiara tiene 2 fotos y los demás 1 (10 en total)', () => {
+  test('M-7: Tiara tiene 2 fotos y los demás 1 (13 fotos y 12 miniaturas en total)', () => {
     const cuantas = Object.fromEntries(
       ANIMALES.map(({ id }) => [id, archivosDeFotos(id, existeImagen).length]),
     );
@@ -208,7 +229,11 @@ describe('F-12 · CA-13 · 9 animales con fotos reales (03 v1.8 M-7, AE-13, AE-1
     ANIMALES.filter(({ id }) => id !== 'tiara').forEach(({ id }) => {
       expect(cuantas[id]).toBe(1);
     });
-    expect(Object.values(cuantas).reduce((suma, n) => suma + n, 0)).toBe(10);
+    expect(Object.values(cuantas).reduce((suma, n) => suma + n, 0)).toBe(13);
+    const miniaturas = readdirSync(CARPETA_IMAGENES).filter((nombre) =>
+      nombre.endsWith('-miniatura.jpg'),
+    );
+    expect(miniaturas).toHaveLength(12);
   });
 
   test('M-7: ya no quedan las ilustraciones viejas {id}.jpg', () => {
@@ -217,7 +242,7 @@ describe('F-12 · CA-13 · 9 animales con fotos reales (03 v1.8 M-7, AE-13, AE-1
       imagenes.includes(nombre),
     );
     expect(viejas).toEqual([]);
-    expect(imagenes).toHaveLength(19);
+    expect(imagenes).toHaveLength(25);
   });
 
   test('M-7: archivosDeFotos lee de 1 a 3 fotos en orden y sin huecos', () => {

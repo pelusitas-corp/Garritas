@@ -4,15 +4,21 @@
  * grisáceo de 48 con el ícono de usuario. El ícono es SOLO dibujo: 02 §4.2
  * no da ruta desde estas pantallas a Mi perfil (fuera de alcance de F-06).
  *
- * No recibe nada. No devuelve datos: solo dibuja.
+ * F-13 AF-20 (decisión del equipo, no está en el SRS; reemplaza el "no hay
+ * ←" de MS-8 solo en Match): si recibe `alRegresar`, dibuja a la izquierda
+ * el botón "←" (`arrow-left`, área de toque de 44, etiqueta "Regresar").
+ * "¡Solicitud enviada!" no lo pasa y se queda sin "←".
+ *
+ * Recibe `alRegresar` (opcional). No devuelve datos: solo dibuja.
  */
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { COLORES, FUENTES } from '../../compartido/tema';
+import { AREA_TOQUE, COLORES, FUENTES } from '../../compartido/tema';
 import BotonCircular from '../descubrir/BotonCircular';
 import { TEXTO_GARRITAS, TEXTO_MI_PERFIL } from '../descubrir/textos';
 import ICONOS_MATCH from './iconosMatch';
+import { TEXTOS_MATCH } from './textos';
 
 /** Margen lateral del prototipo (PNG 390 × 844). */
 export const MARGEN = 24;
@@ -27,13 +33,30 @@ const estilos = StyleSheet.create({
     paddingHorizontal: MARGEN,
   },
   marca: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  // F-13 AF-20: área de toque de 44 para el "←".
+  atras: { width: AREA_TOQUE, height: AREA_TOQUE, justifyContent: 'center' },
+  presionado: { opacity: 0.6 },
   titulo: { fontFamily: FUENTES.negrita, fontSize: 24, color: COLORES.cafe },
 });
 
-export default function EncabezadoGarritas() {
+interface Props {
+  alRegresar?: (() => void) | null;
+}
+
+export default function EncabezadoGarritas({ alRegresar = null }: Props) {
   return (
     <View style={estilos.encabezado}>
       <View style={estilos.marca}>
+        {alRegresar ? (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={TEXTOS_MATCH.regresar}
+            onPress={alRegresar}
+            style={({ pressed }) => [estilos.atras, pressed && estilos.presionado]}
+          >
+            <MaterialCommunityIcons name={ICONOS_MATCH.atras} size={24} color={COLORES.cafe} />
+          </Pressable>
+        ) : null}
         <MaterialCommunityIcons name={ICONOS_MATCH.huella} size={24} color={COLORES.cafe} />
         <Text accessibilityRole="header" style={estilos.titulo}>
           {TEXTO_GARRITAS}

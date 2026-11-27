@@ -26,20 +26,43 @@
  * AD-11); "Mayor compatibilidad" pasa a negrita 16 con su ícono de ordenar.
  * Sin solicitudes, el logo del perrito y el gatito queda al centro con el
  * mensaje de RF-04 debajo (18, de mensajes.ts).
+ *
+ * F-13 AF-7 (decisión del equipo, no está en el SRS; reemplaza AE-7 en esta
+ * pantalla): el refugio pasa a negrita 20. Debajo, centrados, la miniatura
+ * del animal en un círculo de 96, "Un hogar para:" (18) y, en la línea
+ * siguiente, el nombre del animal en negrita 32. Sin solicitudes, el logo y
+ * el mensaje quedan centrados en el espacio libre debajo del encabezado.
+ * AF-9: "Ordenadas de mayor a menor compatibilidad." (14), sin ícono ni
+ * negrita. AF-10: "N solicitudes nuevas" en una píldora azul marino al 15 %
+ * con un puntito. AF-12: las tarjetas con margen lateral de 16.
+ * AF-22 (reemplaza el punto 3 de AF-7): sin solicitudes, el bloque del animal
+ * (foto, "Un hogar para:" y nombre) y el bloque vacío (logo y mensaje de
+ * RF-04) forman un solo grupo centrado debajo del refugio, con 40 entre los
+ * dos. Con solicitudes no cambia nada.
  */
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
-import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+import { FlatList, Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ICONOS_PANEL } from '../../../src/albergue/panel/iconosPanel';
 import { textoConteo } from '../../../src/albergue/panel/panel';
 import TarjetaSolicitud from '../../../src/albergue/panel/TarjetaSolicitud';
-import { TEXTOS_PANEL, textoUnHogarPara } from '../../../src/albergue/panel/textos';
+import { TEXTOS_PANEL } from '../../../src/albergue/panel/textos';
 import useSolicitudesDeAnimal from '../../../src/albergue/panel/useSolicitudesDeAnimal';
 import EstadoPantalla from '../../../src/compartido/EstadoPantalla';
 import { RUTAS, rutaSolicitud } from '../../../src/compartido/navegacion/rutas';
-import { COLORES, FUENTES, TAMANOS_TEXTO } from '../../../src/compartido/tema';
+import {
+  CIRCULOS,
+  COLORES,
+  FONDOS,
+  FUENTES,
+  MARGEN_TARJETA_SOLICITUD,
+  PUNTITOS,
+  RADIOS,
+  SEPARACION_VACIA,
+  TAMANOS_TEXTO,
+} from '../../../src/compartido/tema';
 
 /** Margen lateral (Figma). */
 const MARGEN = 24;
@@ -57,17 +80,59 @@ const estilos = StyleSheet.create({
   atras: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   presionado: { opacity: 0.6 },
   textoEncabezado: { fontFamily: FUENTES.negrita, fontSize: 24, color: COLORES.cafe },
-  titulos: { gap: 2, marginTop: 16, paddingHorizontal: MARGEN },
-  // F-12 AE-7: el nombre del refugio más grande que el título, como en la lista.
-  subtitulo: { fontFamily: FUENTES.negrita, fontSize: 28, color: COLORES.cafe },
-  titulo: { fontFamily: FUENTES.negrita, fontSize: 20, color: COLORES.cafe },
+  titulos: { gap: 12, marginTop: 16, paddingHorizontal: MARGEN },
+  // F-13 AF-7: el refugio en negrita 20 (antes 28, F-12 AE-7).
+  subtitulo: {
+    fontFamily: FUENTES.negrita,
+    fontSize: TAMANOS_TEXTO.destacado,
+    color: COLORES.cafe,
+  },
+  // F-13 AF-7: foto en círculo, "Un hogar para:" y el nombre grande, centrados.
+  animal: { alignItems: 'center', gap: 8 },
+  foto: {
+    width: CIRCULOS.fotoAnimal,
+    height: CIRCULOS.fotoAnimal,
+    borderRadius: RADIOS.pildora,
+  },
+  unHogarPara: {
+    fontFamily: FUENTES.regular,
+    fontSize: TAMANOS_TEXTO.subtitulo,
+    color: COLORES.cafe,
+    textAlign: 'center',
+  },
+  nombreAnimal: {
+    fontFamily: FUENTES.negrita,
+    fontSize: TAMANOS_TEXTO.nombreGrande,
+    color: COLORES.cafe,
+    textAlign: 'center',
+  },
   resumen: { gap: 8, marginTop: 12, marginBottom: 16, paddingHorizontal: MARGEN },
-  // PS-15 (spec v1.1): el conteo de nuevas se destaca en su propia línea.
-  nuevas: { fontFamily: FUENTES.negrita, fontSize: 16, color: COLORES.cafe },
-  orden: { flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-end', gap: 4 },
-  // F-12 AE-7: el texto de orden en 16, con su ícono de ordenar al lado.
-  textoOrden: { fontFamily: FUENTES.negrita, fontSize: 16, color: COLORES.cafe },
-  lista: { gap: 12, paddingHorizontal: MARGEN, paddingBottom: MARGEN },
+  // PS-15 y F-13 AF-10: el conteo de nuevas en píldora azul marino al 15 %.
+  nuevas: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    gap: 8,
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    borderRadius: RADIOS.pildora,
+    backgroundColor: FONDOS.nuevas,
+  },
+  puntitoNuevas: {
+    width: PUNTITOS.estado,
+    height: PUNTITOS.estado,
+    borderRadius: RADIOS.pildora,
+    backgroundColor: COLORES.azulMarino,
+  },
+  textoNuevas: {
+    fontFamily: FUENTES.negrita,
+    fontSize: TAMANOS_TEXTO.dato,
+    color: COLORES.azulMarino,
+  },
+  // F-13 AF-9: el texto de orden en regular 14, sin ícono.
+  textoOrden: { fontFamily: FUENTES.regular, fontSize: TAMANOS_TEXTO.minimo, color: COLORES.cafe },
+  // F-13 AF-12: tarjetas más anchas, margen lateral 16 (antes 24).
+  lista: { gap: 12, paddingHorizontal: MARGEN_TARJETA_SOLICITUD, paddingBottom: MARGEN },
   alPreAprobar: {
     marginTop: 4,
     fontFamily: FUENTES.regular,
@@ -76,6 +141,13 @@ const estilos = StyleSheet.create({
     textAlign: 'center',
   },
   separacion: { height: 16 },
+  // F-13 AF-22: el animal y el bloque vacío, juntos y centrados.
+  grupoVacio: {
+    flex: 1,
+    justifyContent: 'center',
+    gap: SEPARACION_VACIA,
+    paddingHorizontal: MARGEN,
+  },
 });
 
 /** "←": regresa a la lista. Si se abrió sin una pantalla anterior, va a `/solicitudes`. */
@@ -92,6 +164,24 @@ export default function SolicitudesDeUnAnimal() {
   const { estado, decisiones, decidir } = useSolicitudesDeAnimal(animalId);
   const conTitulo =
     estado.tipo === 'leer-solicitudes' || estado.tipo === 'vacia' || estado.tipo === 'con-datos';
+
+  /** Foto en círculo, "Un hogar para:" y el nombre del animal (AF-7). */
+  const bloqueAnimal = conTitulo ? (
+    <View style={estilos.animal}>
+      <Image
+        source={{ uri: estado.miniaturaAnimal }}
+        style={estilos.foto}
+        accessibilityIgnoresInvertColors
+      />
+      {/* "Un hogar para:" y, en la línea siguiente, el nombre (AF-7). */}
+      <View>
+        <Text style={estilos.unHogarPara}>{TEXTOS_PANEL.unHogarPara}</Text>
+        <Text accessibilityRole="header" style={estilos.nombreAnimal}>
+          {estado.nombreAnimal}
+        </Text>
+      </View>
+    </View>
+  ) : null;
 
   /** Lo que va debajo de los títulos: las tarjetas o el estado de la pantalla. */
   const cuerpo = () => {
@@ -121,15 +211,16 @@ export default function SolicitudesDeUnAnimal() {
       case 'cargando':
       case 'leer-solicitudes':
         return <EstadoPantalla estado="cargando" />;
-      default:
-        // F-12 AE-8: sin solicitudes, el logo al centro con el mensaje de RF-04.
+      case 'vacia':
+        // F-13 AF-22: el animal y el bloque vacío (logo y mensaje de RF-04) centrados juntos.
         return (
-          <EstadoPantalla
-            estado={estado.tipo}
-            mensaje={estado.mensaje}
-            conLogo={estado.tipo === 'vacia'}
-          />
+          <View style={estilos.grupoVacio}>
+            {bloqueAnimal}
+            <EstadoPantalla estado="vacia" mensaje={estado.mensaje} conLogo ajustado />
+          </View>
         );
+      default:
+        return <EstadoPantalla estado={estado.tipo} mensaje={estado.mensaje} />;
     }
   };
 
@@ -153,19 +244,23 @@ export default function SolicitudesDeUnAnimal() {
       {conTitulo ? (
         <View style={estilos.titulos}>
           <Text style={estilos.subtitulo}>{estado.nombreAlbergue}</Text>
-          <Text style={estilos.titulo}>{textoUnHogarPara(estado.nombreAnimal)}</Text>
+          {/* Sin solicitudes, el bloque del animal va en el grupo centrado (AF-22). */}
+          {estado.tipo === 'vacia' ? null : bloqueAnimal}
         </View>
       ) : null}
 
       {estado.tipo === 'con-datos' ? (
         <View style={estilos.resumen}>
-          <Text style={estilos.nuevas}>{textoConteo(estado.nuevas, 'nuevas')}</Text>
-          <View style={estilos.orden}>
-            <MaterialCommunityIcons name={ICONOS_PANEL.orden} size={18} color={COLORES.cafe} />
-            <Text style={estilos.textoOrden}>{TEXTOS_PANEL.mayorCompatibilidad}</Text>
+          {/* F-13 AF-10: "N solicitudes nuevas" en píldora con puntito. */}
+          <View style={estilos.nuevas}>
+            <View style={estilos.puntitoNuevas} />
+            <Text style={estilos.textoNuevas}>{textoConteo(estado.nuevas, 'nuevas')}</Text>
           </View>
+          {/* F-13 AF-9: texto de orden sin ícono ni negrita; no es tocable (PS-8). */}
+          <Text style={estilos.textoOrden}>{TEXTOS_PANEL.ordenadas}</Text>
         </View>
-      ) : (
+      ) : null}
+      {estado.tipo === 'con-datos' || estado.tipo === 'vacia' ? null : (
         <View style={estilos.separacion} />
       )}
 

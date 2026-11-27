@@ -16,8 +16,10 @@ const RAIZ = join(__dirname, '..');
 
 /** Tamaños que no se escriben como número, sino con una constante. */
 const CONSTANTES_CONOCIDAS: Readonly<Record<string, number>> = {
-  'TAMANOS_TEXTO.minimo': TAMANOS_TEXTO.minimo,
-  'TAMANOS_TEXTO.dato': TAMANOS_TEXTO.dato,
+  // Todos los tamaños de `TAMANOS_TEXTO` (F-12 y los nuevos de F-13).
+  ...Object.fromEntries(
+    Object.entries(TAMANOS_TEXTO).map(([nombre, tamano]) => [`TAMANOS_TEXTO.${nombre}`, tamano]),
+  ),
   'MEDIDAS_BOTON.normal.tamanoTexto': MEDIDAS_BOTON.normal.tamanoTexto,
   'MEDIDAS_BOTON.chico.tamanoTexto': MEDIDAS_BOTON.chico.tamanoTexto,
 };

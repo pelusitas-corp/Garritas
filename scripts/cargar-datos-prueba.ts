@@ -12,11 +12,11 @@
  *   guarda en ningún archivo.
  * - Se puede correr varias veces: deja los datos igual que en la spec
  *   (útil antes de una demo).
- * - Fotos (03 v1.8 M-7, F-12 AE-14): de cada animal escribe todas las que
- *   encuentre, hasta 3 (`{id}-1.jpg` a `{id}-3.jpg` → `foto-0` a `foto-2`), y
- *   borra los `foto-N` que ya no tienen archivo. Con los datos de la spec
- *   quedan 36 documentos: 3 usuarios, 2 cuestionarios, 9 animales, 10 fotos,
- *   6 solicitudes y 6 contactos.
+ * - Fotos (03 v1.9 M-7, F-12 AE-14, F-13 AF-6): de cada animal escribe todas
+ *   las que encuentre, hasta 3 (`{id}-1.jpg` a `{id}-3.jpg` → `foto-0` a
+ *   `foto-2`), y borra los `foto-N` que ya no tienen archivo. Con los datos de
+ *   la spec quedan 42 documentos: 3 usuarios, 2 cuestionarios, 12 animales,
+ *   13 fotos, 6 solicitudes y 6 contactos.
  */
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';

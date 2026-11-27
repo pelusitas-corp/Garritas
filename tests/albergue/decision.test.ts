@@ -17,8 +17,10 @@ import {
   vistaDelEstado,
 } from '../../src/albergue/solicitud/decision';
 import type { LecturaSolicitud, ResultadoDecision } from '../../src/albergue/solicitud/decision';
+import { ICONOS_HOGAR } from '../../src/albergue/solicitud/iconosDecision';
 import { preguntaConfirmacion, textoTelefono } from '../../src/albergue/solicitud/textos';
 import type { EstadoAnimal } from '../../src/compartido/modelo';
+import { CIRCULOS, OPACIDAD_ATENUADA } from '../../src/compartido/tema';
 import { esNoApto } from '../../src/matchmaking';
 import { ADOPTANTES, ALBERGUE, SOLICITUDES } from '../../scripts/datos-prueba/datos';
 
@@ -264,5 +266,25 @@ describe('F-08 · RNF-02 y G-11 · Detalle de una solicitud ajena', () => {
       tipo: 'error',
       mensaje: 'Error de conexión, verifica tu conexión a internet',
     });
+  });
+});
+
+describe('F-13 · CA-10 y CA-11 · Detalle de solicitud (AF-13, AF-14)', () => {
+  test('CA-10 · AF-13: en el Detalle de s1, "Su hogar y sus cuidados" muestra 3 círculos centrados', () => {
+    const lineas = lineasDelHogar(ADOPTANTES.a.resumenHogar);
+    expect(lineas.map((linea) => linea.clave)).toEqual(['viveEn', 'tiempoSolo', 'experiencia']);
+    lineas.forEach((linea) => expect(ICONOS_HOGAR[linea.clave]).toBeTruthy());
+    expect(CIRCULOS.hogar).toBe(72);
+  });
+
+  test('CA-11 · AF-14: s6 (Rechazada) muestra "✕ Rechazada" café en la lista y en el Detalle, con la tarjeta atenuada, y sigue mostrando el mensaje de RF-12', () => {
+    const pantalla = decidirPantallaDetalle(ALBERGUE.uid, lectura('s6'), CONTACTO_ANA);
+    expect(pantalla).toMatchObject({
+      tipo: 'con-datos',
+      solicitud: { estado: 'Rechazada' },
+      contacto: { mensaje: 'Pre-aprueba la solicitud para ver los datos de contacto' },
+    });
+    expect(vistaDelEstado('Rechazada')).toBe('rechazada');
+    expect(OPACIDAD_ATENUADA).toBe(0.6);
   });
 });

@@ -14,10 +14,12 @@ import {
   ordenarSolicitudes,
   resumenDelHogar,
   textoConteo,
+  vistaTarjeta,
 } from '../../src/albergue/panel/panel';
 import type { LecturaSolicitudes, SolicitudConId } from '../../src/albergue/panel/panel';
-import { textoCompatible, textoPorcentaje } from '../../src/albergue/panel/textos';
+import { TEXTOS_PANEL, etiquetaNoApto, textoPorcentaje } from '../../src/albergue/panel/textos';
 import MENSAJES from '../../src/compartido/mensajes';
+import { COLORES, FONDOS } from '../../src/compartido/tema';
 import type { AnimalConId, LecturaAnimal, LecturaAnimales } from '../../src/firebase/animales';
 import type { LecturaNombre } from '../../src/firebase/usuarios';
 import { esNoApto } from '../../src/matchmaking';
@@ -148,6 +150,7 @@ describe('F-07 · RF-04 no válido · Animal sin solicitudes', () => {
       tipo: 'vacia',
       nombreAlbergue: 'Refugio Patitas',
       nombreAnimal: 'Canela',
+      miniaturaAnimal: 'data:image/jpeg;base64,',
       mensaje: 'Aún no hay solicitudes de adopción para este perfil',
     });
   });
@@ -155,11 +158,10 @@ describe('F-07 · RF-04 no válido · Animal sin solicitudes', () => {
 
 describe('F-07 · RF-18 · Etiqueta "No Apto" (RN-02)', () => {
   test('CA-03 RF-18 válido: una solicitud con 25 % y noApto: true lleva la etiqueta "No Apto"', () => {
-    expect(textoCompatible(true)).toBe('compatible · No Apto');
-    expect(textoCompatible(true)).toContain(MENSAJES.ETIQUETA_NO_APTO);
+    expect(etiquetaNoApto(true)).toBe(MENSAJES.ETIQUETA_NO_APTO);
   });
 
-  test('CA-03 RF-18 válido: Toby muestra "24%" con "compatible · No Apto"', () => {
+  test('CA-03 RF-18 válido: Toby muestra "24%" con "compatible" y "No Apto" (F-13 AF-11)', () => {
     const pantalla = decidirPantallaAnimal(
       ALBERGUE.uid,
       NOMBRE_OK,
@@ -172,7 +174,7 @@ describe('F-07 · RF-18 · Etiqueta "No Apto" (RN-02)', () => {
       const [luis] = pantalla.solicitudes;
       expect(luis.nombreAdoptante).toBe('Luis Pérez');
       expect(textoPorcentaje(luis.porcentaje)).toBe('24%');
-      expect(textoCompatible(luis.noApto)).toBe('compatible · No Apto');
+      expect(etiquetaNoApto(luis.noApto)).toBe('No Apto');
     }
   });
 
@@ -180,8 +182,7 @@ describe('F-07 · RF-18 · Etiqueta "No Apto" (RN-02)', () => {
     const conTreinta = { porcentaje: 30, noApto: esNoApto(30) };
 
     expect(conTreinta.noApto).toBe(false);
-    expect(textoCompatible(conTreinta.noApto)).toBe('compatible');
-    expect(textoCompatible(conTreinta.noApto)).not.toContain(MENSAJES.ETIQUETA_NO_APTO);
+    expect(etiquetaNoApto(conTreinta.noApto)).toBeNull();
   });
 
   test('CA-04 RF-18 no válido: Rocky con 31 % muestra "compatible" sin "No Apto"', () => {
@@ -198,20 +199,20 @@ describe('F-07 · RF-18 · Etiqueta "No Apto" (RN-02)', () => {
         pantalla.solicitudes.map((s) => [
           s.nombreAdoptante,
           textoPorcentaje(s.porcentaje),
-          textoCompatible(s.noApto),
+          etiquetaNoApto(s.noApto),
           s.estado,
         ]),
       ).toEqual([
-        ['Ana Torres', '77%', 'compatible', 'Pre-aprobada'],
-        ['Luis Pérez', '31%', 'compatible', 'Pendiente'],
+        ['Ana Torres', '77%', null, 'Pre-aprobada'],
+        ['Luis Pérez', '31%', null, 'Pendiente'],
       ]);
     }
   });
 
   test('RN-02: "No Apto" sale del campo guardado noApto y no se recalcula', () => {
     // Una solicitud guardada con noApto: false se muestra sin etiqueta, sea cual sea su %.
-    expect(textoCompatible(false)).toBe('compatible');
-    expect(textoCompatible(true)).toBe('compatible · No Apto');
+    expect(etiquetaNoApto(false)).toBeNull();
+    expect(etiquetaNoApto(true)).toBe('No Apto');
   });
 });
 
@@ -222,7 +223,7 @@ describe('F-07 · Lista de mis animales (N-5, PS-2, PS-3)', () => {
     solicitudes: SOLICITUDES_PANEL,
   };
 
-  test('CA-05: Refugio Patitas ve sus 9 animales: Wini 2 solicitudes, Luna 1 solicitud, Rocky 2 solicitudes, Toby 1 solicitud, y Canela, Tiara, Tostado, Nova y Naranga 0 solicitudes', () => {
+  test('CA-05: Refugio Patitas ve sus 12 animales: Wini 2 solicitudes, Luna 1 solicitud, Rocky 2 solicitudes, Toby 1 solicitud, y Canela, Tiara, Tostado, Nova, Naranga, Virginia, Lebron y Sombra 0 solicitudes', () => {
     const pantalla = decidirPantallaLista(NOMBRE_OK, LECTURA_ANIMALES, LECTURA_SOLICITUDES);
 
     expect(pantalla.tipo).toBe('con-datos');
@@ -241,6 +242,9 @@ describe('F-07 · Lista de mis animales (N-5, PS-2, PS-3)', () => {
         Tostado: '0 solicitudes',
         Nova: '0 solicitudes',
         Naranga: '0 solicitudes',
+        Virginia: '0 solicitudes',
+        Lebron: '0 solicitudes',
+        Sombra: '0 solicitudes',
       });
     }
   });
@@ -264,8 +268,11 @@ describe('F-07 · Lista de mis animales (N-5, PS-2, PS-3)', () => {
 
     expect(pantalla.tipo).toBe('con-datos');
     if (pantalla.tipo === 'con-datos') {
-      // creadoEn = posición en ANIMALES: Naranga (8) es el más reciente y Wini (0) el más antiguo.
+      // creadoEn = posición en ANIMALES: Sombra (11) es el más reciente y Wini (0) el más antiguo.
       expect(pantalla.filas.map((fila) => fila.animal.nombre)).toEqual([
+        'Sombra',
+        'Lebron',
+        'Virginia',
         'Naranga',
         'Nova',
         'Tostado',
@@ -327,9 +334,9 @@ describe('F-07 · Solicitudes nuevas y tarjeta (PS-7, PS-9)', () => {
     expect(iniciales('Ana')).toBe('A');
   });
 
-  test('PS-9: el hogar de Luis Pérez es "Departamento · primera vez" y el de Ana "Casa · tiene experiencia"', () => {
-    expect(resumenDelHogar(ADOPTANTES.b.resumenHogar)).toBe('Departamento · primera vez');
-    expect(resumenDelHogar(ADOPTANTES.a.resumenHogar)).toBe('Casa · tiene experiencia');
+  test('PS-9 y F-13 AF-12: el hogar de Luis Pérez es "Departamento, primera vez" y el de Ana "Casa, tiene experiencia"', () => {
+    expect(resumenDelHogar(ADOPTANTES.b.resumenHogar)).toBe('Departamento, primera vez');
+    expect(resumenDelHogar(ADOPTANTES.a.resumenHogar)).toBe('Casa, tiene experiencia');
   });
 });
 
@@ -357,6 +364,7 @@ describe('F-07 · RNF-02, G-11 y errores (PS-5, A3 a A5)', () => {
       tipo: 'leer-solicitudes',
       nombreAlbergue: 'Refugio Patitas',
       nombreAnimal: 'Wini',
+      miniaturaAnimal: 'data:image/jpeg;base64,',
     });
   });
 
@@ -385,5 +393,70 @@ describe('F-07 · RNF-02, G-11 y errores (PS-5, A3 a A5)', () => {
         estado: 'sin-permiso',
       }),
     ).toEqual(sinPermiso);
+  });
+});
+
+describe('F-13 · CA-07 · Encabezado de las solicitudes de un animal (AF-7)', () => {
+  test('CA-07 · AF-7: en Wini se ve su foto en círculo, "Un hogar para:" y "Wini" grande; en Canela, el logo y el mensaje centrados', () => {
+    const wini = decidirPantallaAnimal(ALBERGUE.uid, NOMBRE_OK, lecturaDe('wini'));
+    expect(wini).toMatchObject({ nombreAnimal: 'Wini', miniaturaAnimal: expect.any(String) });
+    expect(TEXTOS_PANEL.unHogarPara).toBe('Un hogar para:');
+
+    const canela = decidirPantallaAnimal(
+      ALBERGUE.uid,
+      NOMBRE_OK,
+      lecturaDe('canela'),
+      solicitudesDe('canela'),
+    );
+    expect(canela).toMatchObject({
+      tipo: 'vacia',
+      mensaje: 'Aún no hay solicitudes de adopción para este perfil',
+    });
+  });
+});
+
+describe('F-13 · CA-08, CA-09 y CA-11 · Tarjeta de solicitud (AF-8 a AF-12, AF-14)', () => {
+  test('CA-08 · AF-8, AF-9, AF-10: cada tarjeta tiene "›" y "Ver solicitud ›" (abre el Detalle); el texto de orden no se ve tocable; "2 solicitudes nuevas" va en píldora', () => {
+    expect(TEXTOS_PANEL.flecha).toBe('›');
+    expect(TEXTOS_PANEL.verSolicitud).toBe('Ver solicitud ›');
+    expect(TEXTOS_PANEL.ordenadas).toBe('Ordenadas de mayor a menor compatibilidad.');
+    const wini = decidirPantallaAnimal(
+      ALBERGUE.uid,
+      NOMBRE_OK,
+      lecturaDe('wini'),
+      solicitudesDe('wini'),
+    );
+    expect(wini.tipo === 'con-datos' && textoConteo(wini.nuevas, 'nuevas')).toBe(
+      '2 solicitudes nuevas',
+    );
+    expect(FONDOS.nuevas).toBe('rgba(37, 49, 76, 0.15)');
+  });
+
+  test('CA-09 · AF-11, AF-12: el % va en círculo menta; en Toby (s3) el círculo es gris y "No Apto" va en su propia línea; el hogar se lee con comas', () => {
+    const [s1] = SOLICITUDES_PANEL.filter((s) => s.id === 's1');
+    const [s3] = SOLICITUDES_PANEL.filter((s) => s.id === 's3');
+    expect(vistaTarjeta(s1)).toEqual({
+      fondoCirculo: COLORES.menta,
+      etiqueta: null,
+      atenuada: false,
+    });
+    expect(vistaTarjeta(s3)).toEqual({
+      fondoCirculo: FONDOS.noApto,
+      etiqueta: 'No Apto',
+      atenuada: true,
+    });
+    expect(resumenDelHogar(s1.resumenHogar)).toBe('Casa, tiene experiencia');
+    expect(resumenDelHogar(s1.resumenHogar)).not.toContain('·');
+  });
+
+  test('CA-11 · AF-14: s6 (Rechazada) muestra "✕ Rechazada" café en la lista y en el Detalle, con la tarjeta atenuada, y sigue mostrando el mensaje de RF-12', () => {
+    const [s6] = SOLICITUDES_PANEL.filter((s) => s.id === 's6');
+    expect(s6.estado).toBe('Rechazada');
+    expect(vistaTarjeta(s6)).toMatchObject({ etiqueta: null, atenuada: true });
+  });
+
+  test('F-13 no válido: una "Pendiente" o "Pre-aprobada" sin "No Apto" no se atenúa', () => {
+    expect(vistaTarjeta({ noApto: false, estado: 'Pendiente' }).atenuada).toBe(false);
+    expect(vistaTarjeta({ noApto: false, estado: 'Pre-aprobada' }).atenuada).toBe(false);
   });
 });

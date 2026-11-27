@@ -7,7 +7,6 @@
  * MENSAJES (ya atendida, pre-adopción en curso, contacto oculto, error y
  * permiso) no van aquí: viven en src/compartido/mensajes.ts (F-08 §5).
  */
-import MENSAJES from '../../compartido/mensajes';
 import type { ResumenHogar } from '../../compartido/modelo';
 
 /** Las dos decisiones que puede tomar el albergue (RF-05, RF-21). */
@@ -61,15 +60,6 @@ export function textoSolicitudDe(nombreAdoptante: string): string {
 /** Recibe el nombre del animal. Devuelve "Para adoptar a {nombre}" (Figma). */
 export function textoParaAdoptarA(nombreAnimal: string): string {
   return `Para adoptar a ${nombreAnimal}`;
-}
-
-/**
- * Recibe el porcentaje y el campo guardado `noApto`. Devuelve la píldora del
- * Detalle: "90% compatible" o "24% compatible · No Apto" (Figma; RF-18).
- */
-export function textoPorcentajeCompatible(porcentaje: number, noApto: boolean): string {
-  const texto = `${porcentaje}% compatible`;
-  return noApto ? `${texto} · ${MENSAJES.ETIQUETA_NO_APTO}` : texto;
 }
 
 /**

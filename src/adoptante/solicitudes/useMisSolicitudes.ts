@@ -10,18 +10,23 @@
  * llegan los datos nuevos. Si esa lectura falla, se muestra el error de
  * conexión con "Reintentar" (A5): sin conexión no se dejan datos viejos (MS-6).
  *
- * No recibe nada. Devuelve `{ estado, reintentar }`.
+ * F-13 AF-3: al deslizar hacia abajo (`actualizar`) se vuelve a leer del
+ * servidor con el indicador de arriba (`actualizando`); la lista se queda
+ * mientras tanto y, si falla, se muestra el mismo error de conexión.
+ *
+ * No recibe nada. Devuelve `{ estado, reintentar, actualizando, actualizar }`.
  */
 import { useFocusEffect } from 'expo-router';
 import { useCallback, useRef, useState } from 'react';
 
 import { uidDelAdoptante } from '../../firebase/cuestionario';
 import { leerMisSolicitudes } from '../../firebase/solicitudes';
-import { ordenarMisSolicitudes } from './misSolicitudes';
+import { actualizarConIndicador, ordenarMisSolicitudes } from './misSolicitudes';
 import type { EstadoMisSolicitudes } from './misSolicitudes';
 
 export default function useMisSolicitudes() {
   const [uid] = useState(uidDelAdoptante);
+  const [actualizando, setActualizando] = useState(false);
   const [estado, setEstado] = useState<EstadoMisSolicitudes>(
     // G-1 ya asegura la sesión; sin ella, las reglas rechazarían todo (RNF-02).
     uid ? { tipo: 'cargando' } : { tipo: 'sin-permiso' },
@@ -62,5 +67,8 @@ export default function useMisSolicitudes() {
     cargar();
   }, [cargar]);
 
-  return { estado, reintentar };
+  /** F-13 AF-3: deslizar hacia abajo vuelve a leer con el indicador de arriba. */
+  const actualizar = useCallback(() => actualizarConIndicador(setActualizando, cargar), [cargar]);
+
+  return { estado, reintentar, actualizando, actualizar };
 }

@@ -5,14 +5,19 @@
  * Muestra el % y el porqué del match con el motor de F-05 (RN-01), o la
  * variante < 30 % (MS-3). Abajo, fijo, "Enviar solicitud" con un corazón.
  * Encima del botón aparecen los mensajes de A3 a A6. "Atrás" del sistema
- * regresa al Detalle (MS-8: no hay "←"). A1 y G-5 los resuelve `useMatch`.
+ * regresa al Detalle. A1 y G-5 los resuelve `useMatch`.
+ *
+ * F-13 AF-20 (decisión del equipo, no está en el SRS; ajusta MS-8): arriba a
+ * la izquierda va el botón "←", igual al del Detalle: regresa con
+ * `router.back()` o, si no hay pantalla anterior (enlace directo), abre
+ * `/animal/{animalId}` (02 §6). No cambia G-9 ni "¡Solicitud enviada!".
  *
  * Diseño de Figma ("Match", "Match · menos de 30 % (variante)"): encabezado
  * "Garritas"; huella grande; título negrita 32 café centrado; subtítulo
  * regular 16; tarjeta del % y tarjeta de dimensiones; botón azul marino a lo
  * ancho. Márgenes de 24 y separaciones de 16.
  */
-import { useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -26,6 +31,7 @@ import { TEXTOS_MATCH, textoParejaPerfecta } from '../../../src/adoptante/match/
 import useMatch from '../../../src/adoptante/match/useMatch';
 import BotonPildora from '../../../src/compartido/BotonPildora';
 import EstadoPantalla from '../../../src/compartido/EstadoPantalla';
+import { rutaAnimal } from '../../../src/compartido/navegacion/rutas';
 import { COLORES, FUENTES } from '../../../src/compartido/tema';
 
 const estilos = StyleSheet.create({
@@ -60,13 +66,21 @@ const estilos = StyleSheet.create({
 
 export default function Match() {
   const { animalId } = useLocalSearchParams<{ animalId: string }>();
+  /** F-13 AF-20: "←" regresa al Detalle; con un enlace directo, lo abre. */
+  const regresar = () => {
+    if (router.canGoBack()) {
+      router.back();
+    } else {
+      router.replace(rutaAnimal(animalId));
+    }
+  };
   const { estado, envio, enviar, reintentar, irADescubrir } = useMatch(animalId);
   const propsEstado = pantallaMatch(estado, { reintentar, irADescubrir });
 
   if (propsEstado || estado.tipo !== 'match') {
     return (
       <SafeAreaView style={estilos.pantalla}>
-        <EncabezadoGarritas />
+        <EncabezadoGarritas alRegresar={regresar} />
         <EstadoPantalla
           estado={propsEstado?.estado ?? 'cargando'}
           mensaje={propsEstado?.mensaje}
@@ -82,7 +96,7 @@ export default function Match() {
 
   return (
     <SafeAreaView style={estilos.pantalla}>
-      <EncabezadoGarritas />
+      <EncabezadoGarritas alRegresar={regresar} />
       <ScrollView contentContainerStyle={estilos.contenido}>
         <HuellaMatch conCorazon={!menor} />
         <Text accessibilityRole="header" style={estilos.titulo}>

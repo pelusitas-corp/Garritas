@@ -13,16 +13,28 @@ export const TEXTOS_PANEL = {
   encabezado: 'Solicitudes',
   /** Título de la lista (Figma, D-52, PO-21). */
   tusAnimales: 'Tus animales',
-  /** Indicador del orden; no es un botón (PS-8). */
-  mayorCompatibilidad: 'Mayor compatibilidad',
+  /**
+   * Encima del nombre del animal en "Solicitudes de un animal" (F-13 AF-7;
+   * reemplaza el título "Un hogar para {nombre}").
+   */
+  unHogarPara: 'Un hogar para:',
+  /**
+   * Indicador del orden; no es un botón (PS-8). F-13 AF-9: sin ícono ni
+   * negrita (antes "Mayor compatibilidad").
+   */
+  ordenadas: 'Ordenadas de mayor a menor compatibilidad.',
+  /** Flecha junto al nombre del adoptante en cada tarjeta (F-13 AF-8). */
+  flecha: '›',
+  /** Enlace arriba de "Rechazar" / "Pre-aprobar" que abre el Detalle (F-13 AF-8). */
+  verSolicitud: 'Ver solicitud ›',
   /** Debajo del porcentaje de cada tarjeta (Figma). */
   compatible: 'compatible',
   /** Botón del ícono de usuario (F-01 RN-08, N-3, D-52 I1). También es el nombre accesible del ícono. */
   cerrarSesion: 'Cerrar sesión',
   /** Flecha del encabezado de un animal; es su nombre accesible (Figma). */
   atras: '←',
-  /** Separador del resumen del hogar y de "compatible · No Apto" (Figma). */
-  separador: ' · ',
+  /** Separador de los datos del hogar en la tarjeta (F-13 AF-12; antes " · "). */
+  separadorHogar: ', ',
   /**
    * Al final de la lista, solo si queda alguna "Pendiente" (F-08 PA-12 y
    * decisión del plan de F-08). Es el mismo texto del Detalle.
@@ -51,22 +63,16 @@ export const TEXTO_EXPERIENCIA: Readonly<Record<ResumenHogar['p19'], string>> = 
   primeraVez: 'primera vez',
 };
 
-/** Recibe el nombre del animal. Devuelve el título "Un hogar para {nombre}" (Figma). */
-export function textoUnHogarPara(nombre: string): string {
-  return `Un hogar para ${nombre}`;
-}
-
 /** Recibe el porcentaje guardado. Devuelve "{porcentaje}%", sin espacio (Figma). */
 export function textoPorcentaje(porcentaje: number): string {
   return `${porcentaje}%`;
 }
 
 /**
- * Recibe el campo guardado `noApto` (RN-02: no se recalcula). Devuelve
- * "compatible" o, si es `true`, "compatible · No Apto" (RF-18).
+ * Recibe el campo guardado `noApto` (RN-02: no se recalcula). Devuelve la
+ * etiqueta "No Apto" (RF-18) si es `true`, o `null`. F-13 AF-11: la etiqueta
+ * va en su propia línea, debajo de "compatible", sin viñeta entre los dos.
  */
-export function textoCompatible(noApto: boolean): string {
-  return noApto
-    ? `${TEXTOS_PANEL.compatible}${TEXTOS_PANEL.separador}${MENSAJES.ETIQUETA_NO_APTO}`
-    : TEXTOS_PANEL.compatible;
+export function etiquetaNoApto(noApto: boolean): string | null {
+  return noApto ? MENSAJES.ETIQUETA_NO_APTO : null;
 }

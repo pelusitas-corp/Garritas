@@ -17,6 +17,7 @@ import { FirebaseError } from 'firebase/app';
 import {
   collection,
   doc,
+  getDoc,
   getDocFromServer,
   getDocs,
   getDocsFromServer,
@@ -43,6 +44,12 @@ export type LecturaAnimal =
   { estado: 'ok'; animal: AnimalConId } | { estado: 'no-existe' } | LecturaFallida;
 
 export type LecturaFotos = { estado: 'ok'; fotos: Foto[] } | LecturaFallida;
+
+export type LecturaFotoPrincipal =
+  { estado: 'ok'; datos: string } | { estado: 'no-existe' } | LecturaFallida;
+
+/** ID fijo de la foto con `orden: 0` (03 §4.4, F-02 AL-13). */
+export const ID_FOTO_PRINCIPAL = 'foto-0';
 
 /** Recibe el error de una lectura. Devuelve `sin-permiso` si las reglas la rechazaron; si no, `sin-conexion`. */
 function lecturaFallida(error: unknown): LecturaFallida {
@@ -129,6 +136,27 @@ export async function leerFotos(animalId: string): Promise<LecturaFotos> {
       return { datos: String(datos.datos), orden: Number(datos.orden) };
     });
     return { estado: 'ok', fotos: ordenarFotos(fotos) };
+  } catch (error) {
+    return lecturaFallida(error);
+  }
+}
+
+/**
+ * F-13 AF-4 (cambia D-36 solo en Descubrir; F-03 v1.4): lee UN documento,
+ * `animales/{animalId}/fotos/foto-0`, para que la tarjeta de Descubrir se vea
+ * nítida. No lee las otras fotos. Usa `getDoc` (puede responder con la copia
+ * del teléfono): la foto nunca cambia después de publicarse (03 §7).
+ * Recibe el `animalId`. Devuelve `ok` con el texto base64 de la foto,
+ * `no-existe`, `sin-conexion` o `sin-permiso`.
+ */
+export async function leerFotoPrincipal(animalId: string): Promise<LecturaFotoPrincipal> {
+  try {
+    const instantanea = await conTiempoLimite(
+      getDoc(doc(db, COLECCIONES.animales, animalId, COLECCIONES.fotos, ID_FOTO_PRINCIPAL)),
+      ESPERA_GUARDAR_MS,
+    );
+    const datos = instantanea.data();
+    return datos ? { estado: 'ok', datos: String(datos.datos) } : { estado: 'no-existe' };
   } catch (error) {
     return lecturaFallida(error);
   }
